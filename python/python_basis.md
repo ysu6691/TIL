@@ -214,6 +214,7 @@ print(tuple_a) # (1,)
 tuple_a = 1,
 print(tuple_a) # (1,)
 ```
+
 - Range
 숫자의 시퀀스를 나타내기 위해 사용
 ```python
@@ -275,6 +276,10 @@ c = {'A': 'apple', 'B': 'banana, 'list': [1, 2, 3]}
 print(c) # {'A': 'apple', 'B': 'banana', 'list': [1, 2, 3]}
 d = {A = 'apple, B = 'banana, list = [1, 2, 3]}
 print(d) # {'A': 'apple', 'B': 'banana', 'list': [1, 2, 3]}
+
+print(d.keys()) # dict.keys(['A', 'B', 'list'])
+print(d.values()) # dict_items(['apple', 'banana', [1, 2, 3]])
+print(d.items()) # dict_items([('A', 'apple'), ('B', 'banana'), ('list', [1, 2, 3])])
 ```
 
 
