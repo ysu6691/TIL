@@ -255,3 +255,51 @@ else:
 ```
 
 
+
+## 3. 함수
+### 함수의 기초
+- 내장 함수: 파이썬에 기본적으로 포함된 함수
+- 외장함수: import 문을 통해 사용하며, 외부 라이브러리에서 제공하는 함수
+- 사용자 정의 함수: 직접 사용자가 만드는 함수
+
+```python
+def func1():
+    return True
+print(fun1()) # True
+
+def func2(x, y):
+    return x + y
+print(fuc2(1, 2)) # 3
+```
+
+### 함수의 결과값
+- void function: 명시적인 return 값이 없는 경우, None을 반환하고 종료
+  - print vs return: print는 값을 출력할 뿐, 반환하지 않음.
+
+```python
+def void_function(x, y):
+    print(x + y)
+result = void_function(1, 2)
+print(result) # None
+
+def value_returning_function(x, y):
+    return x + y
+result = value_returning_function(1, 2):
+print(result) # 3
+```
+
+- 튜플을 활용하여 두 개 이상의 값 반환
+```python
+def func(x, y):
+    return x + y, x - y
+result = func(5, 3)
+print(result) # (8, 2)
+print(type(result)) # <class 'tuple'>
+```
+
+### 함수의 입력
+- Parameter와 Argument
+  - Parameter: 함수를 정의할 때, 함수 내부에서 사용되는 변수
+  - Argument: 함수를 호출할 때, 넣어주는 값
+
+
