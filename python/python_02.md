@@ -257,6 +257,7 @@ else:
 
 
 ## 3. 함수
+
 ### 함수의 기초
 - 내장 함수: 파이썬에 기본적으로 포함된 함수
 - 외장함수: import 문을 통해 사용하며, 외부 라이브러리에서 제공하는 함수
@@ -301,5 +302,139 @@ print(type(result)) # <class 'tuple'>
 - Parameter와 Argument
   - Parameter: 함수를 정의할 때, 함수 내부에서 사용되는 변수
   - Argument: 함수를 호출할 때, 넣어주는 값
+    - 필수 Argument: 반드시 전달되어야 하는 argument
+    - 선택 Argument: 값을 전달하지 않아도 되는 경우는 기본값이 전달
+    
+```python
+def func(ham): # parameter: ham
+    return ham
+func('spam') # argument: 'spam'
+
+# positional arguments
+# 위치에 따라 함수 내에 전달
+def add(x, y):
+    return x + y
+add(2, 5) # 7
+
+# keyword arguments
+# 직접 변수의 이름으로 특정 argument 전달
+def add(x, y):
+    return x + y
+add(x = 2, y = 5) # 7 (keyword arguments)
+add(2, y = 5) # 7 (positional argument + keyword argument)
+add(x = 2, 5) # Error 발생 (keyword argument 다음에 positional argument를 활용할 수 없음)
+
+# default arguments values
+기본값 지정시 argument 값 설정안해도 무방
+def add(x, y = 0):
+    return x + y
+add(2) # 2 ()
+```
+
+- 가변 인자(*args) 
+여러 개의 positional argument를 하나의 필수 parameter로 받아서 사용
+
+```python
+# 몇 개의 argument를 받을지 모르는 함수를 정의할 때 유용
+def add(*args):
+    for arg in args:
+        print(arg)
+add(2) # 2
+add(2, 3, 4) # 9
+
+def add(*args):
+    print(args)
+    print(type(args))
+add(1, 2, 3, 'a', 'b')
+
+'''
+(1, 2, 3, 'a', 'b')
+(class 'tuple')
+'''
+
+# 패킹과 언패킹
+# 패킹: 여러 개의 데이터를 묶어서 변수에 할당
+nums = (1, 2, 3)
+print(nums) # (1, 2, 3)
+
+# 언패킹: 시퀀스 속의 요소들을 여러 개의 변수에 나누어 할당하는 것
+nums = (1, 2, 3)
+a, b, c = (nums) # 변수의 개수와 요소의 개수가 같아야함
+print(a, b, c) # 1 2 3 
+
+# 언패킹시 변수에 asterisk(*)를 붙이면, 할당하고 남은 요소를 리스트에 담을 수 있음
+nums = (1, 2, 3, 4)
+a, *rest, b = nums
+print(a, rest, b) # 1 [2, 3] 4
+
+# 기본 인자와 가변 인자의 동시 사용
+def print_family_name{father, mother, *pets}:
+    print(f'아버지 : {father}')
+    print(f'어머니 : {mother}')
+    for name in pets:
+        print(f'반려동물 : {name})
+print(print_family_name('아부지', '어무니', '강아지', '고양이'))
+
+'''
+아버지 : 아부지
+어머니 : 어무니
+반려동물 : 강아지
+반려동물 : 고양이
+'''
+```
+
+- 가변 키워드 인자(**kwargs)
+파라미터를 딕셔너리로 묶어서 처리
+
+```python
+# 몇 개의 키워드 인자를 받을지 모르는 함수를 정의할 때 유용
+def family(**kwargs):
+    for key, value in kwargs.items():
+        print(key, ":", value)
+family(father = '아버지', mother = '어머니', baby = '아기')
+
+'''
+father : 아버지
+mother : 어머니
+baby : 아기
+'''
+
+# 가변 인자와 가변 키워드 인자의 동시 사용
+def print_family_name(*parents, **pets):
+    print('아버지 :', parents[0])
+    print('어머니 :', parents[1])
+    if pets: # pets이 있으면 실행
+        for title, name in pets.items():
+            print(f'{title} : {name}')
+print_family_name('아부지', '어무니', dog = '강아지', cat = '고양이')
+
+'''
+아버지 : 아부지
+어머니 : 어무니
+dog : 강아지
+cat : 고양이
+'''
+```
+
+### Python의 범위(Scope)
+- scope
+  - built-in scope
+    - 파이썬이 실행된 이후부터 영원히 유지
+  - global scope
+    - 코드 어디에서든 참조할 수 있는 공간
+    - 모듈이 호출된 시점 이후 혹은 인터프리터가 끝날 때까지 유지
+  - local scope
+    - 함수가 만든 scope. 함수 내부에서만 참조 가능
+    - 함수가 종료될 때까지 유지
+    
+- variable
+  - global variable: global scope에 정의된 변수
+  - local variable: local scope에 정의된 변수
+
+
+
+
+
+
 
 

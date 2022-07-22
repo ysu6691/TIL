@@ -280,6 +280,15 @@ print(d) # {'A': 'apple', 'B': 'banana', 'list': [1, 2, 3]}
 print(d.keys()) # dict.keys(['A', 'B', 'list'])
 print(d.values()) # dict_items(['apple', 'banana', [1, 2, 3]])
 print(d.items()) # dict_items([('A', 'apple'), ('B', 'banana'), ('list', [1, 2, 3])])
+
+# dict[]와 dict.get()의 차이점
+dict = {'a': 1, 'b': 2, 'c': 3}
+dict['a'] # 1
+dict.get('a') # 1
+
+dict['d'] # 오류 발생
+dict.get('d') # None
+dict.get('d', '없음') # None 대신 '없음' 출력
 ```
 
 

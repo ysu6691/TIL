@@ -116,7 +116,6 @@ $ git clone 'https://github.com/ysu6691'
 
 $ git add.
 $ git commit -m 'Day2 : 회사에서 수정'
-$ git remote add origin 'https://github.com/ysu6691'
 $ git push origin master
 
 ---
