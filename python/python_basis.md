@@ -8,11 +8,11 @@
 - 객체 지향 프로그래밍
 
 ### 파이썬 개발환경
-- IDE(Intergrated Development Environment)
+- IDE(Integrated Development Environment)
   - Visual Studio Code
   - Pycharm
 - Jupyter Notebook
-- IDLE(Intergrated Development and Learning Environment)
+- IDLE(Integrated Development and Learning Environment)
 
 
 
