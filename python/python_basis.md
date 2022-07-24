@@ -92,7 +92,7 @@ print(0x10) # 16
 ```
 
 ### 문자열 자료형(String Type)
-- 작은따옴표(')나 큰따옴표(')를 활용하여 표기
+- 작은따옴표(')나 큰따옴표(")를 활용하여 표기
 ```python
 print("hello") # hello
 print('hi') # hi
