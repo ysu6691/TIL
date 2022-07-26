@@ -498,6 +498,62 @@ def func1():
 func1() # 2
 ```
 
+- LEGB 심화
+```python
+# (1)
+nums = [1, 2, 3]
+
+def a():
+    nums[0] = 10
+a()
+print(nums) # [10, 2, 3] -> global 없이도 바뀜
+
+# (2)
+a = 3
+print(id(a)) # 164...6032
+
+def first():
+    global a
+    print(id(a)) #164...6032 -> 같음
+
+first()
+
+# (3)
+def first():
+    a = 4
+    print(id(a)) # 210...4560
+
+    def second():
+        nonlocal a
+        print(id(a)) # 210...4560 -> 같음
+    second()
+
+first()
+
+# (4)
+def first():
+    a = 6
+    print(id(a)) # 198...7760
+
+    def second():
+        print(id(a)) # 198...7760 -> 같음
+    second()
+
+first()
+
+# (5)
+def first():
+    a = 6
+    print(id(a)) # 318...9472
+
+    def second():
+        print(id(a)) # 오류 발생 (우선적으로 같은 이름공간 내에서 할당된 값을 가져오기 때문에, a = 7이 먼저 나와야 함)
+        a = 7
+    second()
+
+first()
+```
+
 ### 함수 응용
 - map: 순회 가능한 데이터구조(iterable)의 모든 요소에 함수 적용해 map object로 반환
 
@@ -540,9 +596,17 @@ boys = ['justin', 'eric']
 pair = zit(girls, boys)
 print(pair) # <zip object at 0x000...>
 print(list(pair)) # [('jane', 'justin'), ('ashley', 'eric')]
+
+# 전치코드시 zip 활용
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+transposed_matrix = list(zip(*a))
+print(transposed_matrix) # [(1, 4, 7), (2, 5, 8), (3, 6, 9)]
+
+list_transposed_matrix = list(map(list, zip(*a)))
+print(list_transposed_matrix) # [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
 ```
 
-- lambda 함수: 표현식ㄷ을 계산한 결과값을 반환하는 함수, 익명함수라고도 불림
+- lambda 함수: 표현식을 계산한 결과값을 반환하는 함수, 익명함수라고도 불림
 
 ```python
 # 함수이름 = lambda parameter : 표현식
