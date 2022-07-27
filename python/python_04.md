@@ -194,7 +194,7 @@ class Person:
 person1 = Person()
 person1.talk() # 안녕
 person1.eat('피자') # 피자를 냠냠
-# Person.talk(person1) 도 가능은 하지만 권장 x
+# Person.talk(person1)도 가능은 하지만 권장 x
 ```
 
 ### 인스턴스 메소드
@@ -321,9 +321,6 @@ print_hello()
   - 클래스 메소드: 클래스 변수(cls) 사용
   - 인스턴스 메소드: 인스턴스 변수(self) 사용
   - 클래스는 인스턴스 변수 사용 불가하지만, 인스턴스 메소드는 클래스 변수, 인스턴스 변수 둘 다 사용 가능
-```python
-
-```
 
 - 스태틱 메소드
   - 인스턴스 변수, 클래스 변수를 전혀 다루지 않는 메소드
