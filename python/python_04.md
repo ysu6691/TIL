@@ -478,7 +478,7 @@ class Professor(Person):
         self.email = email
 
 class Student(Person):
-    def __init__(self, nane, age, studend_id):
+    def __init__(self, name, age, studend_id):
         super().__init__(name, age) # 부모 클래스 요소 호출
         self.student_id = student_id
 
@@ -681,17 +681,113 @@ print( # SyntaxError: unexpected EOF while parsing
 
 ```python
 # ZeroDivisionError
-10 / 0
+10 / 0 
 
-# NameError
-print(name_error) # namespace 상에 이름이 없는 경우
+# NameError # namespace 상에 이름이 없는 경우 (not defined)
+print(name_error)
 
-# TypeError
+# TypeError - 타입 불일치
 1 + '1'
 round('3.5')
+
+# TypeError - argument 누락
+divmod()
+import random
+random.sample()
+
+# TypeError - argument 개수 초과
+divmod(1, 2, 3)
+import random
+random.sample(range(3), 1, 2)
+
+# TypeError - argument type 불일치
+import random
+random.sample(1, 2)
+
+# ValueError - 타입은 올바르나 값이 적절하지 않거나 없는 경우
+int('3.5')
+range(3).index(6)
+
+# IndexError - 인덱스가 존재하지 않거나 범위를 벗어나는 경우
+empty_list = []
+empty_list[2]
+
+# KeyError - 해당 키가 존재하지 않는 경우
+song = {'IU' : '좋은날'}
+song['BTS']
+
+# ModuleNotFoundError
+import asdf
+
+# ImportError - Module은 있으나 존재하지 않는 클래스/함수를 가져오는 경우
+from random import samp
+
+# KeyboardInterrupt - 임의로 프로그램을 종료하였을 때
+while True:
+  continue
+# Ctrl + C
+
+# IndentationError - Indentation이 적절하지 않는 경우
+for i in range(3):
+print(i)
 ```
 
+### 예외 처리
+- 예외 처리
+  - try문(statement) / except절(clause)을 이용하여 예외 처리를 할 수 있음
+  - try문은 반드시 한 개 이상의 except절을 필요로 함
+```python
+try: # 오류가 발생할 가능성이 있는 코드를 실행
+  num = input('숫자입력: ') # '안녕' 입력
+  print(int(num))
+except: # 예외가 발생하면, except절이 실행
+  print('숫자가 아닙니다.')
 
+'''
+숫자입력 : 안녕
+숫자가 아닙니다.
+'''
 
+try:
+  num = input('숫자입력: ') # '안녕' 입력
+  print(int(num))
+except ValueError: # 에러 종류 설정
+  print('숫자가 아닙니다.')
+
+'''
+숫자입력 : 안녕
+숫자가 아닙니다.
+'''
+
+try:
+  num = input()
+  print(int(num)) # 123 입력
+except:
+  print('예외 발생')
+else: # 예외 없이 try문이 끝나면, else문 실행
+  print('잘 지나감')
+finally: # 예외 발생 여부에 관계없이, finally문 실행
+  print('끝')  
+
+'''
+123
+잘 지나감
+끝
+'''
+```
+
+- 에러 메시지 처리(as)
+  - as 키워드를 활용하여 원본 에러 메시지를 사용할 수 있음
+```python
+try:
+  empty_list = []
+  print(empty_list[-1])
+except IndexError as err:
+  print(f'{err}, 오류가 발생했습니다.')
+
+'''
+list index out of range, 오류가 발생했습니다.
+'''
+```
 
 
