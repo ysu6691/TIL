@@ -63,7 +63,7 @@ else:
 
 num = 2
 result = '홀수입니다.' if num % 2 else '짝수입니다.'
-print(resule) 
+print(result) 
 
 # 짝수입니다.
 ```

@@ -287,9 +287,9 @@ value는 어떠한 형태는 관계없음
 딕셔너리 생성
 a = {}
 b = dict()
-c = {'A': 'apple', 'B': 'banana, 'list': [1, 2, 3]}
+c = {'A': 'apple', 'B': 'banana', 'list': [1, 2, 3]}
 print(c) # {'A': 'apple', 'B': 'banana', 'list': [1, 2, 3]}
-d = {A = 'apple, B = 'banana, list = [1, 2, 3]}
+d = dict(A = 'apple', B = 'banana', list = [1, 2, 3])
 print(d) # {'A': 'apple', 'B': 'banana', 'list': [1, 2, 3]}
 
 print(d.keys()) # dict.keys(['A', 'B', 'list'])
