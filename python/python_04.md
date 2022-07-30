@@ -274,6 +274,34 @@ class Person:
 person1 = Person('아이유')
 person2 = Person('이찬혁')
 print(Person.count) # 인구수: 2명
+
+# 클래스 메소드로 인스턴스 생성
+class Person:
+    def __init__(self, name, age): # 생성자 메소드에서는 이름과 나이를 받음
+        self.name = name
+        self.num = age
+        
+    @classmethod
+    def details(cls, name, birth): # 클래스 메소드에서는 생년월일을 받음
+        p = cls(name, birth) # 이름과 생년월일 정보를 갖는 새로운 인스턴스 생성
+        return p
+
+    def check_age(self): # 2022년 기준 성인이면 True 반환
+        if self.num > 1000: # 인스턴스가 생년월일을 받았을 경우
+            if 2022 - self.num + 1 > 19:
+                return True
+            else:
+                return False
+        else: # 인스턴스가 나이를 받았을 경우
+            if self.num > 19:
+                return True
+            else:
+                return False
+
+p1 = Person('이찬혁', 20)
+print(p1.check_age()) # True
+p2 = Person.details('아이유', 2007)
+print(p2.check_age()) # False
 ```
 
 - 데코레이터
@@ -464,11 +492,12 @@ print(issubclass(float, int)) # False
 print(issubclass(Professor, Person)) # True
 print(issubclass(Professor, (Person, Student))) # True
 
-# super
+# super(1)
 class Person:
     def __init__(self, name, age):
         self.name = name
         self.age = age
+        print('인스턴스 생성')
 
 class Professor(Person):
     def __init__(self, name, age, email):
@@ -478,9 +507,25 @@ class Professor(Person):
         self.email = email
 
 class Student(Person):
-    def __init__(self, name, age, studend_id):
+    def __init__(self, name, age, student_id):
         super().__init__(name, age) # 부모 클래스 요소 호출
         self.student_id = student_id
+    
+s1 = Student('홍길동', 10, 12345) # '인스턴스 생성'
+
+# super(2)
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+class Student(Person):
+    def __init__(self, n, a, student_id): # super로 받아온 매개변수 재지정 가능
+        super().__init__(n, a) # name과 age는 그대로 받아오고, 이름만 재지정
+        self.student_id = student_id
+
+s1 = Student('홍길동', 10, 12345)
+print(s1.name) # 홍길동
 
 # mro
 class Person:
@@ -618,6 +663,30 @@ print(p1.__age) # 오류 (age에 직접 접근 불가능)
     - getter 메소드: 변수의 값을 읽는 메소드 (@property 데코레이터 사용)
     - setter 메소드: 변수의 값을 설정하는 메소드 (@변수.setter 사용)
 ```python
+# getter & setter 없이 사용
+class Person:
+    def __init__(self, age):
+        self._age = age
+
+p1 = Person(20)
+print(p1._age) # 20 (접근은 가능)
+print(p1.age) # 오류 발생
+
+# getter로 언더스코어(_)없이 사용
+class Person:
+    def __init__(self, age):
+        self._age = age
+
+    @property
+    def age(self):
+        return self._age
+
+p1 = Person(20)
+print(p1._age) # 20
+print(p1.age) # 20
+p1.age = 18 # 오류 발생 (변경은 불가능)
+
+# setter로 값 변경 가능
 class Person:
     def __init__(self, age):
         self._age = age
@@ -630,17 +699,16 @@ class Person:
     def age(self, new_age):
         if new_age > 19:
             raise ValueError('Adult')
-            return
+
         self._age = new_age
 
-p1 = Person(15)
+p1 = Person(20)
+print(p1.age) # 20
+
+p1.age = 15
 print(p1.age) # 15
 
-p1.age = 18
-print(p1.age) # 18
-
-p1.age = 25
-print(p1.age) # ValueError: Adult
+p1.age = 20 # ValueError: Adult
 ```
 
 ## 3. 에러와 예외 처리
