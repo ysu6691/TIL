@@ -475,7 +475,8 @@ class Professor(Person):
 p1 = Professor()
 
 print(isinstance(p1, Person)) # True
-print(isinstance(p1, Professor())) # True
+print(isinstance(p1, Professor)) # True
+print(isinstance([1,2,3], list)) # True
 
 # issubclass
 class Person:
@@ -828,8 +829,8 @@ except ValueError: # 에러 종류 설정
 '''
 
 try:
-  num = input()
-  print(int(num)) # 123 입력
+  num = input() # 123 입력
+  print(int(num))
 except:
   print('예외 발생')
 else: # 예외 없이 try문이 끝나면, else문 실행
