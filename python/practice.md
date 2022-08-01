@@ -27,8 +27,8 @@ print(s.swapcase())
 ## 2. 리스트
 ```python
 a = ['a', 'b', 'c']
-a.insert(0, 'z')
-a.insert(100,'z')
+a.insert(0, 1)
+a.insert(100, 10)
 
 a = ['a', 'b', 'c']
 a.extend(['d', 'e'])
@@ -84,8 +84,7 @@ a += 5
 a += (6, 7)
 ```
 
-
-## 4. 시퀀스형 연산자
+- 시퀀스형 연산자
 ```python
 a = [1, 2]
 print(id(a))
@@ -99,7 +98,7 @@ print(id(a))
 ```
 
 
-## 5. 셋
+## 4. 셋
 ```python
 a = {1, 2, 3}
 a.add(4)
@@ -125,7 +124,7 @@ a.pop(1)
 ```
 
 
-## 6. 딕셔너리
+## 5. 딕셔너리
 ```python
 a = {'apple': '사과', 'banana': '바나나'}
 b = a.pop()
@@ -145,7 +144,7 @@ a.update(apple = '풋사과')
 ```
 
 
-## 7. range와 슬라이싱
+## 6. range와 슬라이싱
 ```python
 a = list(range(5, 1, -1))
 print(a)

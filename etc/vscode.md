@@ -15,4 +15,6 @@
 |Alt + Click|마우스로 다중 커서 선택|
 |Ctrl + Enter|커서 아래 행 빈줄 생성|
 |Ctrl + G|행(라인 번호)으로 이동|
+|Shift + Tab|다중 내어쓰기|
+|Alt + Shift + ↑,↓|행 복사|
 
