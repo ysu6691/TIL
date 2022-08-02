@@ -1,4 +1,4 @@
-l# CSS
+# CSS
 
 ## 1. CSS란?
 
@@ -439,7 +439,32 @@ p {color: hsl(120, 100%, 0);}
   </body>
 </html>
 ```
+```html
+<!-- 위아래 margin이 겹칠 경우, 더 큰 margin만 적용 -->
+<!-- 양 옆 margin은 겹쳐도 둘 다 적용 -->
+<head>
+  <style>
+    .box1 {
+      width: 100px;
+      height: 100px;
+      background-color: red;
+      margin-bottom: 50px;
+    }
 
+    .box2 {
+      width: 100px;
+      height: 100px;
+      background-color: blue;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 두 박스 사이 간격: 50px -->
+  <div class="box1"></div>
+  <div class="box2"></div>
+</body>
+```
 ### CSS Display
 - CSS 원칙 2
   - display에 따라 크기와 배치가 달라짐
@@ -462,6 +487,7 @@ p {color: hsl(120, 100%, 0);}
     - block과 inline 레벨 요소의 특징을 모두 가짐
     - inline처럼 한 줄에 표시 가능
     - block처럼 width, height, margin 속성을 모두 지정 가능
+    - margin: auto 지정 불가
 
   - display: none
     - 해당 요소를 화면에 표시하지 않고, 공간도 부여 x
@@ -578,11 +604,9 @@ p {color: hsl(120, 100%, 0);}
     </div>
     <div class="fixed">고정</div>
   </body>
+
+
 ```
-
-## 3. 개발자 도구
-
-  
 
 
 
