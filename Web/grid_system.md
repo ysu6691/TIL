@@ -103,20 +103,21 @@
 
 
 
-
-<head>
-	<style>
-		.box{
-			width: 100px;
-			height: 100px;
-			border: 1px, solid, red;
-			background-color: yellow;
-		}
-	</style>
-</head>
-<body>
-	<div class="box"></div>
-</body>
+<html>
+	<head>
+		<style>
+			.box{
+				width: 100px;
+				height: 100px;
+				border: 1px, solid, red;
+				background-color: yellow;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box"></div>
+	</body>
+</html>
 
 
 
