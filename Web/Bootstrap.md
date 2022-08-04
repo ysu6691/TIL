@@ -63,7 +63,8 @@
   - fw-normal: normal weight text
   - fw-light: light weight text
   - fst-italic: italic text
-  - [bootstrap text 코드](https://getbootstrap.com/docs/5.2/utilities/text/)
+  - <a href="https://getbootstrap.com/docs/5.2/utilities/text/" target="_black">bootstrap text 코드</a>
+  - [bootstrap text 코드](https://getbootstrap.com/docs/5.2/utilities/text/){:target="_blank"}
 
 - 배경색
   - bg-dark: 검은색 배경
