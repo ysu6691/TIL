@@ -7,7 +7,7 @@
   - 웹사이트란 브라우저를 통해서 접속하는 웹 페이지(문서)들의 모음
   - '링크'를 통해 여러 웹 페이지를 연결한 것이 웹사이트
   - HTML(구조), CSS(표현), Javascript(동작)으로 구성
-  - [https://html-css-js.com](https://html-css-js.com/)에서 확인 가능
+  - <a href="https://html-css-js.com/" target="_blank">https://html-css-js.com</a>에서 확인 가능
 
 - 웹사이트와 브라우저
   - 웹사이트는 브라우저를 통해 동작
@@ -18,7 +18,7 @@
 - 웹 표준
   - 웹에서 표준적으로 사용되는 기술이나 규칙
   - 어떤 브라우저든 웹 페이지가 동일하게 보이도록 함(크로스 브라우징)
-  - [can I use](https://caniuse.com/)에서 확인 가능
+  - <a href="https://caniuse.com/" target="_blank">can I use</a>에서 확인 가능
 
 ### 개발 환경 설정
 - Visual Studio Code 확장 프로그램

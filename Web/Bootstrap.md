@@ -63,22 +63,21 @@
   - fw-normal: normal weight text
   - fw-light: light weight text
   - fst-italic: italic text
-  - <a href="https://getbootstrap.com/docs/5.2/utilities/text/" target="_black">bootstrap text 코드</a>
-  - [bootstrap text 코드](https://getbootstrap.com/docs/5.2/utilities/text/){:target="_blank"}
+  - <a href="https://getbootstrap.com/docs/5.2/utilities/text/" target="_blank">bootstrap text 코드</a>
 
 - 배경색
   - bg-dark: 검은색 배경
   - bg-white: 흰색 배경
   - bg-danger: 빨간색 배경
   - bg-primary: 파란색 배경
-  - [bootstrap background 코드](https://getbootstrap.com/docs/5.2/utilities/background/)
+  - <a href="https://getbootstrap.com/docs/5.2/utilities/background/" target="_blank">bootstrap background 코드</a>
 
 - 글자색
   - text-dark: 검은색 글씨
   - text-white: 흰색 글씨
   - text-danger: 빨간색 글씨
   - text-primary: 파란색 글씨
-  - [bootstrap color 코드](https://getbootstrap.com/docs/5.2/utilities/colors/)
+  - <a href="https://getbootstrap.com/docs/5.2/utilities/colors/" target="_blank">bootstrap color 코드</a>
 
 ### layout
 - position
@@ -88,7 +87,7 @@
   - position-fixed
   - position-sticky
   - position-static
-  - [bootstrap position 코드](https://getbootstrap.com/docs/5.2/utilities/position/)
+  - <a href="https://getbootstrap.com/docs/5.2/utilities/position/" target="_blank">bootstrap position 코드</a>
 
 ```html
 <div class="position-relative">
@@ -109,42 +108,42 @@
   - d-block: block으로 설정
   - d-inline-block: inline-block으로 설정
   - d-none: none으로 설정
-  - [display 코드](https://getbootstrap.com/docs/5.2/utilities/display/)
+  - <a href="https://getbootstrap.com/docs/5.2/utilities/display/" target="_blank">display 코드</a>
 
 - flex
   - d-flex: flex 설정
   - d-inline-flex: inline flex 설정
   - flex 속성도 지정 가능
     - ex) justify, align 등
-  - [flex 코드](https://getbootstrap.com/docs/5.2/utilities/flex/)
+  - <a href="https://getbootstrap.com/docs/5.2/utilities/flex/" target="_blank">flex 코드</a>
 
 ### component
   - Navbar
-    - [Navbar 코드](https://getbootstrap.com/docs/5.2/components/navbar/)
+    - <a href="https://getbootstrap.com/docs/5.2/components/navbar/" target="_blank">Navbar 코드</a>
 
   - button
-    - [button 코드](https://getbootstrap.com/docs/5.2/components/buttons/)
+    - <a href="https://getbootstrap.com/docs/5.2/components/buttons/" target="_blank">button 코드</a>
 
   - dropdown
-    - [dropdown 코드](https://getbootstrap.com/docs/5.2/components/dropdowns/)
+    - <a href="https://getbootstrap.com/docs/5.2/components/dropdowns/" target="_blank">dropdown 코드</a>
 
   - carousel
-    - [carousel 코드](https://getbootstrap.com/docs/5.2/components/carousel/)
+    - <a href="https://getbootstrap.com/docs/5.2/components/carousel/" target="_blank">carousel 코드</a>
 
   - modal
     - modal은 중첩해서 들어가면 안됨
-    - [modal 코드](https://getbootstrap.com/docs/5.2/components/modal/)
+    - <a href="https://getbootstrap.com/docs/5.2/components/modal/" target="_blank">modal 코드</a>
 
   - form
-    - [form 코드](https://getbootstrap.com/docs/5.2/forms/form-control/)
+    - <a href="https://getbootstrap.com/docs/5.2/forms/form-control/" target="_blank">form 코드</a>
 
   - card
-    - [grid card 코드](https://getbootstrap.com/docs/5.2/components/card/#grid-cards)
+    - <a href="https://getbootstrap.com/docs/5.2/components/card/#grid-cards" target="_blank">grid card 코드</a>
 
 ## 2. Grid system
 
 ### Bootstrap grid system
-- [grid system](https://getbootstrap.com/docs/5.2/layout/grid/)
+- <a href="https://getbootstrap.com/docs/5.2/layout/grid/" target="_blank">grid system</a>
 
 - 기본 요소
   - column: 실제 컨텐츠를 포함하는 부분
@@ -163,7 +162,7 @@
   ```
 
 - Breakpoints
-  - [breakpoints](https://getbootstrap.com/docs/5.2/layout/breakpoints/)
+  - <a href="https://getbootstrap.com/docs/5.2/layout/breakpoints/" target="_blank">breakpoints</a>
 
   |Breakpoint|Class infix|Dimensions|
   |---|---|---|
