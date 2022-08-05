@@ -108,6 +108,8 @@
   - d-block: block으로 설정
   - d-inline-block: inline-block으로 설정
   - d-none: none으로 설정
+  - d-breakpoint-block: breakpoint부터 block으로 설정
+  - d-breakpoint-none: breakpoint부터 none으로 설정
   - <a href="https://getbootstrap.com/docs/5.2/utilities/display/" target="_blank">display 코드</a>
 
 - flex
