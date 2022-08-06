@@ -151,6 +151,7 @@
   - column: 실제 컨텐츠를 포함하는 부분
   - gutter: column과 column 사이의 공간 (사이 간격)
   - container: column들을 담고 있는 공간
+    - container-fluid로, width 100%의 container 생성 가능
   - 12개의 column과 6개의 grid breakpoints가 존재
 
   ```html
