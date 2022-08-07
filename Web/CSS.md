@@ -691,7 +691,8 @@ p {color: hsl(120, 100%, 0);}
 	- center: 아이템들을 axis 중앙으로
 	- space-between: 아이템 사이의 간격을 균일하게 분배
 	- space-around: 아이템을 둘러싼 영역을 반으로 나눠서 양쪽에 균일하게 분배
-	- space-evenly: 전체 영역에서 아이템 간 간격을 균일하게 분배
+	- space-evenly(justify): 전체 영역에서 아이템 간 간격을 균일하게 분배
+  - stretch(align): 남은 공간만큼 늘리기
 
 - flex 속성-flex 정렬 (align-items & align-self)
 	- flex-start: 아이템을 컨테이너의 교차축의 시작점에 배치

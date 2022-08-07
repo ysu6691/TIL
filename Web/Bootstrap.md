@@ -3,16 +3,14 @@
 ## 1. Bootstrap 기본 원리
 
 ### Bootstrap 불러오기
+- link 태그 (head 태그 내부 위치)
 ```html
-<head>
-    <!-- link 태그는 head 태그 안에 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
-</head>
-<body>
+```
 
-  <!-- scripts 태그는 닫는 body 태그 바로 위에 -->
+- scripts 태그 (닫는 body 태그 바로 위에 위치)
+```html
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
-</body>
 ```
 
 ### Spacing (Margin and Padding)
@@ -32,7 +30,7 @@
   - black: 4 방향 모두
 
 - size
-  - 0: $spacer * .25 = 0rem = 0px
+  - 0: $spacer * 0 = 0rem = 0px
   - 1: $spacer * .25 = 0.25rem = 4px
   - 2: $spacer * .5 = 0.5rem = 8px
   - 3: $spacer * 1 = 1rem = 16px
