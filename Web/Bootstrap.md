@@ -206,7 +206,7 @@
       <div class="box col">2</div>
     </div>
 
-		<hr>
+    <hr>
 
     <!-- 12칸의 column 중 해당 숫자 만큼의 비율을 차지 -->
     <div class="row">
@@ -214,7 +214,7 @@
       <div class="box col-6">6칸 만큼의 column 차지</div>
     </div>
 
-		<hr>
+    <hr>
 
     <!-- 12칸을 넘어가면 다음 줄로 -->
     <div class="row">
@@ -222,7 +222,7 @@
       <div class="box col-4">4칸 만큼의 column 차지</div>
     </div>
 
-		<hr>
+    <hr>
 
     <!-- 크기에 따라 비율 변경 -->
     <div class="row">
@@ -231,22 +231,22 @@
       <div class="box col-2 col-sm-2 col-md-4 col-lg-5">3</div>
     </div>
 
-		<hr>
+    <hr>
 
     <!-- row 중첩 -->
 		<div class="row">
       <div class="box col-8">아래에 12개의 column 생성
-				<div class="row">
-					<div class="box col-4">1</div>
-					<div class="box col-4">2</div>
-					<div class="box col-4">3</div>
-				</div>
-			</div>
+        <div class="row">
+          <div class="box col-4">2</div>
+          <div class="box col-4">3</div>
+          <div class="box col-4">1</div>
+        </div>
+      </div>
       <div class="box col-6">1</div>
-			<div class="box col-6">2</div>
+      <div class="box col-6">2</div>
     </div>
 
-		<hr>
+    <hr>
 
     <!-- offset으로 여백 주기 -->
     <div class="row">
@@ -254,7 +254,7 @@
     </div>
   </div>
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 </body>
 </html>
 ```
