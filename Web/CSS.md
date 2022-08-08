@@ -646,18 +646,18 @@ p {color: hsl(120, 100%, 0);}
 ### CSS Flex
 - CSS Flexible Box Layout
   - 행과 열 형태로 아이템들을 배치하는 1차원 레이아웃 모델
-	- Normal flow를 벗어나는 수단 중 불편한 position과 float의 대안
+  - Normal flow를 벗어나는 수단 중 불편한 position과 float의 대안
   - Display
     - flex: block 특성의 flex container를 정의
     - inline-flex: inline 특성의 flex container를 정의
 
 	- 축
 	  - main axit(메인 축)
-		- cross axis(교차 축)
+	  - cross axis(교차 축)
 
 	- 구성 요소
 	  - Flex Container(부모 요소)
-		- Flex Item(자식 요소)
+	  - Flex Item(자식 요소)
 
 - flex 속성
   - 배치 설정
@@ -667,31 +667,31 @@ p {color: hsl(120, 100%, 0);}
 
 	- 공간 나누기
 	  - justify-content (main axis)
-		- align-content (cross axis)
+	  - align-content (cross axis)
 
 	- 정렬
 	  - align-items (모든 아이템을 cross axis 기준으로)
-		- align-self (개별 아이템)
+	  - align-self (개별 아이템)
 
 - flex 속성-배치 설정
   - flex-direction
-		- row
+	  - row
     - row-reverse
     - column
     - column-reverse
 
   - flex-wrap
-		- nowrap(기본 값): 크기를 조정해 한 줄에 배치
-		- wrap: 넘치면 그 다음 줄로 배치
-		- wrap-reverse: 교차 축 방향으로 역전시켜 배치
+	  - nowrap(기본 값): 크기를 조정해 한 줄에 배치
+	  - wrap: 넘치면 그 다음 줄로 배치
+	  - wrap-reverse: 교차 축 방향으로 역전시켜 배치
 
 - flex 속성-공간 나누기 (justify-content & align-content)
   - flex-start(기본 값): 아이템들을 axis 시작점으로
-	- flex-end: 아이템들을 axis 끝 쪽으로
-	- center: 아이템들을 axis 중앙으로
-	- space-between: 아이템 사이의 간격을 균일하게 분배
-	- space-around: 아이템을 둘러싼 영역을 반으로 나눠서 양쪽에 균일하게 분배
-	- space-evenly(justify): 전체 영역에서 아이템 간 간격을 균일하게 분배
+  - flex-end: 아이템들을 axis 끝 쪽으로
+  - center: 아이템들을 axis 중앙으로
+  - space-between: 아이템 사이의 간격을 균일하게 분배
+  - space-around: 아이템을 둘러싼 영역을 반으로 나눠서 양쪽에 균일하게 분배
+  - space-evenly(justify): 전체 영역에서 아이템 간 간격을 균일하게 분배
   - stretch(align): 남은 공간만큼 늘리기
 
 - flex 속성-flex 정렬 (align-items & align-self)
@@ -703,7 +703,7 @@ p {color: hsl(120, 100%, 0);}
 
 - flex 속성-기타 속성
   - flex-grow: 남은 영역을 아이템에 분배
-	- order: 배치 순서
+  - order: 배치 순서
 
 ```html
 <!-- 예시 -->
@@ -764,60 +764,55 @@ p {color: hsl(120, 100%, 0);}
 <html>
 <head>
   <style>
-      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
-      * {
-          box-sizing: border-box;
-          font-family: 'Roboto', sans-serif;
-        }
-
-        body {
-          margin: 1rem;
-        }
-
-        .example_container {
-          display: grid;
-          place-items: center;
-        }
-
-        .flex_container {
-          display: flex;
-          width: 400px;
-          height: 400px;
-          border: 1px solid black;
-          background-color: rgb(248, 237, 227);
-          margin: 1rem;
-        }
-
-        .flex_item {
-          background-color: rgb(189, 210, 182);
-          border: 1px dotted rgb(121, 135, 119);
-          text-align: center;
-          margin: 3px;
-          width: 100px;
-          height: 100px;
-        }
-
-        #layout_01 {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
-          justify-content: space-around;
-          align-content: space-around;
-        }
+    * {
+        box-sizing: border-box;
+        font-family: 'Roboto', sans-serif;
+      }
+    body {
+      margin: 1rem;
+    }
+    .example_container {
+      display: grid;
+      place-items: center;
+    }
+    .flex_container {
+      display: flex;
+      width: 400px;
+      height: 400px;
+      border: 1px solid black;
+      background-color: rgb(248, 237, 227);
+      margin: 1rem;
+    }
+    .flex_item {
+      background-color: rgb(189, 210, 182);
+      border: 1px dotted rgb(121, 135, 119);
+      text-align: center;
+      margin: 3px;
+      width: 100px;
+      height: 100px;
+    }
+    #layout_01 {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-content: space-around;
+    }
   </style>   
 </head>
 <body>
-    <div class="example_container">
-        <div id="layout_01" class="flex_container">
-            <div class="flex_item"><p>1</p></div>
-            <div class="flex_item"><p>2</p></div>
-            <div class="flex_item"><p>3</p></div>
-            <div class="flex_item"><p>4</p></div>
-            <div class="flex_item"><p>5</p></div>
-            <div class="flex_item"><p>6</p></div>
-        </div>
+  <div class="example_container">
+    <div id="layout_01" class="flex_container">
+      <div class="flex_item"><p>1</p></div>
+      <div class="flex_item"><p>2</p></div>
+      <div class="flex_item"><p>3</p></div>
+      <div class="flex_item"><p>4</p></div>
+      <div class="flex_item"><p>5</p></div>
+      <div class="flex_item"><p>6</p></div>
     </div>
+  </div>
 </body>
 </html>
 ```
