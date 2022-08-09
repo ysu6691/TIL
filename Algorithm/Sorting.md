@@ -37,7 +37,7 @@ O(n<sup>2</sup>)
 
 ### 코드
 ```python
-def bubble_count(a_list):
+def bubble_sort(a_list):
 
   # a_list의 길이: N
   for i in range(N):
@@ -77,21 +77,23 @@ O(n + K)
 
 ### 코드
 ```python
-def count_list(a_list):
+def counting_sort(a_list):
   # a_list 내의 가장 큰 정수: M
+  M = 5
   count = [0] * (M + 1)
 
   # a_list의 길이: N
+  N = 10
   new_list = [0] * N
 
   for i in range(N):
     count[a_list[i]] += 1
 
-  for i in range(1, M):
-    count[i] += count[i - 1]
+  for i in range(M):
+    count[i + 1] += count[i]
 
-  for i in range(N, -1, -1):
-    new_list[count[a_list[i]]] = a_list[i]
+  for i in range(N - 1, -1, -1):
+    new_list[count[a_list[i]] - 1] = a_list[i]
     count[a_list[i]] -= 1
 
   return new_list
