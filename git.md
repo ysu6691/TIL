@@ -34,6 +34,10 @@ $ git add a.txt
 
 # 특정 폴더
 $ git add a 
+
+# add 삭제
+$ git reset HEAD 파일/폴더 # 특정 파일/폴더 add 삭제
+$ git reset HEAD # 모든 파일/폴더 add 삭제
 ```
 
 ### commit
