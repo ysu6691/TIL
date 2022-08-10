@@ -113,10 +113,10 @@ def counting_sort(a_list):
 - 그 값을 리스트의 맨 앞에 위치한 값과 교환한다.
 - 이를 반복
 
-<img src="https://user-images.githubusercontent.com/109272360/183922142-77a68779-9d9c-4c25-84d9-1daecc9e78b4.png" width="300px" style="margin-top:20px;">
-<img src="https://user-images.githubusercontent.com/109272360/183922146-25acbf98-6ada-4dec-9ad7-7e34125562e5.png" width="300px" style="margin-top:20px;">
-<img src="https://user-images.githubusercontent.com/109272360/183922148-6e9dd286-973e-4ed7-bbe4-f08b3f3d8306.png" width="300px" style="margin-top:20px;">
-<img src="https://user-images.githubusercontent.com/109272360/183922152-14781b40-6da1-4699-9cdd-eccf985f4747.png" width="300px" style="margin-top:20px;">
+<img src="https://user-images.githubusercontent.com/109272360/183922142-77a68779-9d9c-4c25-84d9-1daecc9e78b4.png" width="400px" style="margin-top:20px;">
+<img src="https://user-images.githubusercontent.com/109272360/183922146-25acbf98-6ada-4dec-9ad7-7e34125562e5.png" width="400px" style="margin-top:20px;">
+<img src="https://user-images.githubusercontent.com/109272360/183922148-6e9dd286-973e-4ed7-bbe4-f08b3f3d8306.png" width="400px" style="margin-top:20px;">
+<img src="https://user-images.githubusercontent.com/109272360/183922152-14781b40-6da1-4699-9cdd-eccf985f4747.png" width="400px" style="margin-top:20px;">
 
 ### 시간 복잡도
 O(n<sup>2</sup>)
@@ -138,6 +138,6 @@ O(n<sup>2</sup>)
 - ex1) [3, 1, 2, 3] -> [1, 2, 3, 3] (안정정렬과 불안정정렬 모두 동일한 결과)
 - ex2) [(a,3), (b,1), (c,2), (d,3)] -> [(b,1), (c,2), (a,3), (d,3)] (안정정렬)
 
-  <img src="https://user-images.githubusercontent.com/109272360/183350062-99a2a4ac-ec24-4e53-823a-de6a29520260.png" width="400px">
+  <img src="https://user-images.githubusercontent.com/109272360/183350062-99a2a4ac-ec24-4e53-823a-de6a29520260.png" width="550px">
 
 
