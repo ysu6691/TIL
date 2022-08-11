@@ -62,7 +62,7 @@ def bubble_sort(a_list):
   <img src="https://user-images.githubusercontent.com/109272360/183440043-e1a28c24-4a0f-4d9b-b522-e33d5a4ca88a.png" width="500px">
   <img src="https://user-images.githubusercontent.com/109272360/183440056-69e6357e-7291-4e1e-9c2d-a8d1226667e4.png" width="500px">
   <img src="https://user-images.githubusercontent.com/109272360/183440072-06a4197e-1562-41a4-99be-5056a5fbf62a.png" width="500px" style="margin-top:16px;">
-  <img src="https://user-images.githubusercontent.com/109272360/183440080-c5b8b3b3-a71f-4fe0-8fad-890695dd2bbb.png" width="500px" style="margin-top:16px;">
+  <img src="https://user-images.githubusercontent.com/109272360/183923343-2c5b7c82-f578-44e5-8efe-03ea97e6e84e.png" width="500px" style="margin-top:16px;">
   <img src="https://user-images.githubusercontent.com/109272360/183440089-b3e3215a-e00e-43a2-84cd-751ef9a4e395.png" width="500px" style="margin-top:16px;">
   <img src="https://user-images.githubusercontent.com/109272360/183440103-71348ae6-5442-4da0-a125-2c269a181c47.png" width="500px" style="margin-top:16px;">
   <img src="https://user-images.githubusercontent.com/109272360/183440335-c7ab8b16-cf8d-4e5a-a503-f618d550de97.png" width="500px" style="margin-top:16px;">
