@@ -39,13 +39,13 @@ O(n<sup>2</sup>)
 ```python
 def bubble_sort(a_list):
 
-  # a_list의 길이: N
-  for i in range(N):
-    for j in range(i, N):
-      if a_list[i] > a_list[j]: # 안정 정렬 (>= 일 경우, 불안정 정렬)
-        a_list[i], a_list[j] = a_list[j], a_list[i]
+    # a_list의 길이: N
+    for i in range(N):
+        for j in range(i, N):
+            if a_list[i] > a_list[j]: # 안정 정렬 (>= 일 경우, 불안정 정렬)
+                a_list[i], a_list[j] = a_list[j], a_list[i]
 
-  return a_list
+    return a_list
 ```
 
 ## 3. 카운팅 정렬
@@ -78,25 +78,25 @@ O(n + K)
 ### 코드
 ```python
 def counting_sort(a_list):
-  # a_list 내의 가장 큰 정수: M
-  M = 5
-  count = [0] * (M + 1)
+    # a_list 내의 가장 큰 정수: M
+    M = 5
+    count = [0] * (M + 1)
 
-  # a_list의 길이: N
-  N = 10
-  new_list = [0] * N
+    # a_list의 길이: N
+    N = 10
+    new_list = [0] * N
 
-  for i in range(N):
-    count[a_list[i]] += 1
+    for i in range(N):
+        count[a_list[i]] += 1
 
-  for i in range(M):
-    count[i + 1] += count[i]
+    for i in range(M):
+        count[i + 1] += count[i]
 
-  for i in range(N - 1, -1, -1):
-    new_list[count[a_list[i]] - 1] = a_list[i]
-    count[a_list[i]] -= 1
+    for i in range(N - 1, -1, -1):
+        new_list[count[a_list[i]] - 1] = a_list[i]
+        count[a_list[i]] -= 1
 
-  return new_list
+    return new_list
 ```
 
 ## 4. 선택 정렬
@@ -123,7 +123,16 @@ O(n<sup>2</sup>)
 
 ### 코드
 ```python
-# ㅁㄴㅇㄹ
+def selection_sort(a_list):
+    # a_list의 길이: N
+    for i in range(N-1):
+        minIdx = 0
+        for j in range(i, N):
+            if minIdx > a_list[j]:
+                minIdx = j
+      a_list[minIdx], a_list[i] = a_list[i], a_list[minIdx]
+
+    return a_list
 ```
 
 

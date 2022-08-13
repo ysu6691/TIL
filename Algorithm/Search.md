@@ -38,7 +38,16 @@
 
 - 코드
 ```python
-
+def sequentialSearch(a_list, n, key):
+    # n: a_list의 길이
+    # key: 찾고자 하는 원소 값
+    i = 0
+    while i < n and a[i] != key:
+        i += 1
+    if i < n:
+        return i
+    else:
+        return -1
 ```
 
 
@@ -56,7 +65,16 @@
 
 - 코드
 ```python
-
+def sequentialSearch(a_list, n, key):
+	# n: a_list의 길이
+    # key: 찾고자 하는 원소 값
+    i = 0
+    while i < n and a_list[i] < key:
+        i += 1
+    if i < n and a_list[i] == key:
+        return i
+    else:
+        return -1
 ```
 
 ## 3. 이진 검색
@@ -80,7 +98,18 @@
 - 만약 자료에 삽입이나 삭제가 발생하면, 항상 정렬 상태로 유지하는 추가 작업 필요
 
 ```python
-
-
-# 재귀함수 이용
+def binarySearch(a_list, n, key):
+	# n: a_list의 길이
+    # key: 찾고자 하는 원소 값
+	start = 0
+	end = n - 1
+	while start <= end:
+		middle = (start + end) // 2
+		if a_list[middle] > key:
+			end = middle - 1
+		elif a_list[middle] < key:
+			start = middle + 1
+		else:
+			return True
+	return False
 ```
