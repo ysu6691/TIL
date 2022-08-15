@@ -60,9 +60,55 @@ def BruteForce(p, t):
 <img src="https://user-images.githubusercontent.com/109272360/184591523-e1a6c880-25f8-421c-ae25-0d748c8d9361.png" width = "900px" style = "margin-top:20px;">
 <img src="https://user-images.githubusercontent.com/109272360/184591524-0f4e0a61-2cd6-4cfe-b285-3148399b00fa.png" width = "900px" style = "margin-top:20px;">
 
+### 시간복잡도
+- 텍스트를 다 보지 않아도 확인 가능
+- N = 전체 텍스트 길이, M = 찾을 패턴의 길이
+- 평균: O(N)보다 대체로 적은 수준
+- 최악의 경우: O(MN)
 
+### 코드
+```python
+p = 'cdeee'
+t = 'acceeddeecdeee'
+M = len(p)
+N = len(t)
 
+def skip(p, char):
+    for i in range(M-1, -1, -1):
+        if p[i] == char:
+            if i == M - 1:
+                continue
+            return M - i - 1
+    if char in p:
+        return 1
+    return M
 
+def BoyerMoore(p, t):
+    i = M - 1
+    j = M - 1
+
+    while i < N:
+        k = i + 0
+        move = 0
+
+        for _ in range(M):
+            if t[i] != p[j]:
+                move = skip(p, t[k])
+                break
+            i -= 1
+            j -= 1
+
+        if j == -1:
+            break
+
+        i = k + move
+        j = M - 1
+
+    if i >= N:
+        return -1
+    else:
+        return i + 1
+```
 
 
 
