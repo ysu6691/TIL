@@ -68,5 +68,30 @@ dfs(1) # 스택 이용할 때와 결과 다르게 나오는 점 유의!
 <img src="https://user-images.githubusercontent.com/109272360/184883267-03226e04-ec31-479f-8ea2-dd68fd1953c1.png" width="400px" style="margin-top:10px;">
 
 
+### BFS 구현
+```python
+V, E = map(int, input().split())
+
+# 인접 행렬 생성
+adj_matrix = [[0]*(V+1) for _ in range(V+1)]
+
+for _ in range(E):
+    # 연결 정보 저장
+    start, end = map(int, input().split())
+    adj_matrix[start][end] = 1
+    adj_matrix[end][start] = 1 # 양방향 허용
+
+queue = [1]
+visited = []
+
+while queue:
+    current = queue.pop(0)
+    if current not in visited:
+        visited.append(current)
+
+    for destination in range(V+1):
+        if adj_matrix[current][destination] and destination not in visited:
+            queue.append(destination)
+```
 
 
