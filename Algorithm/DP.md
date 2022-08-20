@@ -23,8 +23,8 @@
 ### Memoization
 - 입력값에 대한 결과를 저장함으로써, 같은 입력값에 대해 함수가 한 번만 실행되도록 함
 
-<img src="https://user-images.githubusercontent.com/109272360/185610180-d4a0d1ab-b2f2-4563-9536-05ec950e30c4.png" width="600px" style="margin-top:16px;">
-<img src="https://user-images.githubusercontent.com/109272360/185610177-907f0727-bc6b-4999-8299-c7693f5186c2.png" width="600px" style="margin-top:16px;">
+<img src="https://user-images.githubusercontent.com/109272360/185610180-d4a0d1ab-b2f2-4563-9536-05ec950e30c4.png" width="750px" style="margin-top:16px;">
+<img src="https://user-images.githubusercontent.com/109272360/185610177-907f0727-bc6b-4999-8299-c7693f5186c2.png" width="750px" style="margin-top:16px;">
 
 ### 코드
 ex) 피보나치 수열
