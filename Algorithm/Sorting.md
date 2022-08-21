@@ -40,10 +40,10 @@ O(n<sup>2</sup>)
 def bubble_sort(a_list):
 
     # a_list의 길이: N
-    for i in range(N):
-        for j in range(i, N):
-            if a_list[i] > a_list[j]: # 안정 정렬 (>= 일 경우, 불안정 정렬)
-                a_list[i], a_list[j] = a_list[j], a_list[i]
+    for i in range(N-1, 0, -1):
+        for j in range(i):
+            if a_list[j] > a_list[j+1]: # 안정 정렬 (>= 일 경우, 불안정 정렬)
+                a_list[j], a_list[j+1] = a_list[j+1], a_list[j]
 
     return a_list
 ```
