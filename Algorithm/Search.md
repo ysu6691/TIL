@@ -41,13 +41,12 @@
 def sequentialSearch(a_list, n, key):
     # n: a_list의 길이
     # key: 찾고자 하는 원소 값
-    i = 0
-    while i < n and a[i] != key:
-        i += 1
-    if i < n:
-        return i
+    for i in range(N):
+        if a_list[i] == key:
+            print('find!')
+            break
     else:
-        return -1
+        print('none')
 ```
 
 
@@ -66,15 +65,17 @@ def sequentialSearch(a_list, n, key):
 - 코드
 ```python
 def sequentialSearch(a_list, n, key):
-	# n: a_list의 길이
+	  # n: a_list의 길이
     # key: 찾고자 하는 원소 값
-    i = 0
-    while i < n and a_list[i] < key:
-        i += 1
-    if i < n and a_list[i] == key:
-        return i
+    for i in range(N):
+        if a_list[i] == key:
+            print('find!')
+            break
+        elif a_list[i] > key:
+            print('none')
+            break
     else:
-        return -1
+        print('finish') 
 ```
 
 ## 3. 이진 검색

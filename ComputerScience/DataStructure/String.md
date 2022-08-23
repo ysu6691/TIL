@@ -26,18 +26,17 @@ M = len(p)
 N = len(t)
 
 def BruteForce(p, t):
-    i = 0
-    j = 0
-    while j < M and i < N:
-        if t[i] != p[j]:
-            i = i - j
-            j = -1
-        i += 1
-        j += 1
-    if j == M:
-        return i - M
+    for i in range(N):
+        for j in range(M):
+            if text[i] == pattern[j]:
+                i += 1
+            else:
+                break
+        else:
+            print('find!')
+            break
     else:
-        return -1
+        print('none')
 ```
 
 ## 2. 보이어-무어 알고리즘
