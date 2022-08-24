@@ -1,6 +1,6 @@
 # 순열과 조합
 
-## 순열(Permutation)
+## 1. 순열(Permutation)
 
 ### 순열의 구현
 ```python
@@ -105,7 +105,7 @@ print(result)
 '''
 ```
 
-## 조합
+## 2. 조합
 
 ### 조합(nCr)의 구현
 ```python
@@ -163,7 +163,7 @@ print(result)
 '''
 ```
 
-## 부분집합
+## 3. 부분집합
 ```python
 def subset(idx):
     if idx == N:
