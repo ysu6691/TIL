@@ -1,4 +1,4 @@
-# Django_basis
+# Django Basis
 
 ## 1. 클라이언트와 서버
 
@@ -42,7 +42,7 @@
 - View
   - 클라이언트의 요청에 대해 Model과 Template과 관련된 로직을 처리해 응답을 반환
 
-<img src="" width="600px" style="margin-top:16px; margin-bottom:16px;">
+<img src="https://user-images.githubusercontent.com/109272360/187707531-04ef0001-c4fe-4af6-a570-2a3218c6f281.png" width="700px" style="margin-top:16px; margin-bottom:16px;">
 
 - MVC와 MTV의 차이점
   |MVC|MTV|
@@ -127,9 +127,9 @@
 
   urlpatterns = [
       path('admin/', admin.site.urls),
-      path('index/', view.index),
+      path('index/', views.index),
       # index/ : 해당 웹 페이지 주소 정보
-      # view.index : view 파일 내 index 함수 실행
+      # views.index : view 파일 내 index 함수 실행
   ]
   ```
 
@@ -485,8 +485,8 @@ urlpatterns = [
   ```python
   # articles/urls.py
   urlpatterns = [
-    path('throw/', views.throw, name='throw')
-    path('catch/', views.catch, name='catch')
+      path('throw/', views.throw, name='throw')
+      path('catch/', views.catch, name='catch')
   ]
   ```
   ```django
@@ -510,3 +510,49 @@ urlpatterns = [
     <a href="{% url 'throw' %}">데이터 다시 던지러 가기</a>
   {% endblock content %}
   ```
+
+## 7. Django Namespace
+
+### Namespace
+- 서로 다른 앱에서 동일한 url을 사용하는 경우, 다른 앱의 해당 url로 이동 불가
+- 따라서 `app_name`을 지정해, 두 앱의 템플릿을 분리해줘야 함
+- app_name을 사용하면, 템플릿 내에서도 app_name을 반드시 사용해야 함
+```python
+# articles/urls.py
+app_name = 'articles'
+urlpatterns = [
+  # 생략
+]
+```
+```python
+# pages/urls.py
+app_name = 'pages'
+urlpatterns = [
+  # 생략
+]
+```
+```django
+<!-- throw.html -->
+{% block content %}
+  <h1>Throw</h1>
+  <form action="{% url 'articles:catch' %}" method="GET">
+    <!-- 생략 -->
+  </form>
+{% endblock content %}
+```
+
+### Template Namespace
+- Django는 templates 폴더 내 파일만 찾을 수 있음
+- 같은 이름의 템플릿이 여러 앱에 있는 경우, django는 settings 내 앱 등록 순서에 따라 순차 검색
+- 따라서 중복을 피하기 위해, templates 폴더 내 해당 앱과 같은 이름의 폴더를 생성해야 함
+- 생성 후, views.py 내에서 해당 경로 수정
+- 예시
+  - articles/templates/articles/index.html
+  - pages/templates/pages/index.html
+  ```python
+  # articles/views.py
+  def index(request):
+      return render(request, 'articles/index.html')
+  ```
+
+
