@@ -103,7 +103,7 @@
   - Query: 데이터베이스에 특정 데이터를 요청하는 것
   - QuerySet: 데이터베이스로부터 ORM이 QuerySet이라는 자료 형태로 변환해 전달해줌
 
-<img src="https://user-images.githubusercontent.com/109272360/187707539-883c7726-4be0-46ff-b017-50fd02875cca.png" width="400px" style="margin-top:16px; margin-bottom:16px;">
+<img src="https://user-images.githubusercontent.com/109272360/187707539-883c7726-4be0-46ff-b017-50fd02875cca.png" width="600px" style="margin-top:16px; margin-bottom:16px;">
 
 ### CRUD
 - 데이터 처리 기능 4가지: Create / Read / Update / Delete

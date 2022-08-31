@@ -42,7 +42,7 @@
 - View
   - 클라이언트의 요청에 대해 Model과 Template과 관련된 로직을 처리해 응답을 반환
 
-<img src="https://user-images.githubusercontent.com/109272360/187707531-04ef0001-c4fe-4af6-a570-2a3218c6f281.png" width="700px" style="margin-top:16px; margin-bottom:16px;">
+<img src="https://user-images.githubusercontent.com/109272360/187707531-04ef0001-c4fe-4af6-a570-2a3218c6f281.png" width="850px" style="margin-top:16px; margin-bottom:16px;">
 
 - MVC와 MTV의 차이점
   |MVC|MTV|
