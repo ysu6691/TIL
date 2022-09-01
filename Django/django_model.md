@@ -190,13 +190,27 @@
 - new 템플릿에서 데이터 받아, index 템플릿에 나타내기
 ```python
 # articles/views.py
+from .models import Article
+
 def index(request):
     articles = Article.objects.all()
     context = {
         'articles' : articles,
     }
     return render(request, 'articles/index.html', context)
+
+def new(request):
+    return render(request, 'articles/new.html')
+
+# new에서 입력한 데이터를 전송받아 DB에 저장할 create 함수 생성
+def create(request):
+    # 다음과 같은 저장 방식을 쓰는 것이 유리
+    # 유효성 검사가 진행된 후에 save 메서드가 호출되는 구조
+    article = Article(title=title, content=content)
+    article.save()
+    return render(request, 'articles/create.html')
 ```
+
 ```django
 <!-- templates/articles/index.html -->
 {% extends 'base.html' %}
@@ -212,11 +226,6 @@ def index(request):
 {% endblock content %}
 ```
 
-```python
-# articles/views.py
-def new(request):
-    return render(request, 'articles/new.html')
-```
 ```django
 <!-- templates/articles/new.html -->
 {% extends 'base.html' %}
@@ -235,15 +244,6 @@ def new(request):
 {% endblock content %}
 ```
 
-```python
-# new에서 입력한 데이터를 전송받아 DB에 저장할 create 함수 생성
-def create(request):
-    # 다음과 같은 저장 방식을 쓰는 것이 유리
-    # 유효성 검사가 진행된 후에 save 메서드가 호출되는 구조
-    article = Article(title=title, content=content)
-    article.save()
-    return render(request, 'articles/create.html')
-```
 ```django
 <!-- templates/articles/create.html -->
 {% extends 'base.html' %}
