@@ -513,8 +513,8 @@ urlpatterns = [
 
 ## 7. Django Namespace
 
-### Namespace
-- 서로 다른 앱에서 동일한 url을 사용하는 경우, 다른 앱의 해당 url로 이동 불가
+### URL Namespace
+- 서로 다른 앱에서 동일한 url을 사용하는 경우, 다른 앱의 해당 url로 이동 불가(urls.py에서 밑에서부터 탐색해서 먼저 찾은 url 선택)
 - 따라서 `app_name`을 지정해, 두 앱의 템플릿을 분리해줘야 함
 - app_name을 사용하면, 템플릿 내에서도 app_name을 반드시 사용해야 함
 ```python

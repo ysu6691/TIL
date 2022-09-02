@@ -38,6 +38,8 @@
 - Model 작성
   ```python
   # articles/models.py
+  from django.db import models
+
   class Article(models.Model):
     # DB 필드 이름 = 데이터 타입
     title = models.CharField(max_length=10)
