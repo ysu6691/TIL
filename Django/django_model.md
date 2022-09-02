@@ -166,6 +166,10 @@
 
   >>> Article.objects.filter(content__contains='dj')
   # <QuerySet [<Article: Article object (1)>, 생략]>
+
+  # pk를 역순으로 반환
+  >>> Article.objects.filter(content__contains).order_by('-pk')
+  # <QuerySet [<Article: Article object (3)>, 생략]>
   ```
 
 - Update
