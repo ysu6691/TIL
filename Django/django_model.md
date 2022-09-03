@@ -195,10 +195,28 @@
 ### 웹사이트에서 DB 이용해보기
 - new 템플릿에서 데이터 받아, index 템플릿에 나타내기
 ```python
+# articles/urls.py
+from django.urls import path
+from . import views
+
+app_name = 'articles'
+urlpatterns = [
+    path('', views.index, name = 'index'),
+    path('new/', views.new, name = 'new'),
+    path('<int:number>/', views.detail, name = 'detail'), # 해당 pk 값에 해당하는 주소로보내기 
+    path('create/', views.create, name = 'create'),
+]
+```
+
+```python
 # articles/views.py
 from .models import Article
 
 def index(request):
+    # new.html에서 바로 데이터를 받아 index 함수에서 저장을 하게 되면,
+    # 저장하지 않고 그냥 index.html로 들어가는 경우에도 저장을 하려고 함
+    # -> 저장할 데이터가 없으므로 오류 발생
+    # 따라서 create 함수 별도로 생성해줘야 함 
     articles = Article.objects.all()
     context = {
         'articles' : articles,
@@ -212,9 +230,18 @@ def new(request):
 def create(request):
     # 다음과 같은 저장 방식을 쓰는 것이 유리
     # 유효성 검사가 진행된 후에 save 메서드가 호출되는 구조
+    title = request.GET.get('title')
+    content = request.GET.get('content')
     article = Article(title=title, content=content)
     article.save()
-    return render(request, 'articles/create.html')
+    return redirect('articles:detail', article.pk)
+
+def detail(request, number):
+    article = Article.objects.get(pk=pk)
+    context = {
+      'article' : article
+    }
+    return render(request, 'articles/detail.html', context)
 ```
 
 ```django
@@ -227,8 +254,11 @@ def create(request):
     <p>번호: {{ article.pk }}</p>
     <p>제목: {{ article.title }}</p>
     <p>내용: {{ article.content }}</p>
+    <!-- pk값 포함해서 detail url로 보내기 -->
+    <a href="{% url 'articles:detail' article.pk %}">DETAIL</a>
     <hr>
   {% endfor %}
+  <a href="{% url 'articles:new' %}">NEW</a>
 {% endblock content %}
 ```
 
@@ -251,15 +281,33 @@ def create(request):
 ```
 
 ```django
-<!-- templates/articles/create.html -->
+<!-- templates/articles/detail.html -->
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>CREATE</h1>
-  <h2>데이터 저장 완료</h2>
-  <a href="{% url 'articles:index' %}">index</a> <br>
+  <h1>DETAIL</h1>
+  <p>번호: {{ article.pk }}</p>
+  <p>제목: {{ article.title }}</p>
+  <p>내용: {{ article.content }}</p>
+  <hr>
+  <a href="{% url 'articles:index' %}">BACK</a>
 {% endblock content %}
 ```
 
+## 4. Admin site
+- admin site: 서버 관리자가 활용하기 위한 페이지
+- **http://127.0.0.1:8000/admin/** 으로 접속 후 로그인
 
+- admin 계정 생성
+  ```bash
+  python manage.py createsuperuser
+  ```
 
+- model 클래스 등록
+```python
+# articles/admin.py
+from django.contrib import admin
+from .models import Article
+
+admin.site.register(Article)
+```

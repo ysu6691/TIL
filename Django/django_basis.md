@@ -137,6 +137,10 @@
   - render
     - 주어진 템플릿을 주어진 컨텍스트 데이터와 결합
     - 렌더링된 텍스트와 함께 HttpResponse 객체를 반환하는 함수
+    - 정상적으로 동작하면 200 status code를 응답
+  - redirect
+    - 템플릿을 렌더링하지 않고, url에 추가 정보를 포함해서 보냄
+    - 정상적으로 동작하면 302 status code를 응답
   - context
     - 템플릿에서 사용할 데이터
     - 딕셔너리 타입으로 작성
@@ -154,6 +158,11 @@
       }
       return render(request, 'index.html', context)
       # render의 첫 번째 인자는 request, 두 번째 인자는 템플릿, 세 번째 인자는 context
+
+  def create(request):
+      # articles/index url로 10을 포함해 전송
+      # 추가로 html 파일을 만들지 않고 바로 정보를 보내거나 함수를 실행시킬 때 사용
+      return redirect('/articles/index', 10)
   ```
 
 - Templates
@@ -339,7 +348,11 @@
 ### Retrieving data
 - 서버는 클라이언트로부터 key-value 쌍의 데이터를 받게 됨
 - django의 경우, 모든 요청 데이터는 view 파일 내 지정한 함수의 첫 번째 인자(request)에 들어 있음
-- request에서 GET을 이용해 데이터를 얻음으로써, 적절하게 사용 가능
+- request에서 GET 또는 POST를 이용해 데이터를 얻음으로써, 적절하게 사용 가능
+  - GET: DB에 변화를 주지 않고, 데이터를 읽을 때만 사용
+  - POST: 서버나 DB에 변경을 줄 때 사용 / 신원 확인을 위해 token을 부여받아야 함
+    - `{% csrf_token %}`을 html 파일 내 form 태그 밑에 작성
+
 - request 객체 살펴보기
   ```python
   # 예시: '전송된 데이터'를 retrieve.html로 전송
@@ -378,7 +391,8 @@ def throw(request):
     return render(request, 'throw.html')
 
 def catch(request):
-    message = request.GET.get('message')
+    # GET으로 데이터 보냈을 경우, POST 대신 GET 사용
+    message = request.POST.get('message')
     context = {
         'message': message
     }
@@ -392,7 +406,8 @@ def catch(request):
 {% block content %}
   <h1>Throw</h1>
   <!-- 같은 폴더 내 catch.html로 데이터 보내기 -->
-  <form action="/catch/" method="GET"> <!-- GET은 소문자도 가능하지만, 대문자 사용을 권장 -->
+  <form action="/catch/" method="POST"> <!-- POST는 소문자도 가능하지만, 대문자 사용을 권장 -->
+    {% csrf_token %}
     <label for="throwMessage">Throw</label>
     <input type="text" id="throwMessage" name="message">
     <input type="submit">
