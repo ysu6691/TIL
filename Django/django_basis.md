@@ -421,6 +421,7 @@ def catch(request):
 {% block content %}
   <h1>Catch</h1>
   <p>전송받은 데이터: {{ message }}</p>
+  <!-- <a> tag는 GET method로 전달 -->
   <a href="/throw/">데이터 다시 던지러 가기</a>
 {% endblock content %}
 ```
