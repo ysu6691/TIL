@@ -300,7 +300,7 @@ def detail(request, number):
 
 - admin 계정 생성
   ```bash
-  python manage.py createsuperuser
+  $ python manage.py createsuperuser
   ```
 
 - model 클래스 등록
@@ -310,4 +310,9 @@ from django.contrib import admin
 from .models import Article
 
 admin.site.register(Article)
+```
+
+- admin 비밀번호 변경
+```bash
+$ python manage.py changepassword 계정ID
 ```
