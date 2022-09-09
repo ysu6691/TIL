@@ -112,6 +112,8 @@ def login(request):
 - 템플릿에서 인증 관련 데이터를 출력 가능
   - 현재 로그인한 사용자를 나타내는 User 클래스의 인스턴스가 템플릿 변수 user에 저장됨
   - context 없이도 user 변수를 사용가능한 것은, setting.py의 context processors 설정 값 때문
+  - `{{ user.정보 }}`를 이용해 유저 정보에 접근 가능
+    - ex) {{ user.email }}, {{ user.first_name }}
 
   ```django
   <!-- base.html -->
