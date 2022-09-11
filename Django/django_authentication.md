@@ -336,7 +336,7 @@ def login(request):
 ```python
 # articles/views.py
 from django.views.decorators.http import require_http_methods, require_POST, require_safe
-from django.contrib.auth.decorator import login_required
+from django.contrib.auth.decorators import login_required
 
 @require_safe
 def index(request):
@@ -371,7 +371,7 @@ def update(request, pk):
 ```python
 # accounts/views.py
 from django.views.decorators.http import require_http_methods, require_POST, require_safe
-from django.contrib.auth.decorator import login_required
+from django.contrib.auth.decorators import login_required
 
 @require_http_methods(['GET', 'POST'])
 def login(request):
