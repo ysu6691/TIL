@@ -26,6 +26,7 @@
   - 하지만 기계어로 변환된 코드 중 자주 쓰이는 코드를 캐시에 저장해, 런타임에 다시 기계어로 변환하지 않고 사용한다.
   - 따라서 미리 컴파일된 코드를 사용하는 정적 컴파일과 같은 효과를 낼 수 있어, 다른 동적 컴파일러보다 좋은 성능을 갖는다.
 
+### Java 출력
 - Main method
   - `public static void main(String [] args) {}`
   - java application 실행 시 가장 먼저 호출되는 부분
@@ -94,7 +95,56 @@
 
   ```
 
-### 변수와 자료형
+## 2. 자료형, 변수, 연산자
+
+### 자료형
+|타입|자료형|크기|범위|
+|---|---|---|---|
+|논리형|boolean||True / False|
+|문자형|char|2byte|0 ~ 65,535|
+|정수형|byte|1byte|-128 ~ 127|
+|정수형|short|2byte|-32,768 ~ 32,767|
+|정수형|int|4byte|-2,147,483,648 ~ -2,147,483,647|
+|정수형|long|8byte|-9,223,372,036,854,775,808 ~ 9,223,372,036,854,775,807|
+|실수형|float|4byte|-3.402932347e+38~+3.40292347e+38|
+|실수형|double|8byte|	-179769313486231570e+308~1.79769313486231570e+308|
+
+- 자료형 범위 비교
+byte < char = short < int < long < float < double
+
+- 데이터 형변환
+  - 암묵적(Implicit Casting)
+    - 범위가 넓은 데이터 형에 좁은 데이터 형을 대입하는 것
+    - ex) byte b = 100;  int i = b;
+  - 명시적(Explicit Casting)
+    - 범위가 좁은 데이터 형에 넓은 데이터 형을 대입하는 것
+    - ex1) int i = 100;  byte b = i; (x)
+    - ex2) int i = 100;  byte b = (byte) i; (o)
+
+  ```java
+	public static void main(String[] args) {
+      // 암묵적 형변환
+      short sa = 32767;
+      int c = sa;
+      System.out.println(c); // 32767
+      
+      // 명시적 형변환
+      int d = 100;
+      short sb = (short) d;
+      System.out.println(sb); // 100
+      
+      // 명시적 형변환 시 범위를 벗어날 경우, 값 손실 발생
+      int e = 128;
+      byte sc = (byte) e;
+      System.out.println(sc); // -128
+      
+      double f = 1.6;
+      int ia = (int) f;
+      System.out.println(ia); // 1 (소수점 버림)
+	}
+  ```
+
+### 변수
 - 선언
   - `자료형 변수명`
   - ex) int age;  String name;
@@ -122,8 +172,172 @@ public static void main(String[] args) {
     System.out.println(c); // 20
     // d = b; -> 오류 발생 (d 변수를 선언하지 않음)
 
+    int a = 10;
+		int b = a;
+		System.out.println(a); // 10
+		System.out.println(b); // 10
+		a = 12;
+		System.out.println(a); // 12
+		System.out.println(b); // 10 (b는 값 변화 x)
+
     System.out.printf("변수 c의 값은 %d", c);
     // 변수 c의 값은 20
 }
 ```
 
+### 연산자
+- 연산자 종류
+  |종류|연산 기호|우선 순위|
+  |--|--|--|
+  |증감 연산자|++, --|1순위|
+  |산술 연산자|+, -, *, /, %|2순위|
+  |시프트 연산자|>>, <<, >>>|3순위|
+  |비교 연산자|>, <, >=, <=, ==, !=|4순위|
+  |비트 연산자|&, &#124;, ^, ~|~만 1순위, 나머지는 5순위|
+  |논리 연산자|%%, &#124;&#124;, !|!만 1순위, 나머지는 6순위|
+  |조건(삼항) 연산자|?, :|7순위|
+  |대입 연산자|=, *=, /=, %=, +=, -=|8순위|
+
+  - 증감 연산자
+    - 피연산자에 저장된 값을 1 증가 또는 1 감소시킨다.
+    - 피연산자의 왼쪽에 위치하면 전위형(prefix), 오른쪽에 위치하면 후위형(postfix)라고 한다.
+    - 전위형은 연산을 수행한 후 피연산자의 값을 변화시키고, 후위형은 피연산자의 값을 변화시킨 뒤 연산을 수행한다.
+
+  - 조건(삼항) 연산자
+    - `조건식 ? 식1 : 식2`
+		- 조건식이 참일 경우 식1 수행
+		- 조건식이 거짓일 경우 식2 수행
+
+  ```java
+  public static void main(String[] args) {
+      // 증감 연산자
+      int a = 5;
+      System.out.println(a++); // 5 (출력을 하고 a에 1을 더함)
+      System.out.println(a); // 6
+      System.out.println(++a); // 7 (a에 1을 더하고 출력)
+      
+      int b = a++; // b = a, a = a + 1
+      int c = ++a; // a = a + 1, c = a
+      System.out.println(b); // 7
+      System.out.println(c); // 9
+
+
+      // 산술 연산자
+      int a = 10;
+      int b = 6;
+      
+      // 정수와 정수의 연산 = 정수
+      System.out.println(a+b); // 16
+      System.out.println(a/b); // 1
+      
+      // 정수와 실수의 연산 = 실수
+      System.out.println(a/(double)b); // 1.666...
+      System.out.println((double)a/b); // 1.666...
+      System.out.println((double)(a/b)); // 1.0
+
+
+      // 논리 연산자
+      int a = 10;
+      int b = 20;
+      
+      System.out.println(a > 5 && b > 5); // true
+      System.out.println(a < 5 && b > 5); // false
+      System.out.println(a < 5 || b > 5); // true
+      System.out.println(a < 5 || b < 5); // false
+      System.out.println(!(a < 5 || b < 5)); // true
+
+
+      // 삼항 연산자
+      int a = 2;
+      int b = 3;
+      System.out.println(a % 2 == 0 ? "짝" : "홀"); // 짝
+      System.out.println(b % 2 == 0 ? "짝" : "홀"); // 홀
+  }
+  ```
+
+## 3. 제어문
+
+### 조건문
+- if 문
+  - `if(조건식) { }`
+  - `if(조건식) { } else {}`
+  - `if(조건식1) { } elif(조건식2) { } else{ }`
+  ```java
+	public static void main(String[] args) {
+      // if(조건문) { }
+      int a = 5;
+      if(a > 3) {
+          System.out.println("a는 3보다 크다.");
+      }
+      if (a > 3)
+          System.out.println("한 문장은 중괄호 생략 가능");
+      
+      // if(조건문) { } else { }
+      int b = 2;
+      if(b > 3) {
+          System.out.println("b는 3보다 크다.");
+      }
+      else {
+          System.out.println("b는 3보다 작거나 같다.");
+      }
+      
+      // if(조건문) { } else if(조건문2) { } else { }
+      int c = 5;
+      if(c > 7) {
+          System.out.println("c는 7보다 크다.");
+      }
+      else if(c > 3) {
+          System.out.println("c는 3보다 크고 7보다 작거나 같다.");
+      }
+      else {
+          System.out.println("c는 3보다 작다.");
+      }
+	}
+  ```
+- switch 문
+  - 인자로 선택 변수를 받아 변수의 값에 따라서 실행문이 결정
+  - 선택에 따라 break 사용 가능
+  - if문의 else와 같이, default 사용 가능
+  ```java
+  public static void main(String[] args) {
+  int month1 = 12;
+  
+  switch(month1) {
+  case 1:
+      System.out.println("31일");
+      break;
+  case 2:
+      System.out.println("28일");
+      break;
+  // 생략
+  case 12:
+      System.out.println("31일");
+      break;
+  }
+  // 31일
+
+  int month2 = 13;
+  switch(month2) {
+  case 1:
+  case 3:
+  case 5:
+  // 생략
+  case 12:
+      System.out.println("31일");
+      break;
+  case 4:
+  case 6:
+  case 9:
+  case 11:
+      System.out.println("30일");
+      break;
+  case 2:
+      System.out.println("28일");
+      break;
+  default:
+      System.out.println("없는 달 입니다.");
+  }
+  // 없는 달 입니다.
+  ```
+
+### 반복문
