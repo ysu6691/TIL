@@ -182,6 +182,8 @@ public static void main(String[] args) {
 
     System.out.printf("변수 c의 값은 %d", c);
     // 변수 c의 값은 20
+    System.out.printf("a: %d, b: %d", a, b);
+    // a: 0, b: 1
 }
 ```
 
@@ -341,3 +343,122 @@ public static void main(String[] args) {
   ```
 
 ### 반복문
+- for문
+  - `for(초기화식; 조건식; 증감식) {반복 수행할 문장}`
+  - 증감식은 반복 수행할 문장이 끝날 때마다 실행
+  - 초기화식, 증감식은 `,`를 이용하여 둘 이상을 작성 가능
+  - 필요하지 않은 부분은 생략 가능 (for(;;): 무한 루프 -> 조건식은 비어있으면 True로 인식)
+  ```java
+	public static void main(String[] args) {
+		for(int i = 0; i < 3; i++) {
+			System.out.println(i);
+		}
+		// 0
+		// 1
+		// 2
+	
+		for(int i = 0, j = 10; i < 3; i += 2, j--) {
+			System.out.printf("i: %d \n", i);
+			System.out.printf("j: %d \n", j);
+		}
+		// i: 0 
+		// j: 10 
+		// i: 2 
+		// j: 9 
+		
+		int i = 0;
+		for(int i = 1; i < 3; i++) {
+			System.out.println(i);
+		}
+		// 오류 발생 (이미 선언된 변수를 for문에서 다시 선언하려 함)
+		
+		for(int j = 0; j < 3; j++) {
+			System.out.println(j);
+		}
+		int j = 0;
+		// 오류 x (for문이 끝나면서 j가 사라짐)
+	}
+  ```
+
+- while문
+  - `while(조건식) {반복 수행할 문장}`
+  - 조건식 생략 불가능
+  ```java
+  public static void main(String[] args) {
+  	int n = 1;
+		while(n < 4) {
+			System.out.println(n);
+			n++;
+		}
+  }
+  // 1
+  // 2
+  // 3
+  ```
+
+- do while문
+  - `do {반복 수행할 문장;} while(조건식);`
+  - 먼저 반복 수행 문장 수행 후, 조건식 판단 (최소 한번은 수행)
+  - 조건식 생략 불가능
+  ```java
+  public static void main(String[] args) {
+  	int n = 3;
+		do {
+      System.out.println(n);
+			n++;
+		} while(n < 3);
+  }
+  // 3
+  ```
+
+- break
+  - 반복문에서 빠져나올 때 사용
+  - 반복문에 이름(라벨)을 붙여 한번에 빠져 나올 수 있음
+  ```java
+  public static void main(String[] args) {
+		for(int n = 0; n < 5; n++) {
+			System.out.println(n);
+			if(n==2) {
+				break;
+			}
+		}
+    // 0
+    // 1
+    // 2
+		
+		loop1 :
+		for(int a = 0; a < 3; a++) {
+			loop2:
+			for(int b = 10; b > 7; b--) {
+				System.out.println("a="+a + " b="+b);
+				if (a==1) {
+					break loop1;
+				}
+			}
+		}
+    // b=0 c=10
+    // b=0 c=9
+    // b=0 c=8
+    // b=1 c=10
+  }
+  ```
+
+- continue
+  - 반복문의 처음으로 보내기
+  - 반복문에 이름(라벨)을 붙여 한번에 빠져 나올 수 있음
+  ```java
+  public static void main(String[] args) {
+		int e = 0;
+		loop3:
+		while(e < 5) {
+			e++;
+			if (e % 2 == 0) {
+				continue loop3;
+			}
+			System.out.println(e);
+		}
+	}
+  // 1
+  // 3
+  // 5
+  ```
