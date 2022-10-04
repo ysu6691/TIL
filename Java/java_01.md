@@ -172,6 +172,10 @@ public static void main(String[] args) {
     System.out.println(c); // 20
     // d = b; -> 오류 발생 (d 변수를 선언하지 않음)
 
+    int d = 'A';
+    System.out.println(d); // 65 
+    // int로 되어있는 변수에 문자열을 넣으면, 아스키 코드로 변환되어 저장
+
     int a = 10;
 		int b = a;
 		System.out.println(a); // 10
@@ -462,3 +466,55 @@ public static void main(String[] args) {
   // 3
   // 5
   ```
+
+## 4. 배열(Array)
+
+### 배열
+- 같은 종류의 데이터를 저장하기 위한 자료구조
+- 크기가 고정되어 있음(한 번 생성된 배열을 크기를 바꿀 수 없음)
+- 배열을 객체로 취급(참조형) -> 배열의 요소를 참조
+- `배열이름.length'를 통해 배열 길이 조회 가능
+- 배열의 선언
+  - `타입[] 배열이름` <- 보통 이 형태로 사용
+    - ex) int[] arr
+  - `타입 배열이름[]`
+    - ex) int arr[]
+  - 타입 종류: int, char, boolean, String, Date
+
+- 배열의 생성과 초기화
+  - `자료형[] 배열이름 = {값1, 값2, 값3};` -> 선언과 동시에 초기화
+  - `배열이름 = new 자료형[] {값1, 값2, 값3};` -> 배열 생성 및 값 초기화
+  - `배열이름 = new 자료형[길이];` -> 배열 생성(자료형의 초기값으로 초기화)
+
+  |자료형|기본값|
+  |---|---|
+  |boolean|false|
+  |char|공백문자|
+  |byte, short, int|0|
+  |long|0L|
+  |float|0.0f|
+  |double|0.0|
+  |참조형 변수(String, Date, ...)|null(참조x)|
+
+```java
+public static void main(String[] args) {
+    int[] score1; // 이 형식으로 사용 권장
+    int score2[]; // 이 형식으로는 권장 x
+    
+    score1 = new int[] {1, 2, 3, 4, 5};
+    System.out.println(score3); // 메모리 주소 값 반환
+    
+    int[] score3 = {1, 2, 3, 4, 5};
+    System.out.println(score3[0]); // 1
+    
+    int[] score4 = new int[3];
+    score4[0] = 10;
+    score4[1] = 20;
+    for(int i = 0; i<score4.length; i++) {
+      System.out.println(score4[i]);
+    }
+    // 10
+    // 20
+    // 0
+}
+```
