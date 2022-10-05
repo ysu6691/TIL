@@ -91,12 +91,14 @@ sqlite> .exit # 종료
     - `UNIQUE`: 컬럼의 모든 값이 서로 구별되거나 고유한 값이 되도록 함
     - `PRIMARY KEY`: 테이블에서 행의 고유성을 식별하는 데 사용되는 컬럼, 암시적으로 NOT NULL 제약 조건이 포함되어 있음 (**INTEGER 타입에만 사용 가능**)
     - `AUTOINCREMENT`: 사용되지 않은 값이나 이전에 삭제된 행의 값을 재사용하는 것을 방지, `PRIMARY KEY` 다음에 작성 시, rowid를 재사용 x
+    - `DEFAULT '내용'`: 아무 값도 넣지 않으면, 해당 값을 `내용`으로 자동 지정
 
 ## 3. DDL
 
 ### CREATE
 - 테이블 생성
   - 생성할 필드의 데이터 타입과 제약조건 설정
+  - 제약조건을 설정하지 않으면, NULL값을 허용
   - 필드 생성 시, id 컬럼은 따로 정의하지 않으면 자동으로 `rowid`라는 컬럼으로 생성
     - `PRIMARY KEY` 키워드를 가진 컬럼을 rowid 컬럼의 별칭으로 사용(rowid 이름으로도 여전히 액세스 가능)
     - 데이터가 최대 값에 도달하면, 사용되지 않는 정수를 찾아 사용 (그런 정수가 없으면, 에러 발생)
@@ -172,8 +174,8 @@ INSERT INTO classmates VALUES ('홍길동', '23', '대전');
 -- 여러 행 삽입
 INSERT INTO classmates 
 VALUES
-  ('홍길동', '23', '대전');
-  ('가나다', '24', '서울');
+  ('홍길동', '23', '대전'),
+  ('가나다', '24', '서울'),
   ('김이박', '25', '경기');
 ```
 
@@ -205,6 +207,8 @@ VALUES
 ```SQL
 -- 양식
 SELECT column1, column2 FROM table_name;
+-- 모든 정보 조회
+SELECT * FROM table_name;
 
 -- ORDER BY
 SELECT first_name, age FROM users ORDER BY age
@@ -230,6 +234,8 @@ SELECT first_name FROM users WHERE first_name LIKE '%준';
 SELECT phone FROM users WHERE phone LIKE '02-%';
 -- 나이가 20대인 사람들의 이름과 나이 조회
 SELECT first_name, age FROM users WHERE age LIKE '2_';
+-- 나이가 20대가 아닌 사람들의 이름과 나이 조회
+SELECT first_name, age FROM users WHERE age NOT LIKE '2_';
 -- 경기도 혹은 강원도에 사는 사람들의 이름과 지역 조회 (2가지 방법)
 SELECT first_name, country FROM users WHERE country IN ('경기도', '강원도');
 SELECT first_name, country FROM users WHERE country = '경기도' OR country = '강원도';
