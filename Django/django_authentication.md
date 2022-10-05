@@ -413,3 +413,18 @@ def change_password(requese):
     pass
 ```
 
+### 참고) 에러 응답하기
+```python
+# articles/views.py
+from django.http import httpResponse
+
+@require_POST
+def delete(request, pk):
+    if request.user.is_authenticated:
+        article = Article.objects.get(pk=pk)
+        article.delete()
+        return redirect('articles:index')
+    # 401: Unauthorized
+    # 비인증된 사용자라는 의미로 응답
+    return HttpResponse(status=401)
+```
