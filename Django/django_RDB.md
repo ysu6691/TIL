@@ -24,8 +24,8 @@
 - ManyToManyField(): N:N
 
 ## 2. N:1
-<img src="https://user-images.githubusercontent.com/109272360/194015413-7cf08b42-e01d-4f44-9f1d-2b9630aa7ef7.png" width="600px" style="margin-top:16px;">
-<img src="https://user-images.githubusercontent.com/109272360/194015421-266835b4-744e-45c1-b15d-f5836d65694d.png" width="600px" style="margin-top:16px;">
+<img src="https://user-images.githubusercontent.com/109272360/194015413-7cf08b42-e01d-4f44-9f1d-2b9630aa7ef7.png" width="700px" style="margin-top:16px;">
+<img src="https://user-images.githubusercontent.com/109272360/194015421-266835b4-744e-45c1-b15d-f5836d65694d.png" width="700px" style="margin-top:16px;">
 
 ### ForeignKey
 - Many-to-one relationship을 담당하는 Django의 모델 필드 클래스
