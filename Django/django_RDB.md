@@ -8,7 +8,7 @@
 - N:1(Many-to-one relationships)
   - 한 테이블의 0개 이상의 레코드가 다른 테이블의 레코드 한 개와 관련된 경우
   - 기준 테이블에 따라(1:N, One-to-many relationships)이라고도 함
-- N:N(Many-to-many relationships)
+- M:N(Many-to-many relationships)
   - 한 테이블의 0개 이상의 레코드가 다른 테이블의 0개 이상의 레코드와 관련된 경우
   - 양쪽 모두에서 N:1 관계를 가짐
 
@@ -21,7 +21,7 @@
 ### Django Relationship fields
 - OneToOneField(): 1:1
 - ForeignKey(): N:1
-- ManyToManyField(): N:N
+- ManyToManyField(): M:N
 
 ## 2. N:1
 <img src="https://user-images.githubusercontent.com/109272360/194015413-7cf08b42-e01d-4f44-9f1d-2b9630aa7ef7.png" width="700px" style="margin-top:16px;">
@@ -549,3 +549,357 @@
           return HttpResponseForbidden()
       return HttpResponse(status=401) # 비인증된 사용자
   ```
+
+## 3. M:N
+<img src="https://user-images.githubusercontent.com/109272360/195249519-2aa96d17-680d-4f45-a920-5e87d72eae63.png" width="700" style="top-margin:16px;">
+<img src="https://user-images.githubusercontent.com/109272360/195249527-dbab0c85-f84c-47b2-a047-d931b32581ef.png" width="700" style="top-margin:16px;">
+
+### Target model & Source model
+- target model: 모델 내부에 관계 필드를 가지지 않은 모델
+- source model: 모델 내부에 관계 필드를 가진 모델
+```python
+# 예시
+# models.py
+# 모델 내부에 관계 필드(model2s)가 있으므로, target model
+# M:N 에서 관계 필드는 복수형으로 작성
+class Model1(models.Model):
+    model2s = models.ManyToManyField(Model2)
+
+# 모델 내부에 관계 필드가 없으므로, source model
+class Model2(models.Model):
+    pass
+```
+- M:N 관계에서 관계 필드는 두 모델 중 어느 모델에 작성해도 상관없지만, 참조와 역참조 관계는 달라짐
+- 따라서 어디서 참조와 역참조를 쓰는게 편할지 고려한 뒤, 편한 곳에 작성
+
+### ManyToManyField
+- Many-to-Many relationship을 담당하는 Django의 모델 필드 클래스
+- 두 model 간의 관계를 맺는 중개 테이블을 자동으로 생성
+- M:N ERD는 두 테이블이 중개 테이블과 N:1로 이어져 있는 형태로 그려짐
+- ManyToManyField의 인자들
+  - 참조하는 model class (**필수 인자**)
+  - `related_name`: target model이 source model을 참조할 때 사용할 manager name
+    - ForeignKey의 `related_name`과 동일
+  - `through`: 중개 테이블을 직접 작성하는 경우, 해당 테이블을 지정
+    - 일반적으로 중개 테이블에 추가 데이터를 사용할 경우 사용
+  - `symmetrical`: ManyToManyField가 동일한 모델('self')을 가리키는 경우만 사용
+    - `symmetrical=True`일 경우, _set 매니저를 추가하지 않음
+    - source 모델의 인스턴스가 tartget 모델의 인스턴스를 참조하면, target 모델 인스턴스도 source 모델 인스턴스를 참조하도록 설정
+    - 테이블에 행을 두 개 만듦[(from:source, to: target), (from:target, to: source)]
+    - 기본 값은 True이다.
+  - `db_table`: 생성되는 중개 테이블의 이름을 설정할 수 있다.
+
+### Related Manager methods
+- 사용 모델이 누군지에 따라 두 가지 형태로 method 사용 가능
+- `<source model>.<관계 필드>.method(<target model>)`
+- `<target model>.<related manager>.method(<source model>)`
+
+- add()
+  - 지정된 객체를 관련 객체 집합에 추가
+  - 이미 존재하는 관계에 사용하면 복제 x (오류 발생x)
+- remove()
+  - 관련 객체 집합에서 지정된 모델 객체를 제거
+- 이 외에도 create(), clear(), set() 등이 있다.
+
+### 중개 테이블
+- source model과 target model이 다른 경우
+  - id, source model_id, target model_id field로 구성
+- 동일한 모델을 가리키는 경우
+  - id, from_model_id, to_model_id로 구성
+
+### M:N 연습하기
+- 의사와 환자 모델 생성
+```python
+# hospitals/models.py
+
+class Doctor(models.Model):
+    name = models.TextField()
+
+class Patient(models.Model):
+    doctors = models.ManyToManyField(Doctor)
+    name = models.TextField()
+```
+```bash
+# shell_plus 실행
+$ python manage.py shell_plus
+
+# 의사와 환자 객체 생성
+doctor1 = Doctor.objects.create(name='doc1')
+patient1 = Patient.objects.create(name='pat1')
+patient1 = Patient.objects.create(name='pat2')
+
+# 예약 생성
+patient1.doctors.add(doctor1)
+# 1번 환자가 예약한 의사 목록 출력
+patient1.doctors.all()
+# 1번 의사에게 예약된 환자 목록 출력
+# Doctor model은 target model이므로, related manager를 사용해야 함
+doctor1.patient_set.all()
+
+# 예약 취소
+patient1.doctors.remove(doctor1)
+```
+
+- `related_name` 생성
+```python
+# hospitals/models.py
+
+class Doctor(models.Model):
+    name = models.TextField()
+
+class Patient(models.Model):
+    # 이제 Doctor 모델은 patient_set 대신 patients 사용
+    doctors = models.ManyToManyField(Doctor, related_name='patients')
+    name = models.TextField()
+```
+```bash
+# shell_plus 실행
+$ python manage.py shell_plus
+
+# 예약 생성
+doctor1 = Doctor.objects.create(name='doc1')
+patient1 = Patient.objects.create(name='pat1')
+doctor1.patients.add(patient1)
+# 1번 의사에게 예약된 환자 목록 출력
+doctor1.patients.all()
+```
+
+- `through` 옵션 사용
+```python
+# hospitals/models.py
+
+class Doctor(models.Model):
+    name = models.TextField()
+
+class Patient(models.Model):
+    # 이제 Doctor 모델은 patient_set 대신 patients 사용
+    doctors = models.ManyToManyField(Doctor, related_name='patients')
+    name = models.TextField()
+
+class Reservation(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    # 추가 정보를 테이블에 입력
+    symptom = models.TextField()
+    reserved_at = models.DateTimeField(auto_now_add=True)
+```
+```bash
+# shell_plus 실행
+$ python manage.py shell_plus
+
+# 의사 및 환자 생성
+doctor1 = Doctor.objects.create(name='doc1')
+patient1 = Patient.objects.create(name='pat1')
+
+# 예약 생성 1
+reservation1 = Reservation(doctor=doctor1, patient=patient1, symptom='headache')
+reservation.save()
+
+# 예약 생성 2
+# through_defaults 인자 사용
+patient1.doctors.add(doctor1, through_defaults={'symptom': 'flu'})
+```
+
+### Article-User (좋아요 기능 구현)
+```python
+# articles/models.py
+class Article(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_articles')
+    # 생략
+    # related_name을 필수로 설정해야 하는 이유:
+    # related_name을 설정하지 않으면 user model이 article을 역참조할 때, article_set을 사용해야 한다.
+    # 그럴 경우 user가 작성한 글과 좋아요를 누른 글을 구분할 수 없게 된다.
+    # 따라서 두 필드 중 하나에 related_name을 설정해야 한다.
+```
+- 현재 User-Article간 사용 가능한 related manager 정리
+  - article.user: 게시글을 작성한 유저 - N:1
+  - user.article_set: 유저가 작성한 게시글(역참조) - N:1
+  - article.like_users: 게시글을 좋아요한 유저 - M:N
+  - user.like_articles: 유저가 좋아요한 게시글(역참조) - M:N
+
+```python
+# articles/urls.py
+
+app_name = 'articles'
+urlpatterns = [
+    # 생략
+    path('<int:article_pk>/likes/', views.likes, name='likes'),
+]
+```
+
+```python
+# articles/views.py
+
+@require_POST
+def likes(request, article_pk):
+    # 권한이 부여된 사용자만 좋아요를 누를 수 있도록 설정
+    if request.user.is_authenticated:
+        article = Article.objects.get(pk=article_pk)
+        # exists: QuerySet에 결과가 포함되어 있으면 True를 반환하고, 아니면 False를 반환
+        # if request.user in article.like_users.all(): <- 같은 의미
+        if article.like_users.filter(pk=request.user.pk).exists():
+            article.like_users.remove(request.user)
+        else:
+            article.like_users.add(request.user)
+        return redirect('articles:index')
+    return redirect('accounts:login')
+```
+```django
+<!-- articles/templates/articles/index.html -->
+    ...
+    <div>
+      좋아요 수: {{ article.like_users.all|length }}
+      <form action="{% url 'articles:likes' article.pk %}" method='POST'>
+        {% csrf_token %}
+        {% if request.user in article.like_users.all %}
+          <input type="submit" value='좋아요 취소'>
+        {% else %}
+          <input type="submit" value='좋아요'>
+        {% endif %}
+      </form>
+    </div>
+    <a href="{% url 'articles:detail' article.pk %}">상세 페이지</a>
+    ...
+```
+
+### User-User (팔로우 기능 구현)
+- 먼저 profile 구현하기
+
+```python
+# accounts/urls.py
+
+app_name = 'accounts'
+urlpatterns = [
+    # 생략
+    path('profile/<username>/', views.profile, name='profile'),
+    # url을 그냥 <username>으로 하면 안 되는 이유:
+    # 이 다음으로 생성되는 모든 문자열의 url이 profile 함수를 실행시킴
+    # (urlpatterns의 위에서부터 탐색하다가 해당되는 url을 찾으면 바로 들어가므로)
+]
+```
+
+```python
+# accounts/views.py
+from django.contrib.auth import get_user_model
+
+def profile(request, username):
+    User = get_user_model()
+    person = User.objects.get(username=username)
+    context = {
+        'person': person,
+    }
+    return render(request, 'accounts/profile.html', context)
+```
+
+```django
+<!-- accounts/templates/accounts/profile.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ person.username }}님의 프로필</h1>
+
+<hr>
+
+<h2>{{ person.username }}'s 게시글</h2>
+{% for article in person.article_set.all %}
+  <div>{{ article.title }}</div>
+{% endfor %}
+
+<hr>
+
+<h2>{{ person.username }}'s 댓글</h2>
+{% for comment in person.comment_set.all %}
+  <div>{{ comment.content }}</div>
+{% endfor %}
+
+<hr>
+
+<h2>{{ person.username }}'s 좋아요한 게시글</h2>
+{% for article in person.like_articles.all %}
+  <div>{{ article.title }}</div>
+{% endfor %}
+
+<hr>
+
+<a href="{% url 'articles:index' %}">BACK</a>
+
+{% endblock content %}
+```
+
+- profile로 이동하는 하이퍼 링크 작성
+```django
+<!-- base.html -->
+<body>
+  <div class="container">
+    {% if request.user.is_authenticated %}
+      <h3>{{ user }}</h3>
+      <a href="{% url 'accounts:profile' user.username %}">내 프로필</a>
+      ...
+```
+```django
+  ...
+  {% for article in articles %}
+    <p><b>작성자 : <a href="{% url 'accounts:profile' article.user.username %}">{{ article.user }}</a></b></p>
+    <p>글 번호 : {{ article.pk }}</p>
+    ...
+```
+
+- Follow 구현
+```python
+# accounts/models.py
+class User(AbstractUser):
+    followings = models.ManyToManyField('self', symmetrical=False, related_name='followers')
+    # symmetrical=True로 하면, 팔로우할 때 자동으로 맞팔로우가 되는 현상이 생김
+```
+
+```python
+# accounts/urls.py
+
+app_name = 'accounts'
+urlpatterns = [
+    # 생략
+    path('<int:user_pk>/follow/', views.follow, name='follow'),
+]
+```
+
+```python
+# accounts/views.py
+@require_POST
+def follow(request, user_pk):
+    # 권한이 부여된 사용자만 팔로우가 가능하도록 설정
+    if request.user.is_authenticated:
+        User = get_user_model()
+        person = User.objects.get(pk=user_pk)
+        if person != request.user:
+            # if User in person.followers.all(): <- 같은 의미
+            if person.followers.filter(pk=request.user.pk).exists():
+                person.followers.remove(request.user)
+            else:
+                person.followers.add(request.user)
+        return redirect('accounts:profile', person.username)
+    return redirect('accounts:login')
+```
+
+```django
+<!-- accounts/templates/accounts/profile.html -->
+<h1>{{ person.username }}님의 프로필</h1>
+<div>
+  <div>
+    팔로잉: {{ person.followings.all|length }} / 팔로워: {{ person.followers.all|length }}
+  </div>
+  {% if request.user != person %}
+    <div>
+      <form action="{% url 'accounts:follow' person.pk %}" method='POST'>
+        {% csrf_token %}
+        {% if request.user in person.followers.all %}
+          <input type="submit" value="Unfollow">
+        {% else %}
+          <input type="submit" value="Follow">
+        {% endif %}
+      </form>
+    </div>
+  {% endif %}
+</div>
+...
+```
