@@ -83,16 +83,16 @@ User.objects.order_by('age').order_by('-balance')
 ```
 
 ## 3. Filtering data
-- distinct()
+- `distinct()`
   - 중복을 제거한 뒤 QuerySet 반환
 
-- filter()
+- `filter()`
   - 주어진 매개변수와 일치하는 객체를 포함하는 QuerySet 반환
 
-- exclude()
+- `exclude()`
   - 주어진 매개변수와 일치하지 않는 객체를 포함하는 QuerySet 반환
 
-- Field lookups
+- **Field lookups**
   - 상세한 조건을 지정하는 방법
   - QuerySet 메소드 filter(), exclude() 및 get()에 대한 키워드 인자로 사용
     - 참고) 위 메소드는 모두 파이썬의 함수이므로, `=`를 제외한 `>=`등을 사용할 수 없음
@@ -142,7 +142,7 @@ User.objects.exclude(country__in=['경기도', '강원도']).values('first_name'
 User.objects.order_by('age').values('first_name', 'age')[:10]
 ```
 
-- Q object
+- **Q object**
   - filter()와 같은 메소드의 키워드 인자는 AND statement를 따름
   - 더 복잡한 쿼리를 실행해야 한다면, Q객체가 필요
   - `&`: AND , `|`: OR
@@ -160,13 +160,13 @@ User.objects.get(Q(last_name='김'), Q(age=20) | Q(age=30))
 
 ## 4. Grouping data
 
-- aggregate()
+- `aggregate()`
   - 전체 QuerySet에 대한 값을 계산
   - 특정 필드 전체의 합, 평균, 개수 등을 계산할 때 사용
   - 딕셔너리를 반환
   - aggregation functions: `Avg`, `Count`, `Max`, `Min`, `Sum` 등
 
-- annotate()
+- `annotate()`
   - 쿼리의 각 항목에 대한 요약 값을 계산
   - SQL의 `GROUP BY`에 해당
 
