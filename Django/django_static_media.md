@@ -248,3 +248,75 @@ def update(request, pk):
 ### Image Resizing
 - 실제 원본 이미지를 서버에 그대로 로드하는 것은 여러 이유로 부담이 큼
 - HTML `<img>` 태그에서 사이즈를 조정할 수도 있지만, 업로드 될 때 이미지 자체를 resizing 가능
+- django-imagekit 모듈 설치 : 이미지 처리를 위한 Django 앱(썸네일, 해상도, 사이즈 등 조정 가능)
+  ```bash
+  $ pip install django-imagekit
+  ```
+  ```python
+  # settings.py
+
+  INSTALLED_APPS = [
+      'articles',
+      'accounts',
+      'django_extensions',
+      'imagekit',
+      # 생략
+  ]
+  ```
+
+- 썸네일을 만드는 2가지 방법
+  - 원본 이미지 저장x
+    ```python
+    # articles/models.py
+
+    from imagekit.processors import Thumbnail
+    from imagekit.models import ProcessedImageField
+
+    class Article(models.Model):
+        user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+        title = models.CharField(max_length=10)
+        content = models.TextField()
+        # ProcessedImageField()의 파라미터들은 변경이 되더라도 다시 makemigrations 할 필요 x
+        image = ProcessedImageField(
+            blank=True,
+            upload_to='thumbnails/'
+            processors=[Thumbnail(200,300)],
+            format='JPEG',
+            options={'quality': 80},
+        )
+        # 생략
+    ```
+    ```django
+    <!-- articles/detail.html -->
+    ...
+    <!-- resizing한 이미지 출력 -->
+    <img src="{{ article.image.url }}" alt="{{ article.image }}">
+    ...
+    ```
+  - 원본 이미지 저장 o
+    ```python
+    from imagekit.processors import Thumbnail
+    from imagekit.processors import ImageSpecField
+
+    class Article(models.Model):
+      user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+      title = models.CharField(max_length=10)
+      content = models.TextField()
+      image = models.ImageField(blank=True)
+      image_thumbnail = ImageSpecField(
+          source='image',
+          processors=[Thumbnail(200, 300)],
+          format='JPEG',
+          options={'quality': 80},
+      )
+    ```
+    ```django
+    <!-- articles/detail.html -->
+    ...
+    <!-- 원본 이미지 출력 -->
+    <img src="{{ article.image.url }}" alt="{{ article.image }}">
+    <!-- resizing한 이미지 출력 -->
+    <!-- resizing한 이미지는 사용되었을 때만 저장 (CACHE/images 폴더) -->
+    <img src="{{ article.image_thumbnail.url }}" alt="{{ article.image_thumbnail }}">
+    ...
+    ```
