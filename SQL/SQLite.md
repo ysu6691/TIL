@@ -42,7 +42,7 @@
   SELECT column_name FROM table_name;
   -- clause: SELECT column_name, FROM table_name
   ```
-  - 하나의 SQL문(statement)은 **세미콜론(;)**으로 끝남 (줄바꿈은 상관 x)
+  - 하나의 SQL문(statement)은 **세미콜론(;)** 으로 끝남 (줄바꿈은 상관 x)
     - statement: 독립적으로 실행할 수 있는 완전한 코드 조각
     - clause: statement의 하위 단위
   - SQL 키워드는 대소문자를 구분하지 않으나, 대문자 작성을 권장 (구조 파악 용이)
@@ -66,7 +66,7 @@ sqlite> .exit # 종료
     - 하지만 다른 데이터베이스 엔진과의 호환성 문제가 있기 때문에, **데이터 타입을 지정하는 것을 권장**
 
   - Data Type 종류
-    - `NULL`: 정보가 없거나 알 수 없음을 의미 / 따옴표 없이 NULl만 있는 경우
+    - `NULL`: 정보가 없거나 알 수 없음을 의미 / 따옴표 없이 NULL만 있는 경우
     - `INTEGER`: 정수 / 따옴표와 소수점 또는 지수가 없는 경우
     - `REAL`: 실수 / 따옴표 없이 소수점 또는 지수가 있는 경우
     - `TEXT`: 문자 데이터 / 따옴표로 묶여있는 경우
@@ -88,7 +88,7 @@ sqlite> .exit # 종료
   - 데이터 무결성: 데이터의 정확성, 일관성을 보장
   - Constraints 종류
     - `NOT NULL`: 컬럼이 NULL 값을 허용하지 않도록 지정 (사용하지 않을 경우, NULL값 허용)
-    - `UNIQUE`: 컬럼의 모든 값이 서로 구별되거나 고유한 값이 되도록 함
+    - `UNIQUE`: 컬럼의 모든 값이 서로 구별되거나 고유한 값이 되도록 함 (NULL값 허용)
     - `PRIMARY KEY`: 테이블에서 행의 고유성을 식별하는 데 사용되는 컬럼, 암시적으로 NOT NULL 제약 조건이 포함되어 있음 (**INTEGER 타입에만 사용 가능**)
     - `AUTOINCREMENT`: 사용되지 않은 값이나 이전에 삭제된 행의 값을 재사용하는 것을 방지, `PRIMARY KEY` 다음에 작성 시, rowid를 재사용 x
     - `DEFAULT '내용'`: 아무 값도 넣지 않으면, 해당 값을 `내용`으로 자동 지정
