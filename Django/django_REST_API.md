@@ -238,6 +238,7 @@
   # articles/serializers.py
 
   # 단일 객체를 serialize할 클래스
+  # 같은 모델을 설정한 serializer가 있더라도 다른 필드로 구성하고 싶을 때는 새로운 클래스를 생성해야 함.
   class ArticleSerializer(serializers.ModelSerializer):
 
       class Meta:
