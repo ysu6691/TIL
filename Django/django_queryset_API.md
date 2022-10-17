@@ -26,6 +26,9 @@ len(User.objects.all())
 
 # 10번 user 레코드 조회
 User.objects.get(pk=10)
+
+# 현재 ORM을 SQL로 해석해서 출력
+print(User.objects.all().query)
 ```
 
 ### UPDATE
@@ -88,6 +91,7 @@ User.objects.order_by('age').order_by('-balance')
 
 - `filter()`
   - 주어진 매개변수와 일치하는 객체를 포함하는 QuerySet 반환
+  - `.filter`를 연속해서 사용할 수 있다.
 
 - `exclude()`
   - 주어진 매개변수와 일치하지 않는 객체를 포함하는 QuerySet 반환
@@ -194,3 +198,119 @@ User.objects.values('country').annotate(num_of_country=Count('country'))
 # 각 지역별로 몇 명씩 살고 있는지와 계좌 잔액 평균 조회
 User.objects.values('country').annotate(Count('country'), Avg('balance'))
 ```
+
+## 5. Improve Query
+Query를 줄이는 최적화 과정을 연습해보기
+
+### annotate
+- 예시: 각 게시글의 댓글 수를 함께 출력
+  ```python
+  def index(request):
+      # articles = Article.objects.order_by('-pk')
+      articles = Article.objects.annotate(Count('comment')).order_by('-pk')
+      context = {
+          'articles': articles,
+      }
+      return render(request, 'articles/index.html', context)
+  ```
+  ```django
+  {% extends 'base.html' %}
+
+  {% block content %}
+    <h1>Articles</h1>
+    {% for article in articles %}
+      <p>제목 : {{ article.title }}</p>
+      {% comment %} <p>댓글개수 : {{ article.comment_set.count }}</p> {% endcomment %}
+      <p>댓글개수 : {{ article.comment__count }}</p>
+      <hr>
+    {% endfor %}
+  {% endblock content %}
+  ```
+
+### select_related
+- 1:1 또는 N:1 참조 관계에서 사용
+- SQL에서 INNER JOIN 절을 활용
+- 예시: 각 게시글의 작성자를 함께 출력
+  ```python
+  def index(request):
+      # article을 가져올 때 user id 값도 함께 가져와서, 중복으로 query를 보내지 않음
+      # articles = Article.objects.order_by('-pk')
+      articles = Article.objects.select_related('user').order_by('-pk')
+      context = {
+          'articles': articles,
+      }
+      return render(request, 'articles/index.html', context)
+  ```
+  ```django
+  {% extends 'base.html' %}
+
+  {% block content %}
+    <h1>Articles</h1>
+    {% for article in articles %}
+      <h3>작성자 : {{ article.user.username }}</h3>
+      <p>제목 : {{ article.title }}</p>
+      <hr>
+    {% endfor %}
+  {% endblock content %}
+  ```
+
+### prefecth_related
+- 역참조 관계에서 사용
+
+- 예시: 각 게시글의 모든 댓글을 함께 출력
+  ```python
+  def index(request):
+      # article을 가져올 때 역참조 관계인 comment도 한 번에 가져오기
+      # articles = Article.objects.order_by('-pk')
+      articles = Article.objects.prefetch_related('comment_set').order_by('-pk')
+      context = {
+          'articles': articles,
+      }
+      return render(request, 'articles/index.html', context)
+  ```
+  ```django
+  {% extends 'base.html' %}
+
+  {% block content %}
+    <h1>Articles</h1>
+    {% for article in articles %}
+      <p>제목 : {{ article.title }}</p>
+      <p>댓글 목록</p>
+      {% for comment in article.comment_set.all %}
+        <p>{{ comment.content }}</p>
+      {% endfor %}
+      <hr>
+    {% endfor %}
+  {% endblock content %}
+  ```
+
+- 예시: 각 게시글의 모든 댓글과, 모든 댓글의 유저를 함께 출력
+  ```python
+  def index(request):
+      # 댓글과 함께 
+      # articles = Article.objects.order_by('-pk')
+      # articles = Article.objects.prefetch_related('comment_set').order_by('-pk')
+      articles = Article.objects.prefetch_related(
+          Prefetch('comment_set', queryset=Comment.objects.select_related('user'))
+      ).order_by('-pk')
+
+      context = {
+          'articles': articles,
+      }
+      return render(request, 'articles/index.html', context)
+  ```
+  ```django
+  {% extends 'base.html' %}
+
+  {% block content %}
+    <h1>Articles</h1>
+    {% for article in articles %}
+      <p>제목 : {{ article.title }}</p>
+      <p>댓글 목록</p>
+      {% for comment in article.comment_set.all %}
+        <p>{{ comment.user.username }} : {{ comment.content }}</p>
+      {% endfor %}
+      <hr>
+    {% endfor %}
+  {% endblock content %}
+  ```
