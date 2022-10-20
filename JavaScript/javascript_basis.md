@@ -7,7 +7,7 @@
 - HTML 문서의 콘텐츠를 **동적으로 변경**할 수 있는 언어
 - Web을 위해 탄생한 언어이지만, 서버 프로그래밍, 블록체인 등 다양한 분야에서 활용이 가능한 프로그래밍 언어로 변화했다.
 - 웹 브라우저는 자바스크립트를 해석하는 엔진을 가지고 있다.
-- ES5 표준안에서 ES6 표준안이 제정되면서, 큰 변환가 일어났다.
+- ES5 표준안에서 ES6 표준안이 제정되면서, 큰 변화가 일어났다.
 
 ### JavaScript 실행하기
 - Web Browser로 실행하기
@@ -89,9 +89,10 @@
 - 변수의 선언
   - `let`: 블록 스코프 지역 변수를 선언 / 재할당 가능 & 재선언 불가능
   - `const`: 블록 스코프 읽기 전용 상수를 선언 / 재할당 불가능 & 재선언 불가능
+    - 꼭 재할당이 필요한 변수가 아니면, `const` 사용하기
   - `var`: 함수 스코프 변수를 선언 / 재할당 가능 % 재선언 가능
     - "호이스팅"되는 특성으로 인해 문제 발생 가능 -> **let과 const 사용 권장**
-  - 변수 선언시 세 가지 키워드 중 하나를 사용하지 않으면 자동으로 `var`로 선언
+  - 변수를 선언하지 않고 할당하려고 하면, 
   - 선언 예시
     ```js
     let number = 10 // 선언 및 초기화
@@ -107,6 +108,39 @@
     number = 20 // 재할당
     var number = 30 // 재선언
     ```
+  > **전역 객체** <br>
+  > 전역 객체를 사용하면 어디서나 사용 가능한 변수나 함수를 만들 수 있다. 전역 객체는 언어 자체나 호스트 환경에 기본 내장되어 있는 경우가 많다.<br>
+  > 브라우저 환경에선 전역 객체를 `window`, Node.js 환경에선 `global`이라고 부르는데, 각 호스트 환경마다 부르는 이름은 다르다.<br>
+  > (전역 객체의 이름을 `globalThis`로 표준화하자는 내용이 최근에 자바스크립트 명세에 추가되었지만, 아직 몇몇 브라우저는 지원하지 않는다.)<br>
+  > node.js에서는 모든 객체는  `global` 객체의 프로퍼티로서 접근할 수 있고, `global` 하위에 위치한 객체는 `global`을 생략하고 접근할 수 있다.<br>
+  > 예시
+  > ```js
+  > // a = 3과 같은 행위
+  > global.a = 3 // global의 프로퍼티로서 등록
+  > global.a // 3
+  >
+  > myObj = {} // 객체 생성
+  > myObj.a = 3 // myObj의 프로퍼티로서 등록
+  > myObj // {a: 3} 
+  > ```
+  > `global`도 전역'객체'이기 때문에 프로퍼티로 등록이 가능한 것을 확인할 수 있고, `global`을 출력하는 방식으로도 확인할 수 있다.<br>
+  > 전역 변수도 같은 방식으로 등록이 가능하다.
+  > ```js
+  > var a = 5 // 전역 변수로서 등록
+  > global.a // 5
+  > ```
+  > `global`을 출력해보면 전역 변수 `a`가 기존의 프로퍼티였던 `a`의 자리를 뺏고, `global`의 객체로 등록이 된 것을 확인할 수 있다.<br>
+  > 하지만 전역 변수와 프로퍼티는 `global`로 확인했을 때 구분이 불가능하므로 혼동이 생길 수 있다.<br>
+  > 따라서 다음과 같은 방법으로 전역 변수와 프로퍼티를 구분지어 이해할 수 있다.<br>
+  > ```js
+  > a = 3
+  > var b = 3
+  >
+  > Object.getOwnPropertyDescriptor(global, 'a')
+  > // {value: 3, writable: true, enumerable: true, configurable: true}
+  > Object.getOwnPropertyDescriptor(global, 'b')
+  > // {value: 4, writable: true, enumerable: true, configurable: false}
+  > ```
 
 - 호이스팅(hoisting)
   - 변수를 선언 이전에 참조할 수 있는 현상
@@ -188,6 +222,7 @@
   - 문자열을 표현하는 자료형
   - 작은 따옴표 또는 큰 따옴표 모두 가능
   - 덧셈을 통해 문자열 붙일 수 있음
+  - `.length`를 통해 길이를 반환받을 수 있음
   - Template Literal로 문자열 사이에 변수 삽입 가능
     - ES6+ 부터 지원
     - 작은 따옴표(') 대신 Backtick(`)을 이용
@@ -559,11 +594,31 @@
 - 0을 포함한 양의 정수 인덱스로 접근 가능
 - 배열의 길이는 `array.length` 형태로 접근
   - 배열의 마지막 원소는 `array.length - 1`로 접근
-  
+
+> **※ `const`로 Array 생성하기** <br>
+> `const`는 재할당하지 않는 변수를 선언할 때 사용한다.<br>
+> 만약 배열을 선언하는 경우에 배열의 값이 바뀌어도 '변수가 할당하는 배열'이 바뀌는 것이 아니므로, `const`를 사용하는 것이 적합하다.
+> ```js
+> const myArray = [1, 2, 3]
+> myArray.push(4)
+> console.log(myArray) // [ 1, 2, 3, 4 ]
+> ```
+
+### 참고: 연속적인 숫자를 갖는 배열 만들기
+```js
+const tenArr = Array.from(Array(10).keys(), x => x+1)
+const tenArr2 = Array.from(Array(10), (_,x) => x+1)
+const tenArr3 = Array.from({length:10}, function(v,k) {return k+1})
+console.log(tenArr, tenArr2, tenArr3)
+// [1, 2, 3, ..., 9, 10]
+// [1, 2, 3, ..., 9, 10]
+// [1, 2, 3, ..., 9, 10]
+```
+
 ### 배열 메소드 기초
 | 메소드 | 설명 | 비고 |
 |--|--|--|
-| reverse |원본 배열의 요소들의 순서를 반대로 정렬||
+| reverse |원본 배열의 요소들의 순서를 반대로 정렬|정렬한 결과를 저장 및 반환|
 |push & pop|배열의 가장 뒤의 요소를 추가 또는 제거||
 |unshift & shift|배열의 가장 앞의 요소를 추가 또는 제거||
 |includes|배열에 특정 값이 존재하는지 판별 후 참/거짓 반환||
@@ -607,6 +662,16 @@ console.log(numbers.join('')) // 321
   - 메소드 호출 시 인자로 **callback 함수**를 받는 것이 특징
     - callback 함수: 어떤 함수의 내부에서 실행될 목적으로 인자로 넘겨받는 함수
     - 다양한 함수 형태로 사용 가능하다.
+    - 예시:
+      ```js
+      const myArray = [1, 2, 3]
+
+      printFunc = function (num) {
+        console.log(num)
+      }
+      myArray.forEach(printFunc)
+      ```
+  
   |메소드|설명|비고|
   |--|--|--|
   |forEach|배열의 각 요소에 대해 콜백 함수를 한 번씩 실행|반환 값 없음|
@@ -687,6 +752,13 @@ console.log(numbers.join('')) // 321
     })
     console.log(sumNumbers) // 6
     console.log(sumNumbers / numbers.length) // 2, 평균값 구하기
+
+    /*
+    기본값 설정하기
+    const sumNumbers = numbers.reduce((total, x) => {
+      return total + x
+    }, 0)
+    */
     ```
 
 - `find`
@@ -735,7 +807,8 @@ console.log(numbers.join('')) // 321
 
 ### 객체
 - 객체는 속성의 집합이며, 중괄호 내부에 key와 value의 쌍으로 표현
-- key는 문자열 타입만 가능(띄어쓰기 등의 구분자가 있으면 따옴표로 묶어서 표현)
+- key는 문자열 타입만 가능
+  - 따옴표 없이도 표현이 가능하지만, 띄어쓰기 등의 구분자가 있으면 따옴표로 묶어서 표현
 - value는 모든 타입(함수 포함) 가능
 - 객체 요소 접근은 점 또는 대괄호로 가능
   - 대괄호 접근 시 따옴표 사용
@@ -756,31 +829,41 @@ console.log(numbers.join('')) // 321
 
 ### 객체 관련 문법 (ES6 도입)
 - 속성명 축약
-  - 객체를 정의할 때 KEY와 할당하는 변수의 이름이 같으면 축약 가능
+  - 객체를 정의할 때 key와 할당하는 변수의 이름이 같으면 축약 가능
   - 예시
     ```js
     const books = ['book1', 'book2']
-    const magazines = ['mag1', 'mag2']
+    const currentBooks = () => {
+      return books.length
+    }
 
     /*
     const bookShop = {
       books: books,
-      magazines: magazines,
+      currentBooks: currentBooks,
     }
     */
 
     const bookShop = {
       books,
-      magazines,
+      currentBooks,
     }
     console.log(bookShop)
+    /*
+    {
+      books: [ 'book1', 'book2' ],
+      currentBooks: [Function: currentBooks]
+    }
+    */
     ```
 
 - 메소드명 축약
-  - 메소드 선언 시 function 키워드 생략 가능
+  - Object 내부에서 함수(메소드) 정의 시, key 생략 가능
   - 예시
     ```js
     /*
+    객체 내부에 함수 넣기
+    객체 = {key: 함수}
     const obj = {
       greeting: function () {
         console.log('Hi!')
@@ -789,7 +872,7 @@ console.log(numbers.join('')) // 321
     */
 
     const obj = {
-      greeting() {
+      greeting () {
         console.log('Hi!')
       }
     }
@@ -797,7 +880,7 @@ console.log(numbers.join('')) // 321
     obj.greeting() // Hi!
     ```
 
-- 계산된 속성
+- 계산된 속성(computed property name)
   - 객체를 정의할 때 key의 이름을 표현식을 이용하여 동적으로 생성 가능
   - 예시
     ```js
@@ -809,9 +892,10 @@ console.log(numbers.join('')) // 321
     }
 
     console.log(myObj)
+    // { country: [ '한국', '미국' ] }
     ```
 
-- 구조 분해 할당
+- 구조 분해 할당(Object Destructuring, 비구조화)
   - 배열 또는 객체를 분해하여 속성을 변수에 쉽게 할당
   - 예시
     ```js
@@ -821,11 +905,19 @@ console.log(numbers.join('')) // 321
       email: 'asdf@google.com'
     }
 
+    // 키와 동일한 이름을 가진 변수를 선언해, 쉽게 저장 가능
+    // const userName = userInfo.userName
     const { userName } = userInfo // 하나씩 저장
     const { userId, email } = userInfo // 여러개 저장
-
     console.log(userName, userId, email)
     // 홍길동 1234 asdf@google.com
+
+    // 함수 인자 바로 받아오기
+    function printInfo({ userName, userId, email }) {
+      console.log(`내 정보: ${userName} ${userId} ${email} `)
+    }
+    printInfo(userInfo)
+    // 내 정보: 홍길동 1234 asdf@google.com
     ```
 
 - Spread syntax (...)
