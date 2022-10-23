@@ -257,13 +257,19 @@ FROM 테이블이름(들)
   > **주의사항**
   > 
   > 1. SELECT 절에는 GROUP BY로 묶은 속성만 나올 수 있다. (집계함수는 예외)
+
   >    맞는 예: `SELECT custid, SUM(saleprice) FROM Orders GROUP BY custid;`
+
   >    틀린 예: `SELECT bookid, SUM(saleprice) FROM Orders GROUP BY custid;`
+
   > 2. HAVING 절은 반드시 GROUP BY와 함께 작성해야 하고 WHERE 절보다 뒤에 나와야 한다. 그리고 검색조건에는 집계함수만 올 수 있다.
+
   >    맞는 예: `SELECT custid FROM Orders WHERE saleprice>=8000 GROUP BY custid HAVING count(*)>=2;`
+
   >    틀린 예: `SELECT custid FROM Orders HAVING count(*)>=2 WHERE saleprice>=8000 GROUP BY custid;`
 
 - **SQL문의 실행 순서**
+
   ①FROM -> ②WHERE -> ③GROUP BY -> ④HAVING -> ⑤SELECT -> ⑥ORDER BY
   
   ①테이블을 불러온 후, ②조건에 맞는 튜플만 남긴다.
@@ -317,12 +323,14 @@ FROM 테이블이름(들)
     
     따라서 테이블과 컬럼 이름이 모두 동일하기 때문에, 식별을 위해 **반드시 테이블 별칭(Alias)를 사용해야 한다.**
     
-    <img src="https://user-images.githubusercontent.com/109272360/197336222-e8ac6836-c3fa-4182-8636-8bf0241d2bbc.png" width="500px;">
+    <img src="https://user-images.githubusercontent.com/109272360/197336222-e8ac6836-c3fa-4182-8636-8bf0241d2bbc.png" width="630px;">
     
-    ```sql
-    -- '홍길동' 사원이 관리하는 부하사원의 이름을 검색
-    SELECT staff.ename FROM Emp staff, Emp manager WHERE staff.mgr=manager.empno and manager.ename LIKE '홍길동';
-    ```
+    예시:
+
+      ```sql
+      -- '홍길동' 사원이 관리하는 부하사원의 이름을 검색
+      SELECT staff.ename FROM Emp staff, Emp manager WHERE staff.mgr=manager.empno and manager.ename LIKE '홍길동';
+      ```
 
 ### INSERT 문
 
