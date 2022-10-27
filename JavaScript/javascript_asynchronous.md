@@ -31,7 +31,7 @@
 - 자바스크립트는 single thread 언어로, 한 번에 하나의 일만 수행할 수 있다.
   - thread: 작업을 처리할 때 실제로 작업을 수행하는 주체
 - 요청이 들어올 때마다 **Call Stack**에서 순차적으로 처리한다.
-- 따라서 비동기 처리를 위한 환경(런타임)이 필요하다.
+- **따라서 비동기 처리를 위한 환경(런타임)이 필요하다.**
   - 런타임: 특정 언어가 동작할 수 있는 환경(자바스크립트의 경우 웹 브라우저, Node.js 등이 있다.)
 - 브라우저 환경에서는 **Web API**, **Task Queue**, **Event Loop**를 제공한다.
   - Web API: 브라우저에서 제공하는 런타임 환경으로, 시간이 소요되는 작업을 처리
@@ -44,12 +44,14 @@
   3. Web API에서 처리가 끝난 작업들은 Task Queue(FIFO)에 순서대로 들어간다.
   4. Event Loop가 Call Stack이 비어 있는지 확인한 뒤, Task Queue에서 가장 오래된 작업을 Call Stack으로 보낸다.
   - 예시
-    <img src="https://user-images.githubusercontent.com/109272360/198319006-e573f375-b447-434b-ba98-6f5ed776036d.png" width="600px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319011-c4ab7038-e87f-4276-a816-cc2cdf1414e9.png" width="600px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319020-06f0eab9-fe31-48b0-a8db-a33dccd4a98a.png" width="600px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319023-269304bb-4949-46b7-95a6-8584f7f727cc.png" width="600px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319031-af423bac-fa42-4dce-8f35-3149b5a21a30.png" width="600px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319041-6868164e-f3a4-45bd-ba99-8721d6e55f07.png" width="600px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319047-57eaa60f-9b25-43dc-85b3-ac14675d2b57.png" width="600px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319054-f36630c6-1e3b-4cf4-90af-6031a43caa0c.png" width="600px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319060-2433ccf9-0321-4e2f-89ba-4599d1e20198.png" width="600px">
+
+    <img src="https://user-images.githubusercontent.com/109272360/198319006-e573f375-b447-434b-ba98-6f5ed776036d.png" width="750px">
+    <img src="https://user-images.githubusercontent.com/109272360/198319011-c4ab7038-e87f-4276-a816-cc2cdf1414e9.png" width="750px">
+    <img src="https://user-images.githubusercontent.com/109272360/198319020-06f0eab9-fe31-48b0-a8db-a33dccd4a98a.png" width="750px">
+    <img src="https://user-images.githubusercontent.com/109272360/198319023-269304bb-4949-46b7-95a6-8584f7f727cc.png" width="750px">
+    <img src="https://user-images.githubusercontent.com/109272360/198319031-af423bac-fa42-4dce-8f35-3149b5a21a30.png" width="750px">
+    <img src="https://user-images.githubusercontent.com/109272360/198319041-6868164e-f3a4-45bd-ba99-8721d6e55f07.png" width="750px">
+    <img src="https://user-images.githubusercontent.com/109272360/198319047-57eaa60f-9b25-43dc-85b3-ac14675d2b57.png" width="750px">
+    <img src="https://user-images.githubusercontent.com/109272360/198319054-f36630c6-1e3b-4cf4-90af-6031a43caa0c.png" width="750px">
+    <img src="https://user-images.githubusercontent.com/109272360/198319060-2433ccf9-0321-4e2f-89ba-4599d1e20198.png" width="750px">
+
