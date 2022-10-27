@@ -45,13 +45,12 @@
   4. Event Loop가 Call Stack이 비어 있는지 확인한 뒤, Task Queue에서 가장 오래된 작업을 Call Stack으로 보낸다.
   - 예시
 
-    <img src="https://user-images.githubusercontent.com/109272360/198319006-e573f375-b447-434b-ba98-6f5ed776036d.png" width="750px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319011-c4ab7038-e87f-4276-a816-cc2cdf1414e9.png" width="750px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319020-06f0eab9-fe31-48b0-a8db-a33dccd4a98a.png" width="750px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319023-269304bb-4949-46b7-95a6-8584f7f727cc.png" width="750px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319031-af423bac-fa42-4dce-8f35-3149b5a21a30.png" width="750px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319041-6868164e-f3a4-45bd-ba99-8721d6e55f07.png" width="750px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319047-57eaa60f-9b25-43dc-85b3-ac14675d2b57.png" width="750px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319054-f36630c6-1e3b-4cf4-90af-6031a43caa0c.png" width="750px">
-    <img src="https://user-images.githubusercontent.com/109272360/198319060-2433ccf9-0321-4e2f-89ba-4599d1e20198.png" width="750px">
-
+    <img src="https://user-images.githubusercontent.com/109272360/198319006-e573f375-b447-434b-ba98-6f5ed776036d.png" width="830px" style="margin-bottom:16px;">
+    <img src="https://user-images.githubusercontent.com/109272360/198319011-c4ab7038-e87f-4276-a816-cc2cdf1414e9.png" width="830px" style="margin-bottom:16px;">
+    <img src="https://user-images.githubusercontent.com/109272360/198319020-06f0eab9-fe31-48b0-a8db-a33dccd4a98a.png" width="830px" style="margin-bottom:16px;">
+    <img src="https://user-images.githubusercontent.com/109272360/198319023-269304bb-4949-46b7-95a6-8584f7f727cc.png" width="830px" style="margin-bottom:16px;">
+    <img src="https://user-images.githubusercontent.com/109272360/198319031-af423bac-fa42-4dce-8f35-3149b5a21a30.png" width="830px" style="margin-bottom:16px;">
+    <img src="https://user-images.githubusercontent.com/109272360/198319041-6868164e-f3a4-45bd-ba99-8721d6e55f07.png" width="830px" style="margin-bottom:16px;">
+    <img src="https://user-images.githubusercontent.com/109272360/198319047-57eaa60f-9b25-43dc-85b3-ac14675d2b57.png" width="830px" style="margin-bottom:16px;">
+    <img src="https://user-images.githubusercontent.com/109272360/198319054-f36630c6-1e3b-4cf4-90af-6031a43caa0c.png" width="830px" style="margin-bottom:16px;">
+    <img src="https://user-images.githubusercontent.com/109272360/198319060-2433ccf9-0321-4e2f-89ba-4599d1e20198.png" width="830px" style="margin-bottom:16px;">
