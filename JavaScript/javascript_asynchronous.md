@@ -54,3 +54,278 @@
     <img src="https://user-images.githubusercontent.com/109272360/198324589-a7166c91-98eb-482c-a8ac-0e06de53eed8.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
     <img src="https://user-images.githubusercontent.com/109272360/198319054-f36630c6-1e3b-4cf4-90af-6031a43caa0c.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
     <img src="https://user-images.githubusercontent.com/109272360/198319060-2433ccf9-0321-4e2f-89ba-4599d1e20198.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
+
+## 2. Axios
+
+### Axios 사용 이유
+- 클라이언트(브라우저)에서 서버로 요청을 보낼 때 form tag나 url을 통해 요청을 보내면, html 파일을 응답한다.(새로고침)
+- 일부만 수정이 필요한 경우에도 전체 html 파일을 요청해야 하므로 이러한 방식은 비효율적이다.
+- 따라서 html의 일부 요소만 수정할 수 있는 언어인 자바스크립트를 이용해, json을 요청하고 응답받음으로써 일부만 수정이 가능하다.
+- 자바스크립트는 **XMLHttpRequest(XHR)** 객체를 이용해 서버로 요청을 보내는데, 이는 **비동기 함수**이므로 순서 보장이 불가능하다.
+- 따라서 선후관계가 필요한 경우 콜백함수를 사용해야 하는데, 코드가 길어질 경우 가독성을 해치는 '콜백지옥'에 빠지게 된다.
+  ```js
+  // 선후관계는 보장되지만 가독성을 해침
+  const func1 = function () {
+    const func2 = function () {
+      const func3 = function () {
+        ...
+      }
+    }
+  }
+  ```
+- 따라서 자바스크립트 내장 객체인 **promise 객체**를 이용해 콜백지옥을 탈출할 수 있다.
+- **Axios**는 promise기반의 HTTP통신 라이브러리로, 비동기로 HTTP 통신을 가능하게 해주며(XHR 전송) return을 promise 객체로 해주기 때문에 response 데이터를 다루기도 용이하다.
+- [Axios Docs](https://axios-http.com/docs/intro)
+
+### Axios 기본 구조
+```html
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  axios({
+    method: '요청 방식',
+    url: '요청할 url',
+    ...
+  })
+    .then(성공하면 수행할 콜백함수)
+    .catch(실패하면 수행할 콜백함수)
+</script>
+```
+- `then(콜백함수)`
+  - 요청한 작업이 성공하면 콜백함수 실행
+  - 각 콜백함수는 이전 작업의 성공 결과를 promise 객체로 전달 받음
+  - 예시
+    ```html
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      axios({
+        method: 'get',
+        url: '#',
+      })
+        .then((response) => {
+          return result1
+        })
+        .then((result1) => {
+          return result2
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    </script>
+    ```
+
+- `catch(콜백함수)`
+  - `then()`이 하나라도 실패하면 콜백함수 실행
+  - 각 콜백함수는 이전 작업의 실패 객체를 promise 객체로 전달 받음
+
+## 3. Ajax
+
+### Ajax란?
+- Asynchronous JavaScript and XML(비동기 웹 개발 기술)
+- 빠르게 동작하는 동적 웹 페이지를 만들기 위한 방법론의 하나이다.
+- 웹 페이지 새로고침 없이 웹 페이지의 일부를 수정할 수 있다.
+- 백그라운드에서 서버로 요청을 보내고 응답(데이터)를 받거나 데이터를 보낼 수 있다.
+- 데이터의 형태는 JSON, XML, HTML 등 다양하다.
+
+### Django에 적용하기
+- `data-* attributes`
+  - DOM 요소에 데이터를 담는 방법
+  - `data-name1-name2-... = data` 형식으로 HTML 요소의 속성명과 데이터를 지정
+  - 자바스크립트에서 `element.dataset.name1Name2...` 형식으로 접근 가능
+  - 속성명 작성 시 주의사항
+    - 대소문자 여부에 관계없이 XML로 시작 x
+    - 세미콜론 및 대문자 포함 x
+  - 예시
+    ```html
+    <div data-my-data="my-data"></div>
+    <script>
+      const divTag = document.querySelector('div')
+      const myId = divTag.dataset.myData
+    </script>
+    ```
+
+- 팔로우 구현
+  ```python
+  # accounts/views.py
+  from django.http import JsonResponse
+
+  @require_POST
+  def follow(request, user_pk):
+      if request.user.is_authenticated:
+          User = get_user_model()
+          me = request.user
+          you = User.objects.get(pk=user_pk)
+          if me != you:
+              if you.followers.filter(pk=me.pk).exists():
+                  you.followers.remove(me)
+                  is_followed = False
+              else:
+                  you.followers.add(me)
+                  is_followed = True
+              context = {
+                  'is_followed': is_followed,
+                  'followers_count': you.followers.count(),
+                  'followings_count': you.followings.count(),
+              }
+              return JsonResponse(context)
+          return redirect('accounts:profile', you.username)
+      return redirect('accounts:login')
+  ```
+  ```django
+  {% block content %}
+    <h1>{{ person.username }}님의 프로필</h1>
+    <div>
+      팔로워 : <span id="followers-count">{{ person.followers.all|length }}</span> / 
+      팔로잉 : <span id="followings-count">{{ person.followings.all|length }}</span>
+    </div>
+
+    {% if request.user != person %}
+    <div>
+      <form id="follow-form" data-user-id="{{ person.pk }}">
+        {% csrf_token %}
+        {% if request.user in person.followers.all %}
+          <input type="submit" value="언팔로우">
+        {% else %}
+          <input type="submit" value="팔로우">
+        {% endif %}
+      </form>
+    <div>
+    {% endif %}
+    ...
+  {% endblock content %}
+    
+  {% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      const form = document.querySelector('#follow-form')
+      // django에서 hidden 타입으로 숨겨져 있는 csrf 값을 가진 input 태그 찾기
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+      
+      form.addEventListener('submit', function (event) {
+        event.preventDefault()
+        
+        const userId = event.target.dataset.userId
+        axios({
+          method: 'post',
+          url: `/accounts/${userId}/follow/`,
+          // AJAX로 csrftoken 보내기
+          headers: {'X-CSRFToken': csrftoken,}
+        })
+          .then((response) => {
+      
+            const isFollowed = response.data.is_followed
+            const followBtn = document.querySelector('#follow-form > input[type=submit]')
+            
+            if (isFollowed === true) {
+              followBtn.value = '언팔로우'
+            } else {
+              followBtn.value = '팔로우'
+            }
+      
+            const followersCountTag = document.querySelector('#followers-count')
+            const followingsCountTag = document.querySelector('#followings-count')
+            const followersCount = response.data.followers_count
+            const followingsCount = response.data.followings_count
+            followersCountTag.innerText = followersCount
+            followingsCountTag.innerText = followingsCount
+          })
+          .catch((error) => {
+            console.log(error.response)
+          })
+      })
+    </script>
+  {% endblock script %}
+  ```
+
+
+- 좋아요 구현
+  ```python
+  # articles/views.py
+  from django.http import JsonResponse
+
+  @require_POST
+  def likes(request, article_pk):
+      if request.user.is_authenticated:
+          article = Article.objects.get(pk=article_pk)
+
+          if article.like_users.filter(pk=request.user.pk).exists():
+              article.like_users.remove(request.user)
+              is_liked = False
+          else:
+              article.like_users.add(request.user)
+              is_liked = True
+          context = {
+              'is_liked': is_liked,
+          }
+          # json 객체로 반환
+          return JsonResponse(context)
+      return redirect('accounts:login')
+  ```
+```django
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Articles</h1>
+  {% if request.user.is_authenticated %}
+    <a href="{% url 'articles:create' %}">CREATE</a>
+  {% endif %}
+  <hr>
+  {% for article in articles %}
+    <p>
+      <b>작성자 : <a href="{% url 'accounts:profile' article.user %}">{{ article.user }}</a></b>
+    </p>
+    <p>글 번호 : {{ article.pk }}</p>
+    <p>제목 : {{ article.title }}</p>
+    <p>내용 : {{ article.content }}</p>
+    <div>
+      <form class="like-forms" data-article-id="{{ article.pk }}">
+        {% csrf_token %}
+        {% if request.user in article.like_users.all %}
+          <input type="submit" value="좋아요 취소" id="like-{{ article.pk }}">
+        {% else %}
+          <input type="submit" value="좋아요" id="like-{{ article.pk }}">
+        {% endif %}
+      </form>
+    </div>
+    <a href="{% url 'articles:detail' article.pk %}">상세 페이지</a>
+    <hr>
+  {% endfor %}
+{% endblock content %}
+
+{% block script %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const forms = document.querySelectorAll('.like-forms')
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+    forms.forEach((form) => {
+      form.addEventListener('submit', function (event) {
+        event.preventDefault()
+
+        const articleId = event.target.dataset.articleId
+
+        axios({
+          method: 'post',
+          url: `http://127.0.0.1:8000/articles/${articleId}/likes/`,
+          headers: {'X-CSRFToken': csrftoken},
+        })
+          .then((response) => {
+
+            const isLiked = response.data.is_liked
+
+            const likeBtn = document.querySelector(`#like-${articleId}`)
+            if (isLiked === true) {
+              likeBtn.value = '좋아요 취소'
+            } else {
+              likeBtn.value = '좋아요'
+            }
+            // likeBtn.value = isLiked ? '좋아요 취소' : '좋아요'
+          })
+          .catch((error) => {
+            console.log(error.response)
+          })
+      })
+    })
+  </script>
+{% endblock script %}
+```
+
