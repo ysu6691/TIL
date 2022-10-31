@@ -8,7 +8,7 @@
   - 이전 작업이 끝나야 다음 작업을 시작
 
 - 비동기(Asynchronous)
-  - 작업을 시작한 후 결과를 기다리지 않고 다음 작업을 처리하는 것(병령적 수행)
+  - 작업을 시작한 후 결과를 기다리지 않고 다음 작업을 처리하는 것(병렬적 수행)
   - 시간이 필요한 작업들은 요청을 보낸 뒤 응답이 빨리 오는 작업부터 처리
 
 - 비동기를 사용하는 이유
@@ -144,6 +144,15 @@
     ```
 
 - 팔로우 구현
+  ```django
+  <!-- base.html -->
+  <body>
+    ...
+    {% block script %}
+    {% endblock script %}
+  </body>
+  </html>
+  ```
   ```python
   # accounts/views.py
   from django.http import JsonResponse
@@ -171,6 +180,7 @@
       return redirect('accounts:login')
   ```
   ```django
+  <!-- accounts/profile.html -->
   {% block content %}
     <h1>{{ person.username }}님의 프로필</h1>
     <div>
@@ -261,6 +271,7 @@
       return redirect('accounts:login')
   ```
   ```django
+  <!-- articles/index.html -->
   {% extends 'base.html' %}
 
   {% block content %}
