@@ -586,6 +586,22 @@
     (num => num ** 3)(2); // 8
     ```
 
+### 생성자 함수
+- `new` 연산자와 함께 호출하여 객체(인스턴스)를 행성하는 함수
+```js
+function Student(name, age) {
+  this.name = name
+  this.age = age
+  this.say = function () {
+    console.log('안녕하세요')
+  }
+}
+
+const student1 = new Student('홍길동', 20)
+console.log(student1.name) // 홍길동
+student1.say() // 안녕하세요
+```
+
 ## 4. 배열(Array)
 
 ### 배열
