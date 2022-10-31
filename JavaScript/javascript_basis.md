@@ -588,6 +588,7 @@
 
 ### 생성자 함수
 - `new` 연산자와 함께 호출하여 객체(인스턴스)를 행성하는 함수
+- 함수 이름은 대문자로 시작
 ```js
 function Student(name, age) {
   this.name = name
