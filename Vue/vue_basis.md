@@ -439,7 +439,186 @@
     ```
 
 ### computed
+- computed 객체에 정의한 함수를 페이지가 최초로 렌더링 될 때 호출하여 계산
+- 계산 결과가 변하기 전까지 함수를 재호출하는 것이 아닌, 저장(캐싱)된 값을 반환
+- `method` vs `computed`
+  - method: 호출 될 때마다 함수를 실행(같은 결과여도 매번 계산)
+  - computed: 함수의 종속 대상의 변화에 따라 계산 여부가 결정
+- 예시1
+  ```html
+  <body>
+    <div id="app">
+      <h1>add_method : {{ add_method() }}</h1>
+      <h1>add_method : {{ add_method() }}</h1>
+      <h1>add_method : {{ add_method() }}</h1>
+      <hr>
+      <h1>add_computed : {{ add_computed }}</h1>
+      <h1>add_computed : {{ add_computed }}</h1>
+      <h1>add_computed : {{ add_computed }}</h1>
+    </div>
+    <!--
+      method 실행됨!
+      method 실행됨!
+      method 실행됨!
+      computed 실행됨!
+    -->
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+      const app = new Vue({
+        el: '#app',
+        data: {
+          number1: 100,
+          number2: 100
+        },
+        computed: {
+          add_computed: function () {
+            console.log('computed 실행됨!')
+            return this.number1 + this.number2
+          }
+        },
+        methods: {
+          add_method: function () {
+            console.log('method 실행됨!')
+            return this.number1 + this.number2
+          },
+        }
+      })
+    </script>
+  </body>
+  ```
+- 예시2
+  ```html
+  <body>
+    <div id="app">
+      <p v-for="name in fullName" :key="name">{{ name }}</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        students: [
+            {
+              firstName: "길동",
+              lastName: "홍",
+            },
+            {
+              firstName: "민수",
+              lastName: "김",
+            },
+            {
+              firstName: "민지",
+              lastName: "박",
+            },
+          ],
+      },
+      computed: {
+        fullName() {
+          return this.students.map((item) => {
+            return item.lastName + item.firstName
+          })
+        },
+      },
+    })
+    </script>
+  </body>
+  ```
 
 ### watch
+- watch 객체를 정의해 특정 데이터의 변화를 감지
+- key: 감시할 대상 data / value: 해당 data가 변할 시 실행할 함수
+- 함수의 첫 번째 인자는 변동 전 data, 두 번째 인자는 변동 후 data
+- watch 내 각 데이터 객체의 key값으로 `handler`, `deep`, `immediate`를 사용할 수 있다.
+  - `handler`: 실행할 함수를 정의할 때 사용한다. (`deep`, `immediate` 사용 안 하는 경우 생략 가능)
+  - `deep`: array나 object 내 데이터의 변화를 감지할 때 사용한다.
+  - `immediate`: data의 변화와 관계없이 처음에 한 번 실행한다.
+- 예시
+  ```html
+  <body>
+    <div id="app">
+      <!-- input에 변화가 있을 때마다 watch 감지 -->
+      <div>
+        <input type="text" v-model="message">
+        <p>{{ message }}</p>
+      </div>
+      <hr>
+
+      <!-- array에 숫자가 push될 때마다 watch 감지 -->
+      <p>{{ myArray }}</p>
+      <button @click="pushNumber">Push</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+      const app = new Vue({
+        el: '#app',
+        data: {
+          message: '',
+          myArray: [],
+        },
+        methods: {
+          pushNumber() {
+            this.myArray.push(1)
+          },
+        },
+        watch: {
+          // handler 생략
+          message: function (val, oldVal) {
+            console.log(val, oldVal)
+          },
+
+          // handler, deep 사용
+          myArray: {
+            handler: function (val, oldVal) {
+              console.log(val, oldVal)
+            },
+            deep: true
+          },
+        }
+      })
+    </script>
+  </body>
+  ```
 
 ### filters
+- 텍스트의 형식화를 적용
+- `|`와 함께 사용
+- interpolation 혹은 v-bind를 이용할 때 사용 가능
+- filter 중첩해서 사용 가능
+- 예시
+  ```html
+  <body>
+    <div id="app">
+      <p>{{ numbers | getOddNums }}</p>
+      <!-- filter 중첩해서도 사용 가능 -->
+      <p>{{ numbers | getOddNums | getUnderTenNums }}</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+      const app = new Vue({
+        el: '#app',
+        data: {
+          numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        },
+        filters: {
+          getOddNums: function (nums) {
+            const oddNums = nums.filter((num) => {
+              return num % 2
+            })
+            return oddNums
+          },
+          
+          getUnderTenNums: function (nums) {
+            const underTen = nums.filter((num) => {
+              return num < 6
+            })
+            return underTen
+          }
+        }
+      })
+    </script>
+  </body>
+  ```
