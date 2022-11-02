@@ -46,7 +46,12 @@
 ## 3. Vue 기본
 
 ### MVVM Pattern
-
+- 사용자 인터페이스의 개발을 Back-End로부터 분리시킨 소프트웨어 아키텍처 패턴의 일종이다.
+- View와 Model 사이의 의존성이 없어 독립성을 유지할 수 있다.
+- Model, View, ViewModel로 구성
+  - Model: 어플리케이션에서 사용되는 데이터를 처리하는 부분(Plain JavaScript Objects)
+  - View: 사용자에게 보여지는 UI 부분(DOM)
+  - View Model: View를 나타내기 위한 모델로, view와 binding 된다.(Vue)
 
 ### Vue instance
 - Vue 인스턴스 생성
