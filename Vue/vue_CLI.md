@@ -149,6 +149,7 @@
   <!-- src/App.vue -->
   <template>
     <div id="app">
+      <!-- 하위 컴포넌트 태그의 요소로 전달할 props 지정 -->
       <MyComponent 
         static-props="정적 데이터"
         :dynamic-props="dynamicData"
@@ -164,8 +165,10 @@
     components: {
       MyComponent,
     },
+    // 데이터는 함수 형태로 사용
     data: function () {
       return {
+        // 전달할 동적 데이터
         dynamicData: "동적 데이터"
       }
     }
@@ -178,6 +181,7 @@
   <!-- src/components/MyComponent.vue -->
   <template>
     <div id="app">
+      <!-- 전달받은 props 나타내기 -->
       <p>{{ staticProps }}</p>
       <p>{{ dynamicProps }}</p>
       <p>{{ numberProps }}</p>
@@ -187,6 +191,7 @@
   <script>
   export default {
     name: 'MyComponent',
+    // 전달받은 props 선언
     props: {
       staticProps: String,
       dynamicProps: String,
@@ -206,82 +211,89 @@
 - 오직 데이터의 업데이트를 부모 컴포넌트에서만 함으로써, 데이터 추적 및 관리를 용이하게 할 수 있다는 장점이 있다.
 - 따라서 자식 컴포넌트에서 부모 컴포넌트로 데이터를 전달할 때는 **이벤트를 발생시킨다.**
   - v-on을 통해 실행하고자 하는 핸들러 함수를 html 요소에 등록한다.
-  - 메소드 내부에서 `$emit('event-name', 'data')` 형태로 부모 컴포넌트에 'event-name'이라는 이벤트가 발생했다는 것을 알리면서 데이터를 함께 전달한다.(데이터 인자는 생략 가능)
+  - 메소드 내부에서 `this.$emit('event-name', 'data')` 형태로 부모 컴포넌트에 'event-name'이라는 이벤트가 발생했다는 것을 알리면서 데이터를 함께 전달한다.(데이터 인자는 생략 가능)
   - 부모 컴포넌트는 template에서 'event-name' 이벤트를 듣고 script에서 지정한 핸들러 함수를 실행한다.(핸들러 함수의 인자는 전달된 데이터이다.)
 - 예시
-```vue
-<!-- src/App.vue -->
-<template>
-  <div id="app">
-    <MyComponent 
-      :dynamic-props="dynamicData"
-      @child-input="getDynamicData"/>
-  </div>
-</template>
+  ```vue
+  <!-- src/App.vue -->
+  <template>
+    <div id="app">
+      <!-- 하위 컴포넌트 태그의 요소로 전달받을 이벤트 리스너 지정 -->
+      <MyComponent 
+        :dynamic-props="dynamicData"
+        @child-input="getDynamicData"/>
+    </div>
+  </template>
 
-<script>
-import MyComponent from '@/components/MyComponent'
+  <script>
+  import MyComponent from '@/components/MyComponent'
 
-export default {
-  name: 'App',
-  components: {
-    MyComponent,
-  },
-  data: function () {
-    return {
-      dynamicData: "동적 데이터"
-    }
-  },
-  methods: {
-    getDynamicData(inputData) {
-      this.dynamicProps = inputData
-    }
-  }
-}
-</script>
-
-<!-- 생략 -->
-```
-```vue
-<!-- src/components/MyComponent.vue -->
-<template>
-  <div id="app">
-    <p>
-      <input
-        type="text"
-        v-model="childInputData"
-        @keyup.enter="childInput"
-      >
-    </p>
-    <p>{{ dynamicProps }}</p>
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'MyComponent',
-  props: {
-    dynamicProps: String,
-  },
-  data: function () {
-    return {
-      childInputData: '',
+  export default {
+    name: 'App',
+    components: {
+      MyComponent,
+    },
+    data: function () {
+      return {
+        dynamicData: "동적 데이터"
+      }
+    },
+    methods: {
+      // 이벤트가 발생하면 실행할 핸들러 함수
+      // 인자로 전달 받은 데이터를 사용할 수 있음
+      getDynamicData(inputData) {
+        this.dynamicProps = inputData
+      }
     }
   }
-  methods: {
-    childInput() {
-      // `child-input` 이벤트는 부모 컴포넌트에서 HTML 요소로 사용되므로 kebab-case로 명시
-      this.$emit('child-input', this.childInputData)
-      this.childInputData = ""
+  </script>
+
+  <!-- 생략 -->
+  ```
+  ```vue
+  <!-- src/components/MyComponent.vue -->
+  <template>
+    <div id="app">
+      <p>
+        <!-- 이벤트 리스터 등록 -->
+        <input
+          type="text"
+          v-model="childInputData"
+          @keyup.enter="childInput"
+        >
+      </p>
+      <p>{{ dynamicProps }}</p>
+    </div>
+  </template>
+
+  <script>
+  export default {
+    name: 'MyComponent',
+    props: {
+      dynamicProps: String,
+    },
+    data: function () {
+      return {
+        childInputData: '',
+      }
+    }
+    methods: {
+      // 이벤트 발생 시 실행할 핸들러 함수
+      childInput() {
+        // $emit을 통해 부모 컴포넌트의 어떤 이벤트 리스너에 전달할지와 어떤 데이터를 전달할지 지정
+        // `child-input` 이벤트는 부모 컴포넌트에서 HTML 요소로 사용되므로 kebab-case로 명시
+        this.$emit('child-input', this.childInputData)
+        // 데이터 전달한 뒤 input 내부 비우기
+        this.childInputData = ""
+      }
     }
   }
-}
-</script>
+  </script>
 
-<style>
+  <style>
 
-</style>
-```
+  </style>
+  ```
 
 ### Component style guide
 - 싱글 파일 컴포넌트 이름
