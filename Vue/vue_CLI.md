@@ -17,7 +17,7 @@
 - 프로젝트 생성
   ```bash
   # vscode terminal에서 실행
-  $ vue create vue-cli
+  $ vue create 프로젝트명
   ```
 - 프로젝트 실행
   ```bash
@@ -63,7 +63,7 @@
 ### Vue component 실습
 - component 생성
   - template 안에는 반드시 하나의 요소만 추가 가능
-  - 비어 있어도 안되며, 하나의 요소 안에 추가 요소를 작성해야 함
+  - 비어 있어도 안되며(template은 렌더링에 포함x), 하나의 요소 안에 추가 요소를 작성해야 함
   - 컴포넌트명(name)은 파일명과 달라도 되지만, 굳이 다르게 설정할 필요는 없음
   ```vue
   <!-- src/components/MyComponent.vue -->
@@ -123,3 +123,193 @@
 ## 3. Pass Props & Emit Events
 
 ### Data in components
+- 한 페이지는 여러 컴포넌트로 구성되어 있다.
+- 만약 여러 컴포넌트가 같은 데이터를 공유한다면, 컴포넌트 간의 데이터가 일치해야 한다.
+- 하지만 컴포넌트는 서로 독립적이므로 서로 데이터를 주고받아야 한다.
+- 따라서 데이터 흐름 파악 및 유지보수를 위해 **부모-자식 관계의 컴포넌트끼리만 데이터를 주고받는다.**
+- 부모 -> 자식으로의 데이터 흐름을 **pass props** 방식이라고 하고, 자식 -> 부모로의 데이터 흐름을 **emit event** 방식이라고 한다.
+- 데이터의 전달은 한 단계씩만 가능하므로 데이터를 부모-자식 간에 순차적으로 전달해야 한다.
+
+### Data function
+- 하나의 vue 인스턴스를 사용할 때는 데이터를 객체 형태로 선언했지만, 컴포넌트를 사용하게 되면 데이터를 함수형으로 선언해야 한다.
+- 각각의 컴포넌트마다 data를 객체로 생성하더라도, 자바스크립트가 작동하면서 서로의 데이터를 침범할 수 있다.
+- 따라서 각 컴포넌트마다 함수 내부에서 객체를 return함으로써, 데이터를 분리하여 관리할 수 있다.
+
+### Pass props
+- 요소의 속성(property)을 사용하여 하위 컴포넌트로 데이터를 전달
+  - `prop-data-name="value"` 형태로 사용(kebab-case, HTML 속성명은 대소문자를 구분하지 않기 때문)
+  - v-bind를 통해 동적인 데이터를 전달할 수 있고, 부모 컴포넌트의 데이터가 업데이트 되면 자식 컴포넌트로 전달되는 데이터 또한 자동으로 업데이트 된다.
+  - 정적인 데이터라도 숫자나 boolean 등은 문자열로 인식되기 때문에, v-bind를 이용해 전달한다.
+- 하위 컴포넌트는 props 옵션을 사용하여 수신하는 props를 선언해야 한다.
+  - 전달받은 props를 type과 함께 명시
+  - `propDataName: type` 형태로 데이터를 받아서 사용(camelCase)
+  - 부모 템플릿(html)에서 kebab-case로 넘긴 변수를 자식 스크립트(vue)에서 자동으로 camelCase로 변환하여 인식한다.
+- 예시
+  ```vue
+  <!-- src/App.vue -->
+  <template>
+    <div id="app">
+      <MyComponent 
+        static-props="정적 데이터"
+        :dynamic-props="dynamicData"
+        :number-props="10"/>
+    </div>
+  </template>
+
+  <script>
+  import MyComponent from '@/components/MyComponent'
+
+  export default {
+    name: 'App',
+    components: {
+      MyComponent,
+    },
+    data: function () {
+      return {
+        dynamicData: "동적 데이터"
+      }
+    }
+  }
+  </script>
+
+  <!-- 생략 -->
+  ```
+  ```vue
+  <!-- src/components/MyComponent.vue -->
+  <template>
+    <div id="app">
+      <p>{{ staticProps }}</p>
+      <p>{{ dynamicProps }}</p>
+      <p>{{ numberProps }}</p>
+    </div>
+  </template>
+
+  <script>
+  export default {
+    name: 'MyComponent',
+    props: {
+      staticProps: String,
+      dynamicProps: String,
+      numberProps: Number,
+    }
+  }
+  </script>
+
+  <style>
+
+  </style>
+  ```
+
+### Emit event
+- 모든 props는 부모에서 자식으로 단방향 바인딩을 형성한다.
+- 즉 부모 컴포넌트가 업데이트되면 자식 컴포넌트의 props는 자동으로 업데이트되지만, 반대 방향은 그렇지 않다.
+- 오직 데이터의 업데이트를 부모 컴포넌트에서만 함으로써, 데이터 추적 및 관리를 용이하게 할 수 있다는 장점이 있다.
+- 따라서 자식 컴포넌트에서 부모 컴포넌트로 데이터를 전달할 때는 **이벤트를 발생시킨다.**
+  - v-on을 통해 실행하고자 하는 핸들러 함수를 html 요소에 등록한다.
+  - 메소드 내부에서 `$emit('event-name', 'data')` 형태로 부모 컴포넌트에 'event-name'이라는 이벤트가 발생했다는 것을 알리면서 데이터를 함께 전달한다.(데이터 인자는 생략 가능)
+  - 부모 컴포넌트는 template에서 'event-name' 이벤트를 듣고 script에서 지정한 핸들러 함수를 실행한다.(핸들러 함수의 인자는 전달된 데이터이다.)
+- 예시
+```vue
+<!-- src/App.vue -->
+<template>
+  <div id="app">
+    <MyComponent 
+      :dynamic-props="dynamicData"
+      @child-input="getDynamicData"/>
+  </div>
+</template>
+
+<script>
+import MyComponent from '@/components/MyComponent'
+
+export default {
+  name: 'App',
+  components: {
+    MyComponent,
+  },
+  data: function () {
+    return {
+      dynamicData: "동적 데이터"
+    }
+  },
+  methods: {
+    getDynamicData(inputData) {
+      this.dynamicProps = inputData
+    }
+  }
+}
+</script>
+
+<!-- 생략 -->
+```
+```vue
+<!-- src/components/MyComponent.vue -->
+<template>
+  <div id="app">
+    <p>
+      <input
+        type="text"
+        v-model="childInputData"
+        @keyup.enter="childInput"
+      >
+    </p>
+    <p>{{ dynamicProps }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'MyComponent',
+  props: {
+    dynamicProps: String,
+  },
+  data: function () {
+    return {
+      childInputData: '',
+    }
+  }
+  methods: {
+    childInput() {
+      // `child-input` 이벤트는 부모 컴포넌트에서 HTML 요소로 사용되므로 kebab-case로 명시
+      this.$emit('child-input', this.childInputData)
+      this.childInputData = ""
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
+```
+
+### Component style guide
+- 싱글 파일 컴포넌트 이름
+  - PascalCase 또는 kebab-case 중 하나로 통일해서 사용한다.
+  - 예시(둘 중 하나로 통일)
+    - components/MyComponent.vue
+    - components/my-component.vue
+
+- 베이스 컴포넌트 이름
+  - 베이스 역할을 하는 컴포넌트는 Base, App 또는 V로 된 접두사를 갖는다.
+  - 예시
+    - components/BaseButton.vue
+    - components/BaseTable.vue
+    - components/BaseIcon.vue
+
+- 싱글 인스턴스 컴포넌트 이름
+  - 루트를 제외하고 어느 컴포넌트의 상위나 하위 컴포넌트가 아닌 싱글 컴포넌트는 The로 시작한다.
+  - 예시
+    - components/TheHeading.vue
+    - components/TheSidebar.vue
+
+- 강한 연관성을 가진 컴포넌트 이름
+  - 부모 컴포넌트와 같은 접두사를 갖는다.
+  - 예시
+    - components/TodoList.vue
+    - components/TodoListItem.vue
+    - components/TodoListItemButton.vue
+
+- pass props / emit event 컨벤션
+  - HTML의 요소로 사용할 이름: kebab-case
+  - 메소드, 변수명으로 사용할 이름: camelCase
