@@ -43,6 +43,7 @@
     ```
   - 세 번째 방법: 
     웹 브라우저의 console에서 바로 입력 (자바스크립트 엔진이 브라우저에 있기 때문에 가능)
+
     ※ 웹 브라우저에서 바로 실행할 수 있는 자바스크립트 문접들을 'Vanila JavaScript'라 한다.
 
 - Node.js로 실행하기
@@ -90,7 +91,7 @@
   - `let`: 블록 스코프 지역 변수를 선언 / 재할당 가능 & 재선언 불가능
   - `const`: 블록 스코프 읽기 전용 상수를 선언 / 재할당 불가능 & 재선언 불가능
     - 꼭 재할당이 필요한 변수가 아니면, `const` 사용하기
-  - `var`: 함수 스코프 변수를 선언 / 재할당 가능 % 재선언 가능
+  - `var`: 함수 스코프 변수를 선언 / 재할당 가능 & 재선언 가능
     - "호이스팅"되는 특성으로 인해 문제 발생 가능 -> **let과 const 사용 권장**
   - 변수를 선언하지 않고 할당하려고 하면, 
   - 선언 예시
@@ -781,7 +782,7 @@ console.log(numbers.join('')) // 321
 
 - `find`
   - `array.find(callback(element[, index[, array]]))`
-  - 콜백 함수의 반환 값이 참이면 해당 요소를 반환
+  - 콜백 함수의 반환 값이 참인 첫 번째 요소를 반환
   - 찾는 값이 배열에 없으면 undefined 반환
   - 예시
     ```js
@@ -964,10 +965,8 @@ console.log(numbers.join('')) // 321
     console.log(objToJson)  // {"coffee":"Americano","iceCream":"Mint Choco"}
     console.log(typeof objToJson)  // string
 
-
     // json -> Object
-    const jsonToObj = JSON.parse(objToJson)  // { coffee: 'Americano', iceCream: 'Mint Choco' }
-    console.log(jsonToObj)
+    const jsonToObj = JSON.parse(objToJson)
+    console.log(jsonToObj) // { coffee: 'Americano', iceCream: 'Mint Choco' }
     console.log(typeof jsonToObj)  // object
-    console.log(jsonToObj.coffee)  // Americano
     ```

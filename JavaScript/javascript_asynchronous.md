@@ -52,8 +52,10 @@
     <img src="https://user-images.githubusercontent.com/109272360/198319031-af423bac-fa42-4dce-8f35-3149b5a21a30.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
     <img src="https://user-images.githubusercontent.com/109272360/198319041-6868164e-f3a4-45bd-ba99-8721d6e55f07.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
     <img src="https://user-images.githubusercontent.com/109272360/198324589-a7166c91-98eb-482c-a8ac-0e06de53eed8.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
-    <img src="https://user-images.githubusercontent.com/109272360/198319054-f36630c6-1e3b-4cf4-90af-6031a43caa0c.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
-    <img src="https://user-images.githubusercontent.com/109272360/198319060-2433ccf9-0321-4e2f-89ba-4599d1e20198.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
+    <img src="https://user-images.githubusercontent.com/109272360/200122230-f1a8dd0e-0518-4df3-a0e7-7fd80ee9755b.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
+    <img src="https://user-images.githubusercontent.com/109272360/200122235-b7a85dc2-2f41-4ea3-a712-7d403438e97f.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
+    <img src="https://user-images.githubusercontent.com/109272360/200122238-90262da4-37fb-4549-ab4f-21444aa130b2.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
+    <img src="https://user-images.githubusercontent.com/109272360/200122240-c3784e9c-ec62-451a-a95b-faeded91571c.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
 
 ## 2. Axios
 
@@ -88,34 +90,70 @@
   })
     .then(성공하면 수행할 콜백함수)
     .catch(실패하면 수행할 콜백함수)
+
+// 다음과 같은 방식으로도 사용 가능하지만, 위 방식이 권장 사항이다.
+// axios.요청방식('요청할 url')
+//  .then()
+//  .catch()
 </script>
 ```
 - `then(콜백함수)`
   - 요청한 작업이 성공하면 콜백함수 실행
   - 각 콜백함수는 이전 작업의 성공 결과를 promise 객체로 전달 받음
-  - 예시
-    ```html
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-      axios({
-        method: 'get',
-        url: '#',
-      })
-        .then((response) => {
-          return result1
-        })
-        .then((result1) => {
-          return result2
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    </script>
-    ```
 
 - `catch(콜백함수)`
   - `then()`이 하나라도 실패하면 콜백함수 실행
   - 각 콜백함수는 이전 작업의 실패 객체를 promise 객체로 전달 받음
+
+- 예시1: 기본 양식
+  ```html
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    axios({
+      method: 'get',
+      url: '#',
+    })
+      .then((response) => {
+        return result1
+      })
+      .then((result1) => {
+        return result2
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  </script>
+  ```
+
+- 예시2: 고양이 사진 불러오기
+  ```html
+  <body>
+    <button>Get Cat Image</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const catImageSearchURL = 'https://api.thecatapi.com/v1/images/search'
+    const btn = document.querySelector('button')
+
+    btn.addEventListener('click', function () {
+      axios({
+        method: 'get',
+        url: catImageSearchURL,
+      })
+        .then((response) => {
+          imgElem = document.createElement('img')
+          return response
+        })
+        .then((response) => {
+          imgElem.setAttribute('src', response.data[0].url)
+          document.body.appendChild(imgElem)
+        })
+        .catch((error) => { 
+          console.log(error)
+        })
+    })
+  </script>
+  ```
 
 ## 3. Ajax
 
@@ -132,14 +170,15 @@
   - `data-name1-name2-... = data` 형식으로 HTML 요소의 속성명과 데이터를 지정
   - 자바스크립트에서 `element.dataset.name1Name2...` 형식으로 접근 가능
   - 속성명 작성 시 주의사항
-    - 대소문자 여부에 관계없이 XML로 시작 x
+    - 대소문자 여부에 관계없이 'xml'로 시작 x
     - 세미콜론 및 대문자 포함 x
   - 예시
     ```html
-    <div data-my-data="my-data"></div>
+    <div data-my-data="value"></div>
     <script>
       const divTag = document.querySelector('div')
       const myId = divTag.dataset.myData
+      console.log(myId) // value
     </script>
     ```
 
