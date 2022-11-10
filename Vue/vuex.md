@@ -48,14 +48,14 @@ export default new Vuex.Store({
 - Mutations
   - state를 변경하는 유일한 방법
   - mutations에서 선언한 핸들러 함수는 **반드시 동기적**이어야 한다. (mutations, actions에서 호출되는 함수를 핸들러 함수라고 함)
-  - 선언한 핸들러 함수는 첫 번째 인자로 state, 두 번째 인자로 데이터를 받는다. 
+  - 선언한 핸들러 함수는 첫 번째 인자로 state, 두 번째 인자로 데이터를 받는다.(데이터는 생략 가능) 
   - Mutations의 핸들러 함수명은 actions의 핸들러 함수와 구별하기 위해 보통 UPPER_SNAKE_CASE를 사용한다.
   - component 혹은 Actions에서 `commit(핸들러 함수명, 데이터)` 형식으로 호출할 수 있다.
 
 - Actions
   - component에서 데이터를 받아 다양한 로직을 수행하며, **비동기 작업을 포함**할 수 있다.(외부 API와의 소통 등)
   - state를 직접 변경하지 않고 mutations를 호출해서 state를 변경한다.
-  - 선언한 핸들러 함수는 첫 번째 인자로 context, 두 번째 인자로 데이터를 받는다.
+  - 선언한 핸들러 함수는 첫 번째 인자로 context, 두 번째 인자로 데이터를 받는다.(데이터는 생략 가능)
     - context: store.js의 모든 요소와 메소드에 접근할 수 있다. 즉, state를 직접 변경할 수 있지만 하지 않는다.
   - component에서 `dispatch(핸들러 함수명, 데이터)` 형식으로 호출할 수 있다.
 
@@ -70,6 +70,63 @@ export default new Vuex.Store({
      component -> (actions) -> mutations -> state
   - component에서 데이터를 사용할 때
      state -> (getters) -> component
+
+- 예시
+```vue
+<!-- src/app.vue -->
+
+<template>
+  <div>
+    {{ count }}
+    <button @click="increment">+</button>
+  </div>
+</template>
+
+<script>
+
+export default {
+  name: 'IndexView',
+  computed: {
+    count() {
+      return this.$store.state.count
+    }
+  },
+  methods: {
+    increment() {
+      this.$store.dispatch('increment')
+    }
+  }
+}
+</script>
+```
+
+```js
+// src/store/index.js
+
+const store = createStore({
+  state: {
+    count: 0
+  },
+  mutations: {
+    INCREMENT (state) {
+      state.count++
+    }
+  },
+  actions: {
+    increment (context) {
+      context.commit('increment')
+    }
+  }
+})
+
+// 자바스크립트 비구조화를 사용하면 인자를 간편하게 사용할 수 있다.
+// 예시
+//  actions: {
+//     increment ({ commit }) {
+//       commit('increment')
+//     }
+//  }
+```
 
 ## 2. Todo 실습
 
