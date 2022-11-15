@@ -30,6 +30,11 @@
     - Webpack: 모듈 간의 의존성 문제를 해결하기 위한 도구이다.
   - package.json: 프로젝트의 종속성 목록과 지원되는 브라우저에 대한 구성 옵션을 포함
   - package-lock.json: node_modules에 설치되는 모듈과 관련된 모든 의존성을 설정 및 관리(사용할 패키지의 버전을 고정해, 개발 과정 간의 의존성 패키지 충돌을 방지한다.)
+    ```bash
+    # git push할 때 node_modules는 git ignore
+    # 다시 pull 받은 후 package를 이용해 재설치 해야함
+    $ npm install
+    ```
   - publick/index.html: Vue 앱의 뼈대가 되는 html 파일
   - src/
     - assets: 정적 파일을 저장하는 디렉토리
