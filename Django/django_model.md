@@ -109,9 +109,22 @@
 
 ### CRUD
 - 데이터 처리 기능 4가지: Create / Read / Update / Delete
-- 기능 확인을 위해 ipython, django-extensions 라이브러리 설치
+- 기능 확인을 위해 `ipython`, `django-extensions` 라이브러리 설치
   - `settings.py` 내 `INSTALLED-APPS` 안에 `'django_extensions'` 추가
   - Shell을 이용해 장고 프로젝트 환경에 영향을 주지 않는 선에서 다양한 명령어 실행 가능
+  ```bash
+  # django_extensions 라이브러리 설치
+  $ pip install django-extensions
+  ```
+  ```python
+  # settings.py
+
+  INSTALLED_APPS = [
+    'articles',
+    'django_extensions',
+    # 생략
+  ]
+  ```
   ```bash
   $ python manage.py shell_plus
   ```
