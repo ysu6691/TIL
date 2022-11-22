@@ -87,7 +87,7 @@
 - data
   - Vue 인스턴스의 데이터 객체 혹은 인스턴스 속성
   - 데이터 객체는 반드시 기본 객체({ }, object)여야 함
-  - 정의된 속성은 **interpolation '{{ }}'**을 통해 view에 렌더링 가능
+  - 정의된 속성은 **interpolation {{ }}**을 통해 view에 렌더링 가능
   - 객체의 각 속성들은 `this.속성명` 형태로 접근 가능
 
 - methods
