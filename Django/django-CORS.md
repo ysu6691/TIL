@@ -11,4 +11,4 @@ docoment.location.origin
 ```
 
 ### Cross-Origin Resource Sharing
-- a
+- aA
