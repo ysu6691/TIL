@@ -154,7 +154,7 @@ React 공식문서는 object나 array와 같이 참조 타입의 데이터 타�
 
 array의 경우 권장하는 메소드를 다음과 같이 명시하고 있다.
 
-<img src="https://user-images.githubusercontent.com/109272360/204806494-a138d095-ab8a-4877-bbcd-70c257114a31.PNG" width="700px">
+<img src="https://user-images.githubusercontent.com/109272360/204806494-a138d095-ab8a-4877-bbcd-70c257114a31.PNG" width="830px">
 
 따라서 `topics` 또한 array이므로, 다음과 같이 변경해서 사용해야 한다.
 
