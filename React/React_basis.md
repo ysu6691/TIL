@@ -373,24 +373,24 @@ npx serve -s build
     <img src="https://user-images.githubusercontent.com/109272360/204749817-f05fb40d-41c7-4406-87d2-4f60bd9ca88f.png" width="550px">
 
     해결방법은 두 가지가 있다.
-    
-      ```js
-      // 첫 번째 방법
-      function Nav(props) {
-            // 생략
-            event.preventDefault()
-            // 숫자형으로 바꿔주기
-            props.sampleEvent(Number(event.target.id))
-            // 생략
-      }
-      ```
 
-      ```js
-      // 두 번째 방법
-      function Nav(props) {
+    ```js
+    // 첫 번째 방법
+    function Nav(props) {
           // 생략
           event.preventDefault()
-          props.sampleEvent(t.id) // id값을 바로 이용
+          // 숫자형으로 바꿔주기
+          props.sampleEvent(Number(event.target.id))
           // 생략
-      }
-      ```
+    }
+    ```
+
+    ```js
+    // 두 번째 방법
+    function Nav(props) {
+        // 생략
+        event.preventDefault()
+        props.sampleEvent(t.id) // id값을 바로 이용
+        // 생략
+    }
+    ```
