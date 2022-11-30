@@ -285,7 +285,7 @@ npx serve -s build
 
   => 아직 mode를 state로 인식하지 못 하기 때문
   
-  => 따라서 mode를 state로 설정하고, mode가 변경되는 것을 인식하도록 설정
+  => 따라서 mode를 state로 설정하고, mode가 변경되는 것을 인식하도록 설정 -> App 함수가 재실행됨
 
   ```js
   import {useState} from 'react'
@@ -315,6 +315,7 @@ npx serve -s build
     return (
       <div>
         // 각 컴포넌트를 클릭하면 모드가 바뀌도록 설정
+        // setMode 함수를 실행해야 App 함수가 재실행됨
         <Header title="WEB" sampleEvent={() => {setMode('WELCOME')}}></Header>
         <Nav topics={topics} sampleEvent={(id) => {setMode('READ')}}></Nav>
         {content}
