@@ -287,6 +287,8 @@ npx serve -s build
   
   => 따라서 mode를 state로 설정하고, mode가 변경되는 것을 인식하도록 설정 -> App 함수가 재실행됨
 
+  => `useState(초기값)` 함수를 사용해 state를 지정할 수 있다.
+
   ```js
   import {useState} from 'react'
 
@@ -298,6 +300,7 @@ npx serve -s build
     // const mode = _mode[0]
     // const setMode = _mode[1]
     // 축약형으로 주로 다음과 같이 사용
+    // 주로 [state명, setState명] 형태로 사용한다.
     const [mode, setMode] = useState('WELCOME')
 
     const topics = [
@@ -395,3 +398,16 @@ npx serve -s build
         // 생략
     }
     ```
+
+> **state 더 알아보기** <br>
+> state는 사용자의 input이나 컴퓨터의 input에 따라 변화한다. <br>
+> 위의 예시를 보면, 사용자가 Nav의 topic을 클릭할 때 `mode` 가 'READ'로 바뀌는 것을 확인할 수 있다. <br>
+> 또, 컴퓨터는 해당 topic을 불러올 때 `mode`를 'LODING' 등으로 바꿀 수도 있을 것이다. <br>
+> 이러한 state에 따른 분기는 명령형이 아닌 **선언형 UI**로서 동작할 수 있게 하고, 다른 컴포넌트들과 상호작용할 때 강력한 효과를 얻을 수 있다. <br>
+> **그렇다면 state는 어떻게 관리되는가?** <br>
+> state는 컴포넌트 내에서 정의하고 변경되지만, 사실 React의 UI tree 구조 내에서 관리된다. <br>
+> 즉, 같은 컴포넌트를 여러 개 사용해도 각 컴포넌트 내의 state나 렌더링에는 서로 영향을 주지 않는다. <br>
+> 또한 위에서 사용자에게 받은 input을 통해 `topics`의 원소 개수를 늘리면, 재렌더링될 때 `topics`를 재정의하지만 늘어난 `topics`는 저장된다. <br>
+> 이러한 결과는 변화된 state를 React 내부에서 관리하기 때문이다. <br>
+> 그리고 어떠한 UI tree의 컴포넌트 요소가 사라졌다가 재렌더링되면, subtree의 모든 state는 초기화된다. <br>
+> 자세한 사항은 [공식문서](https://beta.reactjs.org/learn/preserving-and-resetting-state)에서 참고할 수 있다. <br>
