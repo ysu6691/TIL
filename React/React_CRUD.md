@@ -196,6 +196,96 @@ function App() {
 
 object나 array의 변경을 위해서는 새로운 변수를 이용해야 한다는 것을 쉽게 인지하기 위해, 전 예시에서는 일부러 let을 이용해 `nextId`를 변경했다.
 
+또한 다음과 같이 사용해서 변경할 수도 있다.
+
+  ```js
+  const newTopic = {id: nextId, title: title, body: body}
+  setTopics( (prevState) => {
+    return [...prevState, newTopic]
+  })
+  // console.log(topics)
+  // 이 경우는 newTopic이 추가되기 전의 스냅샷을 갖고 있기 때문에
+  // topics를 출력해보면 추가되기 이전의 배열을 반환한다.
+  ```
+
+> 참고1] **양방향 바인딩 설정하기**
+> 
+> 우리는 form이 제출되면 title과 body를 다시 빈 칸으로 되돌려놓고 싶다.
+>
+> ```js
+> function Create(props) {
+>   const [title, setTitle] = useState('')
+>   const [body, setBody] = useState('')
+>   // title과 body의 변화를 실시간으로 인식해 state 변화시키기
+>   function titleChange (event) {
+>     setTitle(event.target.value)
+>   }
+>   function bodyChange (event) {
+>     setBody(event.target.value)
+>   }
+> 
+>   return (
+>     <article>
+>       <h2>Create</h2>
+>       <form onSubmit={(event) => {
+>         event.preventDefault()
+>         props.onCreate(title, body)
+>         // form이 제출되면 빈칸으로 변경
+>         setTitle('')
+>         setBody('')
+>       }}>
+>         // 사용자로부터 입력을 받을 때마다 함수 실행
+>         // value에 state를 지정함으로써, 양방향 바인딩
+>         <p><input type="text" value={title} onChange={titleChange} name="title" placeholder='title' /></p>
+>         <p><textarea name="body" value={body} onChange={bodyChange} placeholder='body'></textarea></p>
+>         <p><input type="submit" value="Create" /></p>
+>       </form>
+>     </article>
+>   )
+> }
+
+> 참고2] **ref 사용하기**
+> 
+> 위 방식대로 양방향 바인딩을 설정하면 사용자의 실시간 입력을 반영할 수도 있고, 다시 빈 칸으로 돌려놓는 것도 가능하다.
+>
+> 하지만 만약 실시간 반영은 필요없고 단지 최종 입력을 받는 것, 그리고 빈 칸으로 되돌리는 것만 구현하기에는 state를 사용하는 것이 불필요할 수 있다.
+>
+> state를 값의 변경 대신 단지 기록용으로 사용하기에는 불필요한 코드와 작업이 늘어나게 된다.
+>
+> 따라서 이러한 경우에 `ref`를 사용할 수 있다.
+>
+> ```js
+> import { useRef } from 'react'
+> 
+> function App () {
+>   const titleInputRef = useRef()
+>   const bodyInputRef = useRef()
+>
+>   return (
+>     <article>
+>       <h2>Create</h2>
+>       <form onSubmit={(event) => {
+>         event.preventDefault()
+>         // console.log(titleInputRef) // 실제 DOM 노드와 연결된다.
+>         // 사용자가 최종으로 입력한 input을 얻을 수 있다.
+>         props.onCreate(titleInputRef.current.value, bodyInputRef.current.value)
+>         // form이 제출되면 빈칸으로 변경
+>         // DOM을 조작하기 위해 Ref를 쓰는 것은 드물지만 편의상 사용 가능하다. 
+>         titleInputRef.current.value = ''
+>         bodyInputRef.current.value = ''
+>       }}>
+>         // value와 onChange를 이용한 양방향 바인딩없이도 최종 상태를 알 수 있고 변경도 가능하다.
+>         // ref 속성을 이용해 ref와 연결
+>         <p><input type="text" ref={titleInputRef} name="title" placeholder='title' /></p>
+>         <p><textarea name="body" ref={bodyInputRef} placeholder='body'></textarea></p>
+>         <p><input type="submit" value="Create" /></p>
+>       </form>
+>     </article>
+>   )
+> }
+
+
+
 ## 3. UPDATE
 
 각 topic을 클릭하면 해당 topic을 update 할 수 있는 버튼이 생성되고, 해당 글을 수정할 수 있다.
