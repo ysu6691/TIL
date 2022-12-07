@@ -17,4 +17,5 @@
 |Ctrl + G|행(라인 번호)으로 이동|
 |Shift + Tab|다중 내어쓰기|
 |Alt + Shift + ↑,↓|행 복사|
+|Alt + Shift + F|코드 정리|
 
