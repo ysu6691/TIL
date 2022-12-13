@@ -832,7 +832,7 @@ export default Card;
 
 2. 컴포넌트에서 해당 css 파일을 import 한다.
   ```js
-  import styles from './파일명.module.css'
+  import classes from './파일명.module.css'
   ```
 
 3. 중괄호로 묶은 뒤 객체로서 사용한다.
@@ -840,15 +840,15 @@ export default Card;
   function App() {
     return (
       <div>
-        <div className={styles.greeting}>
+        <div className={classes.greeting}>
           Hello
         </div>
         // '-'이 포함된 클래스는 대괄호로 묶는다.
-        <div className={styles.['second-greeting']}> 
+        <div className={classes.['second-greeting']}> 
           Hi
         </div>
         // 여러 개 사용
-        <div className={`${styles.greeting} ${styles.['second-greeting']}`}>
+        <div className={`${classes.greeting} ${classes.['second-greeting']}`}>
           Nice to meet you
         </div>
       </div>
