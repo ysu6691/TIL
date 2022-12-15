@@ -64,7 +64,7 @@
     >
     > 즉 stateless는 스케일 아웃에는 유리하지만, 클라이언트의 요청에 상대적으로 더 많은 데이터가 소모된다는 단점이 있다.
 
-- Authentication Token(JWT: Json Web Token)
+- **Authentication Token(JWT: Json Web Token)**
     
     사용자 자격 정보로 데이터베이스의 정보과 비교해 유효성 검사를 하는 것은 세션 기반 방식과 동일하다.
 
@@ -74,6 +74,6 @@
 
     단지 후속 요청에 해당 토큰을 담기만 하면, 서버는 자신의 key를 이용해 직접 생성한 토큰인지 확인할 수 있다.
 
-    <img src="https://user-images.githubusercontent.com/109272360/207913581-344dacbb-6ca2-4a77-8837-3936a7207869.png" width="650px">
+    <img src="https://user-images.githubusercontent.com/109272360/207913581-344dacbb-6ca2-4a77-8837-3936a7207869.png" width="750px">
   
 
