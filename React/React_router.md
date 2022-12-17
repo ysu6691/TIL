@@ -91,22 +91,22 @@ $ npm install react-router-dom
 import { NavLink } from 'react-router-dom'
 
 const MainHeader = () => {
-	return (
-		<nav>
-			<ul>
-				<li>
-					{/* to 뒤에 경로를 지정한다. */}
-					{/* active 상태를 인지해 style과 class를 지정할 수 있다. */}
-					<NavLink 
-						to='/welcome' 
-						style={({ isActive }) => ({ color: isActive ? 'black' : 'red' })}
-						className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
-						Welcome
-					</NavLink>
-				</li>
-			</ul>
-		</nav>
-	)
+  return (
+    <nav>
+      <ul>
+        <li>
+          {/* to 뒤에 경로를 지정한다. */}
+          {/* active 상태를 인지해 style과 class를 지정할 수 있다. */}
+          <NavLink 
+            to='/welcome' 
+            style={({ isActive }) => ({ color: isActive ? 'black' : 'red' })}
+            className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
+            Welcome
+          </NavLink>
+        </li>
+      </ul>
+    </nav>
+  )
 }
 
 export default MainHeader
