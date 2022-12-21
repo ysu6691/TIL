@@ -74,6 +74,6 @@
 
     단지 후속 요청에 해당 토큰을 담기만 하면, 서버는 자신의 key를 이용해 직접 생성한 토큰인지 확인할 수 있다.
 
-    <img src="https://user-images.githubusercontent.com/109272360/207913581-344dacbb-6ca2-4a77-8837-3936a7207869.png" width="750px">
+    <img src="https://user-images.githubusercontent.com/109272360/207913581-344dacbb-6ca2-4a77-8837-3936a7207869.png" width="900px">
   
 
