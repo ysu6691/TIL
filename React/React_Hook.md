@@ -136,3 +136,496 @@ useEffect Hook은 두 개의 인자를 갖는다.
     }, [enteredUsername, enteredPassword])
   }
   ```
+
+## 3. useMemo
+
+### useMemo
+
+`useMemo( function, [ dependencies ] )`
+
+useMemo는 **Memoization** 기법, 즉 기존에 수행한 연산의 결괏값을 저장해 두고 값이 변하지 않으면 그 결괏값을 재사용하는 Hook이다.
+
+컴포넌트가 재렌더링될 때 결괏값이 변하지 않았을 경우 캐싱된 값을 사욯하기 때문에 컴포넌트의 성능을 최적화시킬 수 있다.
+
+첫 번째 인자로는 콜백 함수를 받고 **함수의 return 값**을 결괏값으로 저장한다.
+
+두 번째 인자로는 의존성 배열을 받고, 배열의 요소가 업데이트 될 때만 함수를 재실행한다.
+
+### useMemo 예시
+
+**많은 작업을 거치는 함수를 갖는 컴포넌트인 경우**
+
+```js
+import { useState } from 'react'
+
+function App() {
+  const [number1, setNumber1] = useState(0)
+  const [number2, setNumber2] = useState(0)
+
+  const heavyFunction = (input) => {
+    console.log('많은 작업 진행중...')
+    return number2 ** 2
+  }
+  const squareOfNumber2 = heavyFunction(number2)
+
+  return (
+    <div>
+      <div>number1: {number1}</div>
+      <button onClick={() => {setNumber1(number1+1)}}>+</button>
+      <div>number2: {number2}</div>
+      <div>number2의 제곱: {squareOfNumber2}</div>
+      <button onClick={() => {setNumber2(number2+1)}}>+</button>
+    </div>
+  )
+}
+
+export default App;
+```
+
+위 예시는 `number1`이 변화하면 컴포넌트가 재실행되면서 `squareOfNumber2`를 계산하기 위해 `heavyFunction` 또한 재실행된다.
+
+`squareOfNumber2`는 `number2`가 변화할 때만 계산해주면 되는 값이므로, `number1`이 변화할 때마다 불필요하게 함수가 재실행되는 문제가 발생한다.
+
+따라서 이러한 경우 `useMemo`를 사용하면 컴포넌트의 성능을 향상시킬 수 있다.
+
+```js
+import { useMemo, useState } from 'react'
+
+function App() {
+  const [number1, setNumber1] = useState(0)
+  const [number2, setNumber2] = useState(0)
+
+  // number2가 변화할 때만 결괏값을 재계산한다.
+  const squareOfNumber2 = useMemo(() => {
+    console.log('많은 작업 진행중...')
+    return number2 ** 2
+  }, [number2])
+
+  // 아래는 동일
+  return (
+    <div>
+      <div>number1: {number1}</div>
+      <button onClick={() => {setNumber1(number1+1)}}>+</button>
+      <div>number2: {number2}</div>
+      <div>number2의 제곱: {squareOfNumber2}</div>
+      <button onClick={() => {setNumber2(number2+1)}}>+</button>
+    </div>
+  )
+}
+
+export default App;
+```
+
+**참조형 자료형(객체, 배열 등)을 변수로 선언해서 사용하는 경우**
+
+```js
+import { useEffect, useState } from 'react'
+
+function App() {
+  const [number, setNumber] = useState(0)
+
+  const myObj = {'key': 'value'}
+
+  useEffect(() => {
+    console.log('useEffect 실행')
+  }, [myObj])
+
+  return (
+    <div>
+      <button onClick={() => {setNumber(number+1)}}>+</button>
+    </div>
+  )
+}
+
+export default App;
+```
+
+위 예시에서 `useEffect`는 `myObj`의 변화에만 실행되어야 한다.
+
+하지만 위 로직에서 `myObj`는 변화하지 않아도 `number`가 변화할 때마다 `useEffect`가 실행되는 것을 확인할 수 있다.
+
+이는 참조형 자료형의 경우 재렌더링될 때마다 메모리 상의 새로운 주소를 참조하기 때문에 값이 변경된 것으로 인식되기 때문이다.
+
+따라서 이러한 경우에도 `useMemo`를 사용해 불필요한 함수의 재실행을 막을 수 있다.
+
+```js
+import { useEffect, useMemo, useState } from 'react'
+
+function App() {
+  const [number, setNumber] = useState(0)
+
+  // 빈 배열을 의존성 배열로 사용함으로써 초기 한 번만 실행되도록 한다.
+  // 컴포넌트가 재실행되어도 myObj는 초기값 그대로 변하지 않는다.
+  const myObj = useMemo(() => {
+    return {'key': 'value'}
+  }, [])
+
+  useEffect(() => {
+    console.log('useEffect 실행')
+  }, [myObj])
+
+  return (
+    <div>
+      {number}
+      <button onClick={() => {setNumber(number+1)}}>+</button>
+    </div>
+  )
+}
+
+export default App;
+```
+
+## 4. useRef
+
+### useRef
+
+`useRef(initialValue)`
+
+`useRef`는 특정 DOM을 선택할 수 있는 Hook이다.
+
+사용자의 input 값이나 focus를 구현하는 등의 상황에서 유용하게 사용된다.
+
+### useRef 예시
+
+**사용자의 입력이 끝나면 빈 칸으로 되돌리기**
+
+사용자에게 입력을 받은 뒤 input 내부를 비워놓고자 하는 상황이 자주 발생한다.
+
+이러한 경우 state를 이용한 양방향 바인딩으로 구현할 수 있다.
+
+```js
+import { useState } from 'react'
+
+function App() {
+
+  const [inputData, setInputData] = useState("")
+
+  const printData = (event) => {
+    event.preventDefault()
+    console.log(inputData)
+    setInputData("")
+  }
+
+  return (
+    <form onSubmit={printData}>
+      <input 
+        type="text"
+        value={inputData} 
+        onChange={(event) => {setInputData(event.target.value)}} />
+    </form>
+  )
+}
+
+export default App;
+```
+ 
+위 방식대로 양방향 바인딩을 설정하면 사용자의 실시간 입력을 반영할 수도 있고, 다시 빈 칸으로 돌려놓는 것도 가능하다.
+
+하지만 만약 실시간 반영은 필요없고 단지 최종 입력을 받는 것, 그리고 빈 칸으로 되돌리는 것만 구현하기에는 state를 사용하는 것이 불필요할 수 있다.
+
+state를 값의 변경 대신 단지 기록용으로 사용하기에는 불필요한 코드와 작업이 늘어나게 된다.
+
+따라서 이러한 경우 `useRef`를 이용해 간편하게 구현이 가능하다.
+
+```js
+import { useRef } from 'react'
+
+function App() {
+
+  const inputRef = useRef()
+
+  const printInput = (event) => {
+    event.preventDefault()
+    // ref.current를 이용해 DOM에 접근가능하다.
+    console.log(inputRef.current.value)
+    // 빈칸으로 되돌리기
+    inputRef.current.value = ""
+    // 추가 기능: 전송 버튼을 클릭해도 input에 focus 유지
+    inputRef.current.focus()
+  }
+
+  return (
+    <form onSubmit={printInput}>
+      <input type="text" ref={inputRef} />
+    </form>
+  )
+}
+
+export default App;
+```
+
+### forwardRef
+
+`useRef`는 설정한 ref를 컴포넌트로 전달하는 것은 불가능하다.
+
+하지만 `forwardRef`를 이용하면 ref를 컴포넌트로 전달해서 사용할 수 있다.
+
+**forwardRef를 사용해 컴포넌트 밖을 클릭했는지 확인하기**
+
+```js
+import { useRef, useState } from 'react'
+import Modal from './components/Modal'
+
+function App() {
+
+  const [modalMode, setModalMode] = useState('close')
+  const modalRef = useRef()
+
+  // 컴포넌트 밖을 클릭했는지 확인
+  const checkClickModalOutside = (event) => {
+    if (modalMode === 'open') {
+      // 컴포넌트가 return하는 최상위 div 태그를 ref로 설정해,
+      // 클릭한 태그가 컴포넌트 내에 속하는지 확인
+      if (!modalRef.current.contains(event.target)) {
+        setModalMode('close')
+      }
+    }
+  }
+
+  return (
+    <div onClick={checkClickModalOutside}>
+      <button onClick={() => {setModalMode('open')}}>Open Modal</button>
+      {/* 모드가 open일 때만 컴포넌트를 렌더링한다. */}
+      {/* ref를 전달한다. */}
+      {modalMode === 'open' && <Modal ref={modalRef} />}
+    </div>
+  )
+}
+
+export default App;
+```
+
+```js
+import {forwardRef} from 'react'
+
+// forwardRef 사용
+// 반드시 props와 ref를 인자로 받아야 함
+const Modal = forwardRef((props, ref) => {
+
+  const style = {
+    border: "1px solid black",
+    width: "100px",
+    height: "100px"
+  }
+
+  return (
+    {/* 컴포넌트 자체를 ref로 설정 */}
+    <div ref={ref} style={style}>
+      Modal
+    </div>
+  )
+})
+
+export default Modal
+```
+
+## 5. useContext
+
+### useContext 사용해보기
+
+`useContext`는 컴포넌트 간에 props로 전달되던 state를 중앙 저장소에서 한 번에 관리할 수 있게 해주는 Hook이다.
+
+- 중앙 저장소 생성
+  ```js
+  // src/store/activate-context.js
+
+  import { createContext } from "react";
+
+  const ActivateContext = createContext({
+    isActivated: false
+  })
+
+  export default ActivateContext
+  ```
+
+- Provide
+  ```js
+  // src/App.js
+
+  import ActivateContext from './store/activate-context'
+  import MyComponent from './components/MyComponent'
+  import { useState } from 'react'
+
+  function App() {
+
+    const [isActivated, setIsActivated] = useState(false)
+
+    // Provider로 컴포넌트를 감싸 store 내 데이터 공급
+    // value 내부에 어떤 데이터를 전달할지 반드시 적어야함
+    return (
+      <ActivateContext.Provider
+        // 축약형으로 다음과 같이 작성 가능
+        // value={{ isActivated }}
+        // 따라서 Context에서 선언한 key값과 동일한 변수명을 사용하는 것이 좋음
+        value={{
+          isActivated: isActivated,
+        }}>
+        <button onClick={() => {setIsActivated(!isActivated)}}>Click!</button>
+        <MyComponent />
+      </ActivateContext.Provider>
+    )
+  }
+
+  export default App;
+  ```
+
+- Context 얻기
+  ```js
+  // src/components/MyComponent.js
+
+  import { useContext } from "react"
+  import ActivateContext from '../store/activate-context'
+
+  const MyComponent = () => {
+    // Context 얻기
+    // context는 DOM 트리에서 가장 가까이에 있는 Provider의 value prop에 의해 결정된다.
+    const context = useContext(ActivateContext)
+
+    return (
+      <div>
+        {context.isActivated && <p>활성화되었습니다.</p>}
+        {!context.isActivated && <p>비활성화되었습니다.</p>}
+      </div>
+    )
+  }
+
+  export default MyComponent
+  ```
+
+- 함수도 전달이 가능하다.
+  ```js
+  // src/App.js
+
+  import ActivateContext from './store/activate-context'
+  import MyComponent from './components/MyComponent'
+  import { useState } from 'react'
+
+  function App() {
+
+    const [isActivated, setIsActivated] = useState(false)
+    // active toggle 함수
+    const activateHandler = () => {
+      setIsActivated(!isActivated)
+    }
+
+    // 버튼을 컴포넌트 내부로 이동
+    return (
+      <ActivateContext.Provider
+        value={{ isActivated, activateHandler }}>
+        <MyComponent />
+      </ActivateContext.Provider>
+    )
+  }
+
+  export default App;
+  ```
+
+  ```js
+  // src/components/MyComponents.js
+
+  import { useContext } from "react"
+  import ActivateContext from '../store/activate-context'
+
+  const MyComponent = () => {
+    const context = useContext(ActivateContext)
+
+    return (
+      <div>
+        {context.isActivated && <p>활성화되었습니다.</p>}
+        {!context.isActivated && <p>비활성화되었습니다.</p>}
+        {/* 버튼 클릭할 때마다 context 내 함수 실행 */}
+        <button onClick={context.activateHandler}>Click!</button>
+      </div>
+    )
+  }
+
+  export default MyComponent
+  ```
+
+### context 내부에서 로직 관리하기
+
+지금까지 해온 방식은 context와 관련된 데이터도 App 컴포넌트 내에서 state와 함수를 이용해 관리했다.
+
+하지만 context와 관련된 데이터 및 함수를 context 파일 내부에서 관리한다면 더 명확한 코드의 분리가 가능해진다.
+
+```js
+// src/store/activate-context.js
+
+import { createContext, useState } from "react";
+
+const ActivateContext = createContext({
+  isActivated: false,
+  // Tip
+  // context 내에 함수를 정의할 필요는 없지만,
+  // 더미 함수를 만듦으로써 컴포넌트에서 IDE 자동완성 기능을 편리하게 사용할 수 있다.
+  setIsActivated: () => {}
+})
+
+// Provider 컴포넌트 생성
+export const ActivateContextProvider = (props) => {
+
+  // App에서 관리했던 state와 함수를 옮기기
+  const [isActivated, setIsActivated] = useState(false)
+  const activateHandler = () => {
+    setIsActivated(!isActivated)
+  }
+
+  // 합성 이용
+  return (
+    <ActivateContext.Provider
+      value={{ isActivated, activateHandler }}
+    >
+      {props.children}  
+    </ActivateContext.Provider>
+    
+  )
+}
+
+export default ActivateContext
+```
+
+```js
+// src/index.js
+
+// 생략
+import { ActivateContextProvider } from './store/activate-context';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  // App 전체를 Provider로 감싸기
+  <ActivateContextProvider>
+    <App />
+  </ActivateContextProvider>
+);
+
+reportWebVitals();
+```
+
+```js
+// src/App.js
+
+import MyComponent from './components/MyComponent'
+
+// App 컴포넌트는 훨씬 간결해졌다.
+function App() {
+
+  return (
+    <div>
+      {/* 컴포넌트는 전과 동일하게 사용 가능 */}
+      <MyComponent />
+    </div>
+  )
+}
+
+export default App;
+```
+
+### Context의 한계
+
+context는 props를 이용한 연결 없이도 중앙 저장소에서 데이터를 관리할 수 있었다.
+
+하지만 context에서 관리하는 데이터가 바뀔 경우 App 내 전체 컴포넌트가 재렌더링되므로, 자주 바뀌는 데이터를 context에서 관리하는 것은 성능 측면에서 좋지 않다.
+
+그렇기 때문에 context는 prop을 완전히 대체해서 사용할 수 없다고 할 수 있다.
+
+따라서 자주 바뀌면서 긴 prop 체인으로 연결해야 하는 데이터가 있다면 고민에 빠지게 되는데, 이러한 경우에 **Redux**를 사용하는 것이 좋다.
