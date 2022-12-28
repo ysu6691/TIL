@@ -57,7 +57,152 @@
     <img src="https://user-images.githubusercontent.com/109272360/200122238-90262da4-37fb-4549-ab4f-21444aa130b2.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
     <img src="https://user-images.githubusercontent.com/109272360/200122240-c3784e9c-ec62-451a-a95b-faeded91571c.png" width="830px" style="margin-bottom:16px; border: 2px solid black;">
 
-## 2. Axios
+## 2. Promise
+
+### Promise란
+
+Promise는 **자바스크립트 비동기 처리에 사용되는 객체**이다
+
+웹 애플리케이션을 구현할 때 서버로부터 데이터를 받아오기 위해 API 요청을 보낸다.
+
+이때 데이터를 받아오기도 전에 해당 데이터를 사용하려고 하면 오류가 발생하게 된다.
+
+따라서 작업 비동기적으로 처리하기위해 Promise를 사용할 수 있다.
+
+### Promise 기초
+
+- Promise에는 3가지 상태가 있다.
+  - Pending(대기): 비동기 처리 로직이 아직 완료되지 않은 상태
+  - Fulfilled(이행): 비동기 처리가 완료되어 프로미스 결과 값을 반환해준 상태
+  - Rejected(실패): 비동기 처리가 실패하거나 오류가 발생한 상태
+
+- Pending
+  - `new Promise()` 메소드를 호출함으로써 비동기 로직을 대기 상태로 시작한다.
+  - 인자로 콜백 함수를 선언할 수 있고, 콜백 함수의 인자로 `resolve`, `reject`를 받는다.
+  ```js
+  new Promise(function(resolve, reject) {
+    // ...
+  })
+  ```
+  ```js
+  // 아래와 같이 Promise 객체를 반환하는 함수를 생성해 사용할 수 있다.
+  function asynFunction() {
+    return new Promise(function(resolve, reject) {
+      // ...
+    })
+  }
+  asynFunction().then().catch()
+
+  // 아래와 같이 Promise 객체를 반환하는 변수를 생성해 사용할 수 있다.
+  const myPromise = new Promise(function (resolve, reject) {
+    // ...
+  })
+  myPromise.then().catch()
+  ```
+
+- Fulfilled
+  - 콜백 함수의 인자 `resolve`를 실행하면 이행(=완료) 상태가 된다.
+  ```js
+  new Promise(function(resolve, reject) {
+    resolve(이행 상태일 때 넘겨줄 값)
+  })
+  ```
+
+- Rejected
+  - 콜백 함수의 인자 `reject`를 실행하면 실패 상태가 된다.
+  ```js
+  new Promise(function(resolve, reject) {
+    reject(실패 상태일 때 넘겨줄 값)
+  })
+  ```
+
+### Promise Chaining
+
+`resolve()`가 호출되면 Promise가 대기 상태에서 이행 상태로 넘어가고, `.then()`을 이용해 전달된 값을 받을 수 있다.
+
+`reject()`가 호출되면 Promise가 대기 상태에서 실패 상태로 넘어가고, `.catch()`를 이용해 전달된 값을 받을 수 있다.
+
+`then()`과 `catch()`는 인자로 모두 콜백함수를 갖고, 그 콜백함수의 인자로 전달된 값을 받는다.
+
+이때 Promise는 return 값으로 새로운 Promise 객체를 반환하기 때문에 chaining을 이용해 비동기 작업을 연속적으로 처리할 수 있다.
+
+```js
+function asynFunction() {
+  return new Promise(function (resolve, reject) {
+    resolve(1)
+  })
+}
+
+asynFunction()
+.then(function (response) {
+  return response + 1
+})
+.then(function (response) {
+  console.log(response)
+})
+.catch(function (error) {
+  console.log(error)
+})
+```
+
+### Promise 참고할 점
+
+- Promise 객체를 반환하는 함수는 실행 시 Promise 객체가 된다.
+  ```js
+  function asynFunction() {
+    return new Promise(function (resolve, reject) {
+      reject()
+    })
+  }
+
+  asynFunction // 함수
+  asynFunction() // Promise 객체
+  ```
+
+- `new Promise()` 메소드는 `resolve()`와 `reject()`를 분기처리하지 않으면 먼저 호출한 메소드부터 실행된다.
+  ```js
+  function asynFunction() {
+    return new Promise(function (resolve, reject) {
+      resolve('성공')
+      reject('실패') // 실행 x
+    })
+  }
+  
+  asynFunction()
+  .then(response => console.log(response))
+  .catch(error => console.log(error))
+  // 성공
+  ```
+
+- `then()`은 인자로 두 가지 콜백 함수를 받는다.
+  - 첫 번째 인자: fulfilled 상태일 때 실행할 콜백 함수
+  - 두 번째 인자: rejected 상태일 때 실행할 콜백 함수
+  ```js
+  function asynFunction() {
+    return new Promise(function (resolve, reject) {
+      reject()
+    })
+  }
+
+  function successCallback () {
+    console.log('성공')
+  }
+  function failureCallback () {
+    console.log('실패')
+  }
+
+  asynFunction()
+  .then(successCallback, failureCallback)
+  // 실패
+
+  // 이렇게 then 하나로도 두 가지 인자를 모두 받을 수는 있지만, 대부분이 then과 catch로 나눠서 작성
+  asynFunction()
+  .then(successCallback)
+  .catch(failureCallback)
+  // catch(failureCallback)는 사실 .then(null, failureCallback)과 같다.
+  ```
+
+## 3. Axios
 
 ### Axios 사용 이유
 - 클라이언트(브라우저)에서 서버로 요청을 보낼 때 form tag나 url을 통해 요청을 보내면, html 파일을 응답한다.(새로고침)
@@ -155,7 +300,7 @@
   </script>
   ```
 
-## 3. Ajax
+## 4. Ajax
 
 ### Ajax란?
 - Asynchronous JavaScript and XML(비동기 웹 개발 기술)
