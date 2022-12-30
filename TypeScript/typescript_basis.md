@@ -363,3 +363,172 @@ interface ToyCar extends Car, Toy {
 ```
 
 ## 4. 함수
+
+### 함수의 정의
+
+- 함수는 인자의 타입과 반환 값의 타입을 정할 수 있다.
+
+  ```ts
+  function add(num1: number, num2: number): number {
+    return num1 + num2
+  }
+  ```
+
+- 아무 것도 반환하지 않을 때는 `void`를 사용한다.
+  ```ts
+  function add(num1: number, num2: number): void {
+    console.log(num1 + num2)
+  }
+  ```
+
+### 함수의 인자
+
+- 함수를 호출할 때는 지정한 함수의 인자를 필수로 넘겨주어야 한다.
+
+  ```ts
+  function add(num1: number, num2: number): number {
+    return num1 + num2
+  }
+
+  console.log(add(1)) // 에러 발생
+  console.log(add(1, 2)) // 3
+  console.log(add(1, 2, 3)) // 에러 발생
+  ```
+
+- 받아도 되고 안 받아도 되는 인자는 `?`를 사용한다.
+  ```ts
+  function add(num1: number, num2?: number): number {
+    return num1 + num2
+  }
+  console.log(add(1, 2)) // 30
+  console.log(add(1, 2, 3)) // 에러 발생
+  console.log(add(1)) // NaN (에러 없음)
+  ```
+
+- 매개변수 여러 타입 지정하기
+  ```ts
+  function add (num1: number, num2: number | undefined): number {
+    if (num2 !== undefined) {
+      return num1 + num2
+    } else {
+      return num1
+    }
+  }
+
+  console.log(add(1, 2)) // 3
+  console.log(add(1, undefined)) // 1
+  ```
+
+- 매개변수 초기화는 ES6 문법과 동일하다
+  ```ts
+  function add(num1: number, num2 = 10): number {
+    return num1 + num2
+  }
+
+  console.log(add(1, undefined)) // 11
+  console.log(add(1)) // 11
+  console.log(add(1, 2)) // 3
+  ```
+
+- Rest 문법이 적용된 매개변수
+  ```ts
+  function add(...nums: number[]): number {
+    return nums.reduce((result, num) => {return result + num}, 0)
+  }
+  
+  console.log(add(1)) // 1
+  console.log(add(1, 2, 3, 4)) // 10
+  ```
+
+- 매개변수를 특정 값으로 지정
+  ```ts
+  function myFunc (myParam: 1|'a') {
+    return myParam
+  }
+
+  console.log(myFunc(1)) // 1
+  console.log(myFunc('a')) // a
+  console.log(myFunc(2)) // 에러
+  ```
+
+### 인터페이스와의 사용
+
+```ts
+interface User {
+  name: string
+  age: number
+}
+
+function join(name: string, age: number): User {
+  return {
+    name,
+    age
+  }
+}
+
+const user1: User = join("홍길동", 20)
+const user2: User = join("김민수", "31") // 에러 발생
+
+console.log(user1)
+// {
+//   "name": "홍길동",
+//   "age": 20
+// }
+```
+
+위 예시에서 사용자가 나이를 문자열로 입력하려 한다면 에러가 발생한다.
+
+나이를 문자열로 입력한 경우 `나이는 숫자로 입력해주세요.`를 리턴해보자.
+
+```ts
+interface User {
+  name: string
+  age: number
+}
+
+function join(name: string, age: number | string): User | string {
+  if (typeof age === 'number') {
+    return {
+      name,
+      age
+    }
+  } else {
+    return '나이는 숫자로 입력해주세요.'
+  }
+}
+
+const user1: User = join("홍길동", 20) // 에러 발생
+const user2: string = join("김민수", "31") // 에러 발생
+```
+
+위의 코드에서 `user1`과 `user2` 모두 에러가 발생한다.
+
+이는 `join` 함수가 `User`와 `string` 타입을 모두 반환할 수 있는 함수이기 때문이다.
+
+따라서 이러한 경우 **오버로드**를 사용한다.
+
+```ts
+interface User {
+  name: string
+  age: number
+}
+
+// 오버로드
+function join(name: string, age: number): User
+function join(name: string, age: string): string
+function join(name: string, age: number | string): User | string {
+  if (typeof age === 'number') {
+    return {
+      name,
+      age
+    }
+  } else {
+    return '나이는 숫자로 입력해주세요.'
+  }
+}
+
+const user1: User = join("홍길동", 20)
+const user2: string = join("김민수", "31")
+```
+
+### this
