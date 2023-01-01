@@ -669,6 +669,9 @@ console.log(numbers.includes(1)) // true
 
 // indexOf
 console.log(numbers.indexOf(2)) // 1
+// 배열 내 요소의 인덱스 찾아서 삭제
+// const idx = numbers.indexOf(원하는 숫자)
+// numbers.splice(idx, 1)
 
 // join
 console.log(numbers.join()) // 3,2,1
