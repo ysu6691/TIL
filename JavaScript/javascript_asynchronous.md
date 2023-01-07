@@ -199,10 +199,174 @@ asynFunction()
   asynFunction()
   .then(successCallback)
   .catch(failureCallback)
-  // catch(failureCallback)는 사실 .then(null, failureCallback)과 같다.
+  // catch(failureCallback)는 .then(null, failureCallback)과 같은 결과를 낸다.
   ```
 
-## 3. Axios
+## 3. async & await
+
+async & await을 사용하면 promise 없이도 비동기 로직을 실행할 수 있다.
+
+### 사용 방법
+
+- `async`
+  - 비동기 로직을 감싸는 함수의 예약어로 사용
+
+- `await`
+  - 비동기 처리 코드 앞에서 사용
+  - 비동기 함수가 꼭 promise 객체를 반환해야한다.
+
+```js
+// await은 async 함수 내부에서만 사용 가능하다.
+async function 함수명() {
+  await 비동기함수()
+  await 비동기함수()
+  ...
+}
+```
+
+### 예외 처리
+
+`try`와 `catch`를 이용해 에러를 처리할 수 있고, `finally`를 이용해 무조건 실행할 코드를 적을 수 있다.
+
+- `try`: 비동기 처리 코드를 작성
+- `catch`: 오류가 발생했을 때 실행할 코드를 작성
+- `finally`: `try` 블록과 관계없이 무조건 실행할 코드를 작성
+
+```js
+async function 함수명() {
+  try {
+    await 비동기함수()
+  } catch (error) {
+    console.log(error)
+  } finally {
+    무조건 실행할 코드
+  }
+}
+```
+
+### 사용 예시
+
+```js
+// promise 객체를 반환하는 함수
+function timer (time) {
+  return new Promise ((resolve, reject) => {
+    setTimeout(() => {
+      resolve(time)
+    }, time)
+  })
+}
+
+// async & await 사용
+async function run () {
+  console.log('start') // start, 처음에 실행
+  await timer(1000)
+  console.log('1') // 1, 1초 후에 실행
+  await timer(2000)
+  console.log('2') // 2, 3초 후에 실행
+  await timer(3000)
+  console.log('3') // 3, 6초 후에 실행
+  console.log('end') // end, 마지막에 실행
+}
+
+run()
+```
+
+`await`은 promise 객체를 반환하는 함수 앞에서 쓰이며 promise 객체를 반환하기도 한다.
+
+따라서 다음과 같이 promise 객체를 저장해서 사용할 수도 있다.
+
+```js
+function timer (time) {
+  return new Promise ((resolve, reject) => {
+    setTimeout(() => {
+      resolve(time)
+    }, time)
+  })
+}
+
+// promise 객체를 변수에 저장
+async function run () {
+  console.log('start') // start, 처음에 실행
+  let time = await timer(1000)
+  console.log(time) // 1000, 1초 후에 실행
+  time = await timer(time + 1000)
+  console.log(time) // 2000, 3초 후에 실행
+  time = await timer(time + 1000)
+  console.log(time) // 3000, 6초 후에 실행
+  console.log('end') // end, 마지막에 실행
+}
+
+run()
+```
+
+`async` 함수 또한 promise 객체를 반환한다.
+
+```js
+function timer (time) {
+  return new Promise ((resolve, reject) => {
+    setTimeout(() => {
+      resolve(time)
+    }, time)
+  })
+}
+
+async function run () {
+  console.log('start')
+  await timer(1000)
+  console.log('1')
+  await timer(2000)
+  console.log('2')
+  await timer(3000)
+  console.log('3')
+  console.log('end')
+}
+
+async function parentRun () {
+  console.log('parent start')
+  await run()
+  console.log('parent end')
+}
+
+parentRun()
+// parent start
+// start
+// 1
+// 2
+// 3
+// end
+// parent end
+```
+
+만약 `await`을 promise 객체를 반환하지 않는 함수 앞에서 사용한다면 그 다음 코드를 실행하지 못 한다.
+
+```js
+function timer (time) {
+  return new Promise ((resolve, reject) => {
+    setTimeout(() => {
+      console.log('nothing') // promise 반환 x
+    }, time)
+  })
+}
+
+async function run () {
+  console.log('start')
+  await timer(1000) // promise 객체를 반환받지못함
+  // 밑에서부터 실행 x
+  console.log('1')
+  await timer(2000)
+  console.log('2')
+  await timer(3000)
+  console.log('3')
+  console.log('end')
+}
+
+run()
+// start
+// nothing
+// 더 이상 출력 x
+```
+
+## 4. Axios
 
 ### Axios 사용 이유
 - 클라이언트(브라우저)에서 서버로 요청을 보낼 때 form tag나 url을 통해 요청을 보내면, html 파일을 응답한다.(새로고침)
@@ -300,7 +464,62 @@ asynFunction()
   </script>
   ```
 
-## 4. Ajax
+## 5. Fetch
+
+Axios와 마찬가지로 서버에 요청을 보내고 응답을 받는 작업을 처리할 수 있다.
+
+브라우저에서 지원하는 내장 라이브러리로, 따로 호출하지 않고 사용가능하다.
+
+### Fetch 기본 구조
+
+`fetch(url, [options])`
+
+promise 객체를 반환하며 함수에 사용되는 인자는 다음과 같다.
+
+- `url`: 접근하고자 하는 url
+- `options`: 객체 형태로 method나 header 등을 지정할 수 있다. (method의 기본 값은 `GET`)
+
+### Fetch 사용해보기
+
+- chaining 이용
+  ```js
+  function getData () {
+    fetch('https://jsonplaceholder.typicode.com/todos/1')
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
+  }
+
+  getData()
+  ```
+
+- async & await 와의 사용
+
+  ```js
+  async function getData () {
+    try {
+      const res = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+      console.log(res)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  ```
+
+  또는 다음과 같이 작성할 수도 있다.
+
+  ```js
+  async function getData () {
+    const res = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+    if (res.ok) {
+      console.log(res)
+    } else {
+      // error 발생시키기
+      throw Error(res)
+    }
+  }
+  ```
+
+## 6. Ajax
 
 ### Ajax란?
 - Asynchronous JavaScript and XML(비동기 웹 개발 기술)
