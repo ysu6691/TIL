@@ -145,7 +145,7 @@ useEffect Hook은 두 개의 인자를 갖는다.
 
 useMemo는 **Memoization** 기법, 즉 기존에 수행한 연산의 결괏값을 저장해 두고 값이 변하지 않으면 그 결괏값을 재사용하는 Hook이다.
 
-컴포넌트가 재렌더링될 때 결괏값이 변하지 않았을 경우 캐싱된 값을 사욯하기 때문에 컴포넌트의 성능을 최적화시킬 수 있다.
+컴포넌트가 재렌더링될 때 결괏값이 변하지 않았을 경우 캐싱된 값을 사용하기 때문에 컴포넌트의 성능을 최적화시킬 수 있다.
 
 첫 번째 인자로는 콜백 함수를 받고 **함수의 return 값**을 결괏값으로 저장한다.
 
@@ -275,7 +275,95 @@ function App() {
 export default App;
 ```
 
-## 4. useRef
+## 4. useCallback
+
+### useCallback
+
+`useCallback( function, [ dependencies ] )`
+
+`useCallback`은 `useMemo`와 비슷하게, 메모이제이션된 콜백 함수를 반환한다.
+
+`useMemo`와의 핵심적인 차이는 `useMemo`는 함수의 값만 반환하지만 `useCallback`은 함수 자체를 반환한다는 것이다.
+
+따라서 `useCallback(fn, [deps])`는 `useMemo(() => fn, [deps])`와 동일하게 동작한다.
+
+```js
+// useMemo를 사용하는 경우
+
+import { useMemo, useState } from 'react'
+
+function App() {
+  const [number1, setNumber1] = useState(0)
+  const [number2, setNumber2] = useState(0)
+
+  const squareOfNumber2 = useMemo(() => {
+    console.log('많은 작업 진행중...')
+    return number2 ** 2
+  }, [number2])
+
+  return (
+    <div>
+      <div>number1: {number1}</div>
+      <button onClick={() => {setNumber1(number1+1)}}>+</button>
+      <div>number2: {number2}</div>
+      <div>number2의 제곱: {squareOfNumber2}</div>
+      <button onClick={() => {setNumber2(number2+1)}}>+</button>
+    </div>
+  )
+}
+
+export default App;
+```
+
+`useMemo`는 결국 함수의 값을 반환하기 때문에 인자를 넣을 수 없지만, `useCallback`은 인자의 활용이 가능하다.
+
+```js
+// useCallback을 사용하는 경우
+
+import { useCallback, useState } from 'react'
+
+function App() {
+  const [number1, setNumber1] = useState(0)
+  const [number2, setNumber2] = useState(0)
+
+  // useCallback 사용 (파라미터 전달)
+  const squareOfNumber2 = useCallback((param) => {
+    console.log('많은 작업 진행중...')
+    return number2 ** param
+  }, [number2])
+
+  return (
+    <div>
+      <div>number1: {number1}</div>
+      <button onClick={() => {setNumber1(number1+1)}}>+</button>
+      <div>number2: {number2}</div>
+      {/* 파라미터 전달 가능 */}
+      <div>number2의 제곱: {squareOfNumber2(2)}</div>
+      <button onClick={() => {setNumber2(number2+1)}}>+</button>
+    </div>
+  )
+}
+
+export default App;
+```
+
+이를 `useMemo`로 바꾸려면 다음과 같이 사용해야 한다.
+
+```js
+...
+const squareOfNumber2 = useMemo(() => (param) => {
+  ...
+})
+...
+return (
+  ...
+  {/* 이제는 파라미터 전달이 가능하다. */}
+  <div>number2의 제곱: {squareOfNumber2(2)}</div>
+  ...
+)
+```
+
+## 5. useRef
 
 ### useRef
 
@@ -419,7 +507,7 @@ const Modal = forwardRef((props, ref) => {
 export default Modal
 ```
 
-## 5. useContext
+## 6. useContext
 
 ### useContext 사용해보기
 
