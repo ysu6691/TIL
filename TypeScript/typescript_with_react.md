@@ -15,7 +15,7 @@ npx create-react-app my-app --template redux-typescript
 npm install --save typescript @types/node @types/react @types/react-dom @types/jest
 
 # react-redux 설치
-npm install @reduxjs/toolkit
+npm install react-redux @reduxjs/toolkit
 ```
 
 `App.tsx`와 같이 `.tsx` 파일은 JSX 문법을 사용하는 타입스크립트 파일의 확장명이다.
@@ -444,8 +444,29 @@ export default CreateTodo
 
 ### index
 
+```tsx
+// src/index.tsx
+
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import { Provider } from 'react-redux'
+import store from './store/index'
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+root.render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
+```
+
+### store
+
 ```ts
-// store/index.ts
+// src/store/index.ts
 
 import { configureStore } from '@reduxjs/toolkit'
 import counterReducer from './counterSlice'
@@ -464,7 +485,7 @@ export default store
 ### hooks
 
 ```ts
-// store/hooks.ts
+// src/store/hooks.ts
 
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux'
 import { RootState, AppDispatch } from './index'
@@ -476,7 +497,7 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 ### slice
 
 ```ts
-// store/counterSlice.ts
+// src/store/counterSlice.ts
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
@@ -547,7 +568,7 @@ export default Counter
 ### thunk
 
 ```ts
-// src/store/counterSlice.js
+// src/store/counterSlice.ts
 
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
