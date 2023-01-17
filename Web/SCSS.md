@@ -12,6 +12,33 @@ SCSS는 SASS와 동일한 기능을 가지고 있으며 `{}`와 세미콜론을 
 
 ## 2. SCSS의 사용
 
+### 부모 선택자(&)
+
+`&`을 이용해 바로 위의 부모 요소를 그대로 가져올 수 있다.
+
+ ```scss
+.font {
+   /* .font-large */ 
+  &-large {
+     /* .font-large:hover */ 
+    &:hover {
+    }
+    /* .font-large::after */ 
+    &::after {
+    }
+    /* .font-large::before */ 
+    &::before {
+    }
+  }
+  /* .font-medium */ 
+  &-medium {
+  }
+  /* .font-small */ 
+  &-small {
+  }
+}
+ ```
+
 ### 변수 할당(Variable)
 
 `$`을 이용해 변수를 생성한다.
