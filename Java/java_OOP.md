@@ -297,3 +297,277 @@ JVM 메모리 구조의 동작 원리를 간단히 살펴보면 다음과 같이
         }
     }
     ```
+
+## 5. 생성자
+
+### 생성자
+
+**인스턴스가 생성될 때 최초 한 번 수행되는 함수**이다.
+
+`new` 키워드와 함께 호출
+
+힙 영역에 객체 생성 후 객체의 번지가 return
+
+생성자명은 클래스명과 동일하게 작성 (PascalCase로 작성)
+
+반환타입이 없음
+
+```java
+public class Dog {
+    public Dog() {
+        ...
+    }
+}
+```
+
+### 기본 생성자와 파라미터가 있는 생성자
+
+- 기본(디폴트) 생성자
+  - 클래스 내에 생성자가 하나도 정의되어 있지 않을 경우 JVM이 자동으로 제공하는 생성자
+  - `클래스명() {}` 형식으로 자동 생성
+  - 예시
+    ```java
+    class Dog {
+        String name;
+        int age;
+        // Dog() {} 있는 것과 같음
+    }
+
+    public class Main {
+        public static void main(String[] args) {
+            Dog dog1 = new Dog();
+            dog1.name = "ysu";
+            dog1.age = 3;
+            System.out.println(dog1.name); // ysu
+        }
+    }
+    ```
+
+- 파라미터가 있는 생성자
+  - 생성자 호출 시 값을 넘겨주어야 함
+  - JVM에서 기본 생성자를 추가하지 않음
+    ```java
+    class Dog {
+        String name;
+        int age;
+
+        Dog(String n, int a) {
+            name = n;
+            age = a;
+        }
+    }
+
+    public class Main {
+        public static void main(String[] args) {
+            Dog dog1 = new Dog("ysu", 3);
+            System.out.println(dog1.name); // ysu
+        }
+    }
+    ```
+
+- 생성자 오버로딩
+  - 클래스 내에 메소드 이름이 같고 매개변수의 타입 또는 개수가 다른 것
+  - 예시
+    ```java
+    class Dog {
+        String name;
+        int age;
+
+        Dog(String n, int a) {
+            name = n;
+            age = a;
+        }
+
+        Dog(String n) {
+            name = n;
+        }
+
+        Dog() {
+        }
+    }
+
+    public class Main {
+        public static void main(String[] args) {
+            Dog dog1 = new Dog("ysu", 3);
+            System.out.println(dog1.name); // ysu
+            
+            Dog dog2 = new Dog("ysu");
+            System.out.println(dog2.name); // ysu
+            
+            Dog dog3 = new Dog();
+            System.out.println(dog3.name); // null
+        }
+    }
+    ```
+
+### this
+
+객체 자신을 가리킴
+
+this를 이용하여 자신의 멤버 접근 가능: `this.멤버변수`
+
+객체에 대한 참조이므로 static 영역에서 this 사용 불가
+
+- `this([인자들])`: 생성자 호출
+  - this 생성자 호출 시 제한사항
+    - 생성자 내에서만 호출이 가능
+    - 생성자 내에서 첫번째 구문에 위치해야 함
+  - 예시
+    ```java
+    class Dog {
+        String name;
+        int age;
+
+        // new Dog()로 호출하면 기본 필드 적용
+        Dog() {
+            this("ysu", 3);
+        }
+
+        Dog(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+
+    }
+
+    public class Main {
+        public static void main(String[] args) {
+            Dog dog1 = new Dog();
+            System.out.println(dog1.name); // ysu
+            
+            Dog dog2 = new Dog("ysu", 3);
+            System.out.println(dog2.name); // ysu
+        }
+    }
+    ```
+
+> **this는 객체의 필드를 식별할 수 있게 도와준다.**
+> 
+>   ```java
+>   class Dog {
+>   	String name;
+>   	int age;
+>   
+>      // name과 age를 구별하지 못해 에러 발생
+>   	Dog(String name, int age) {
+>   		name = name;
+>   		age = age;
+>   	}
+>   }
+>   ```
+> 
+>   ```java
+>   class Dog {
+>   	String name;
+>   	int age;
+>   
+>      // name과 age를 구별 가능
+>   	Dog(String name, int age) {
+>   		this.name = name;
+>   		this.age = age;
+>   	}
+>   }
+>   ```
+
+## 6. 접근 제한자
+
+### 패키지
+
+프로그램의 많은 클래스를 관리하기 위해서 패키지를 이용한다.
+
+클래스와 관련 있는 인터페이스들을 모아두기 위한 이름 공간이다.
+
+패키지의 구분은 `.`을 이용한다.
+
+ex) `com.project_이름.module_이름`
+
+### import
+
+다른 패키지에 있는 클래스를 사용하기 위해서는 `import` 과정이 필요하다.
+
+`import` 뒤에 패키지 이름과 클래스 이름을 모두 입력해 특정 클래스를 가져오거나, `*`을 이용해 패키지 내 모든 클래스를 가져올 수 있다.
+
+(`*`은 하위 클래스만 가져오고 하위 패키지는 가져오지 않음)
+
+- `import package_name.class_name;`
+
+- `import package_name.*;`
+
+- 예시
+  ```java
+  // service 패키지에서 dto 패키지의 Person 클래스를 import 하기
+
+  package com.project.service;
+
+  import com.project.dto.Person;
+
+  public class PersonService {
+      Person p;
+  }
+  ```
+
+### 캡슐화
+
+객체의 속성(필드)와 행위(메소드)를 하나로 묶은 뒤, 실제 구현 내용 일부를 외부에 감추어 은닉한다.
+
+**외부에서 호출 및 읽기/쓰기가 가능한 데이터/메소드**와 **외부에서 호출 및 읽기/쓰기가 불가능한 데이터/메소드**를 지정할 수 있다.
+
+### 접근 제한자(access modifier)
+
+클래스, 멤버 변수(필드), 멤버 메소드 등의 선언부에서 **접근 허용 범위를 지정**하는 역할의 키워드이다.
+
+- 접근 제한자의 종류
+  - `public`
+    - 모든 위치에서 접근 가능
+    - 외부 클래스, 내부 클래스, 멤버변수, 메소드 사용 가능
+  - `protected`
+    - 같은 패키지에서 접근 가능
+    - 다른 패키지에서 접근이 불가능하지만, 다른 패키지의 클래스와 상속관계가 있을 경우 접근 가능
+    - 내부 클래스, 멤버변수, 메소드 사용 가능
+  - `(default)`
+    - 같은 패키지에서만 접근 가능
+    - 접근제한자가 선언이 안 되었을 경우 기본 적용
+    - 외부 클래스, 내부 클래스, 멤버변수, 메소드 사용 가능
+  - `private`
+    - 자신 클래스에서만 접근이 허용
+    - 내부 클래스, 멤버변수, 메소드 사용 가능
+
+- 접근자(getter)와 설정자(setter)
+  - 접근제한에 의해 접근할 수 없는 변수의 경우, 접근하기 위한 메소드(접근자와 설정자)를 public으로 선언하여 사용
+  - 예시
+    ```java
+    package access;
+
+    public class Person {
+        // private으로 접근 제한
+        private String name;
+
+        // getter: 접근 가능한 메소드
+        public String getName() {
+            return this.name;
+        }
+
+        // setter: 수정 가능한 메소드
+        public void setName(String name) {
+            this.name = name;
+        }
+
+    }
+    ```
+    ```java
+    package access;
+
+    public class Main {
+        public static void main(String[] args) {
+            Person p1 = new Person();
+            p1.name = "ysu"; // 에러 발생 (바로 접근 불가)
+            p1.setName("ysu");
+            System.out.println(p1.getName());
+        }
+    }
+    ```
+
+- 그 외 제한자 예시
+  - `static`: 클래스 레벨의 요소 설정
+  - `final`: 요소를 더이상 수정할 수 없게 함
+  - `abstract`: 추상 메소드 및 추상 클래스 작성
