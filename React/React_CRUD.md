@@ -94,7 +94,12 @@ CREATE 링크를 누르면 article이 form으로 바뀌며, 글을 작성하면 
 function Create() {
   return <article>
     <h2>Create</h2>
-    <form>
+    <form onSubmit={(event) => {
+      event.preventDefault()
+      const title = event.target.title.value
+      const body = event.target.body.value
+      props.onCreate(title, body)
+    }}>
       <p><input type="text" name="title" placeholder='title'/></p>
       <p><textarea name="body" placeholder='body'></textarea></p>
       <p><input type="submit" value="Create"/></p>

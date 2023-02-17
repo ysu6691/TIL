@@ -469,11 +469,12 @@ public static void main(String[] args) {
 
 ## 4. 배열(Array)
 
-### 배열
+### 배열 기본
 - 같은 종류의 데이터를 저장하기 위한 자료구조
 - 크기가 고정되어 있음(한 번 생성된 배열을 크기를 바꿀 수 없음)
 - 배열을 객체로 취급(참조형) -> 배열의 요소를 참조
-- `배열이름.length'를 통해 배열 길이 조회 가능
+- `배열이름.length`를 통해 배열 길이 조회 가능
+- `Arrays.toString(배열이름)`을 통해 배열 안의 요소를 [ ] 형태로 출력
 - 배열의 선언
   - `타입[] 배열이름` <- 보통 이 형태로 사용
     - ex) int[] arr
@@ -502,7 +503,8 @@ public static void main(String[] args) {
     int score2[]; // 이 형식으로는 권장 x
     
     score1 = new int[] {1, 2, 3, 4, 5};
-    System.out.println(score3); // 메모리 주소 값 반환
+    System.out.println(score1); // 메모리 주소 값 반환
+    System.out.println(Arrays.toString(score1)); // [1, 2, 3, 4, 5]
     
     int[] score3 = {1, 2, 3, 4, 5};
     System.out.println(score3[0]); // 1
@@ -518,3 +520,64 @@ public static void main(String[] args) {
     // 0
 }
 ```
+
+### for-each
+  - 가독성이 개선된 반복문으로, 배열 및 Collections에서 사용
+  - index 대신 직접 요소에 접근하는 변수를 제공
+  - 요소를 복사해서 사용하기 때문에 기존 요소의 변경이 불가능하다.
+  ```java
+	public static void main(String[] args) {
+      int intArray[] = { 1, 3, 5 };
+      for (int x : intArray) {
+          System.out.println(x);
+      }
+	}
+  ```
+
+### 배열의 복사
+  - 배열은 생성하면 길이를 변경할 수 없기 때문에 더 많은 저장공간이 필요하다면 큰 배열을 생성하고 이전 배열읠 값을 복사해야한다.
+  - `System.arraycopy(Object src, int srcPos, Object dest, int destPos, int length)`
+    - `src`: 원본배열
+    - `srcPos`: 원본배열 복사 시작 위치
+    - `dest`: 복사할 배열
+    - `destPos`: 복사받을 시작 위치
+    - `length`: 복사할 크기
+  ```java
+	public static void main(String[] args) {
+      int[] arr = { 1, 2, 3 };
+
+      int[] tmp = new int[arr.length * 2];
+
+      // arr의 0번 인덱스부터 arr의 길이만큼 복사
+      // tmp의 0번 인덱스부터 복사한만큼 붙여넣기
+      System.arraycopy(arr, 0, tmp, 0, arr.length);
+      System.out.println(Arrays.toString(tmp)); // [1, 2, 3, 0, 0, 0]
+	}
+  ```
+
+### 다차원 배열
+- 2차원 이상의 배열을 의미
+
+- 2차원 배열 선언
+  - `int[][] iArr` -> 주로 사용
+  - `int iArr[][]`
+  - `int[] iArr[]`
+
+- 2차원 배열 생성
+  - `배열 이름 = new 배열유형[1차원 배열개수][1차원 배열 크기];`
+    - 1차원 배열의 크기가 초기화된 상태로 생성
+  - `배열 이름 = new 배열유형[1차원 배열개수][];`
+    - 1차원 배열이 null인 상태로 생성
+
+- 예시
+  ```java
+	public static void main(String[] args) {
+      int [][] arr = new int[2][];
+      arr[0] = new int [3];
+      arr[0][1] = 5;
+      System.out.println(Arrays.toString(arr));
+      // [[I@15db9742, null]
+      System.out.println(Arrays.toString(arr[0]));
+      // [0, 5, 0]
+	}
+  ```
