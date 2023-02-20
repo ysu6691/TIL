@@ -431,3 +431,224 @@ public class SortTest {
 	}
 }
 ```
+
+## 3. 예외처리
+
+### 에러와 예외
+- 에러(Error)
+  - 메모리 부족, stack overflow와 같이 일단 발생하면 복구할 수 없는 상황
+  - 프로그램의 비정상적 종료를 막을 수 없음
+
+- 예외(Exception)
+  - 읽으려는 파일이 없거나 네트워크 연결이 안되는 등 수습될 수 있는 비교적 상태가 약한 것들
+  - 프로그램 코드에 의해 수습될 수 있는 상황
+
+### 예외 처리
+
+예외 발생 시 프로그램의 비정상종료를 막고 정상적인 실행 상태를 유지하는 것을 뜻한다.
+
+예외 감지 및 예외 발생 시 동작할 코드 작성이 필요하다.
+
+- 예외 클래스의 계층
+  - Error 계열
+  - Checked exception 계열: 예외에 대한 대처 코드가 없으면 컴파일이 진행되지 않음
+  - Unchecked exception 계열(RuntimeException의 하위 클래스): 예외에 대한 대처 코드가 없더라도 컴파일은 진행됨
+
+- 예외 처리 키워드
+  - 직접 처리
+    - try
+    - catch
+    - finally
+  - 간접 처리
+    - throws
+  - 사용자 정의 예외처리
+    - throw
+
+### try ~ catch ~ finally 구문
+
+예외가 발생했을 때 처리할 코드를 작성할 수 있다.
+
+JVM은 try 블록에서 예외가 발생했을 때 해당 Exception 클래스 객체를 생성해 catch 블록으로 던진다(throw).
+
+던져진 exception을 처리할 수 있는 catch 블록이 없으면 예외 처리는 실패한다.
+
+만약 finally 블록이 있다면, 예외 발생 여부와 관계없이 실행할 코드를 적을 수 있다.
+
+중간에 return을 만나는 경우도 finally 블록을 먼저 수행 후 return을 실행한다.
+
+```java
+try {
+    // 예외가 발생할 수 있는 코드
+} catch (Exception e) {
+    // 예외가 발생할 때 처리할 코드
+} finally {
+    // 예외 발생 여부와 관계없이 실행할 코드
+}
+```
+
+try 블록에서 여러 종류의 예외가 발생하는 경우, 하나의 try 블록에 여러 개의 catch 블록을 추가할 수 있다.
+
+이때 JVM이 던진 예외가 catch 문장을 찾을 때는 **다형성이 적용**되므로, 상위 타입의 예외가 먼저 선언되는 경우 뒤에 등장하는 catch 블록은 동작하지 않는다.
+
+### Exception 객체의 정보 활용
+
+Throwable의 주요 메소드
+
+- `public String getMessage()`: 발생된 예외에 대한 구체적인 메시지를 반환
+- `public Throwable getCause()`: 예외의 원인이 되는 Throwable 객체 또는 null을 반환
+- `public void printStackTrace()`: 예외가 발생된 메소드가 호출되기까지의 메소드 호출 스택을 출력 (디버깅의 수단으로 주로 사용)
+
+```java
+package exception;
+
+public class ExceptionTest {
+	public static void main(String[] args) {
+		int[] nums = { 1 };
+		
+		try {
+			System.out.println(nums[2]);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.err.println("배열의 크기를 벗어남");
+			System.out.println(e.getMessage()); // 2
+			e.printStackTrace();
+			// java.lang.ArrayIndexOutOfBoundsException: 2
+			// at exception.ExceptionTest.main(ExceptionTest.java:8)
+		}
+		
+		System.out.println("프로그램을 종료합니다.");
+		// 프로그램을 종료합니다.
+	}
+}
+```
+
+### throws
+
+`throws` 키워드를 이용해 예외 처리를 위임할 수 있다.
+
+예외를 전달받은 메소드는 다시 예외 처리의 책임이 발생하고, 직접 처리할지 아니면 다시 위임할지 정할 수 있다.
+
+- checked exception과 throws
+
+  `throws`를 명시해야 한다.
+
+  ```java
+  package exception;
+
+  public class CheckedExceptionTest {
+    public static void main(String[] args) {
+      try {
+        method1();
+      } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+
+    public static void method1() throws ClassNotFoundException {
+      method2();
+    }
+    
+    public static void method2() throws ClassNotFoundException {
+      Class.forName("ysu");
+    }
+  }
+  ```
+
+- Unchecked Exception과 throws
+
+  `throws`를 명시하지 않아도 전달이 된다.
+
+  ```java
+  package exception;
+
+  public class UnCheckedExceptionTest {
+    public static void main(String[] args) {
+      try {
+        method1();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    public static void method1() {
+      method2();
+    }
+    
+    public static void method2() {
+      int i = 1 / 0;
+    }
+  }
+  ```
+
+- override와 throws
+
+  하위 클래스에서 메소드를 override하면, 조상클래스 메소드가 던지는 예외보다 부모 예외를 던질 수 없다.
+
+  ```java
+  class Parent {
+    void methodA() throws IOException{}
+    void methodB() throws ClassNotFoundException{}
+  }
+
+  // Parent를 상속받는 클래스 생성
+  public class OverridingTest extends Parent {
+
+    // 하위 예외는 던질 수 있다.
+    @Override
+    void methodA() throws FilNotFoundException{}
+
+    // 부모 예외는 던질 수 없다.
+    @Override
+    void methodB() throws Exception {}
+  }
+  ```
+
+### 사용자 정의 예외
+
+대부분 Exception 또는 RuntimeException 클래스를 상속받아 작성한다.
+
+- check exception 활용
+  - 명시적 예외 또는 throws 필요
+  - 코드는 복잡해지지만 처리 누락 등 오류 발생 가능성은 줄어든다.
+- runtime exception 활용
+  - 묵시적 예외 처리 가능
+  - 코드가 간결해지지만 예외 처리 누락 가능성 발생
+
+```java
+package exception;
+
+public class FruitNotFoundException extends Exception {
+	public FruitNotFoundException(String name) {
+		super(name + "에 해당하는 과일이 없습니다.");
+	}
+}
+```
+
+```java
+package exception;
+
+public class CustomExceptionTest {
+	private static String[] fruits = {"사과", "오렌지", "토마토"};
+	
+	public static void main(String[] args) {
+		try {
+			getFruit("배");
+		} catch (FruitNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void getFruit(String name) throws FruitNotFoundException {
+		for (int i = 0; i < fruits.length; i++) {
+			if (fruits[i] != null && fruits[i].equals(name)) {
+				fruits[i] = null;
+				return;
+			}
+		}
+		throw new FruitNotFoundException(name);
+	}
+}
+
+// exception.FruitNotFoundException: 배에 해당하는 과일이 없습니다.
+// 	 at exception.CustomExceptionTest.getFruit(CustomExceptionTest.java:21)
+// 	 at exception.CustomExceptionTest.main(CustomExceptionTest.java:8)
+```
