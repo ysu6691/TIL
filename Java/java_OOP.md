@@ -662,35 +662,35 @@ ex) `com.project_이름.module_이름`
 > package modifier;
 > 
 > public class Car {
-> 	String color;
-> 	private int speed;
+>     String color;
+>     private int speed;
 > 	
->   // getter에도 원하는 결과를 return하도록 로직을 짤 수 있다.
-> 	public int getSpeed() {
-> 		return this.speed;
-> 	}
+>     // getter에도 원하는 결과를 return하도록 로직을 짤 수 있다.
+>     public int getSpeed() {
+>         return this.speed;
+>     }
 > 	
->  // 속성에 제한 두기
-> 	public void setSpeed(int speed) {
-> 		if (speed <= 250 && speed >= 0) {
-> 			this.speed = speed;
-> 		} else {
-> 			System.out.println("속도 제한");
-> 		}
-> 	}
+>     // 속성에 제한 두기
+>     public void setSpeed(int speed) {
+>         if (speed <= 250 && speed >= 0) {
+>             this.speed = speed;
+>         } else {
+>             System.out.println("속도 제한");
+>         }
+>     }
 > }
 > ```
 > ```java
 > package modifier;
 > 
 > public class CarTest {
-> 	public static void main(String[] args) {
-> 		Car c = new Car();
-> 		c.color = "Red";
-> 		c.setSpeed(100);
-> 		System.out.println(c.getSpeed()); // 100
-> 		c.setSpeed(300); // 속도 제한
-> 	}
+>     public static void main(String[] args) {
+>         Car c = new Car();
+>         c.color = "Red";
+>         c.setSpeed(100);
+>         System.out.println(c.getSpeed()); // 100
+>         c.setSpeed(300); // 속도 제한
+>     }
 > }
 > ```
 
@@ -702,26 +702,26 @@ ex) `com.project_이름.module_이름`
 > package modifier;
 > 
 > public class Person {
-> 	private boolean isMale;
+>     private boolean isMale;
 > 
-> 	public boolean isMale() {
-> 		return isMale;
-> 	}
+>     public boolean isMale() {
+>         return isMale;
+>     }
 > 
-> 	public void setMale(boolean isMale) {
-> 		this.isMale = isMale;
-> 	}
+>     public void setMale(boolean isMale) {
+>         this.isMale = isMale;
+>     }
 > }
 > ```
 > ```java
 > package modifier;
 > 
 > public class PersonTest {
-> 	public static void main(String[] args) {
-> 		Person p = new Person();
-> 		p.setMale(true);
-> 		System.out.println(p.isMale()); // true
-> 	}
+>     public static void main(String[] args) {
+>         Person p = new Person();
+>         p.setMale(true);
+>         System.out.println(p.isMale()); // true
+>     }
 > }
 > ```
 
