@@ -517,31 +517,31 @@ this를 이용하여 자신의 멤버 접근 가능: `this.멤버변수`
 
 > **this는 객체의 필드를 식별할 수 있게 도와준다.**
 > 
->   ```java
->   class Dog {
->   	String name;
->   	int age;
+> ```java
+> class Dog {
+>     String name;
+>     int age;
 >   
->      // name과 age를 구별하지 못해 에러 발생
->   	Dog(String name, int age) {
->   		name = name;
->   		age = age;
->   	}
->   }
->   ```
+>     // name과 age를 구별하지 못해 에러 발생
+>     Dog(String name, int age) {
+>         name = name;
+>         age = age;
+>     }
+> }
+> ```
 > 
->   ```java
->   class Dog {
->   	String name;
->   	int age;
->   
->      // name과 age를 구별 가능
->   	Dog(String name, int age) {
->   		this.name = name;
->   		this.age = age;
->   	}
->   }
->   ```
+> ```java
+> class Dog {
+>     String name;
+>     int age;
+> 
+>     // name과 age를 구별 가능
+>     Dog(String name, int age) {
+>         this.name = name;
+>         this.age = age;
+>     }
+> }
+> ```
 
 ## 6. 접근 제한자
 
@@ -762,43 +762,43 @@ public class Manager {
 package practice;
 
 public class Student {
-	private String name;
-	private int age;
-	private String major;
+    private String name;
+    private int age;
+    private String major;
 	
-	Student(){
+    Student(){
 		
-	}
+    }
 	
-	Student(String name, int age, String major) {
-		this.name = name;
-		this.age = age;
-		this.major = major;
-	}
+    Student(String name, int age, String major) {
+        this.name = name;
+        this.age = age;
+        this.major = major;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public int getAge() {
-		return age;
-	}
+    public int getAge() {
+        return age;
+    }
 
-	public void setAge(int age) {
-		this.age = age;
-	}
+    public void setAge(int age) {
+        this.age = age;
+    }
 
-	public String getMajor() {
-		return major;
-	}
+    public String getMajor() {
+        return major;
+    }
 
-	public void setMajor(String major) {
-		this.major = major;
-	}
+    public void setMajor(String major) {
+        this.major = major;
+    }
 }
 ```
 
@@ -807,42 +807,42 @@ package practice;
 
 // 싱글턴 패턴 적용
 public class StudentManager {
-	private Student[] students = new Student[100];
-	private int size = 0; // 현재 Student 배열의 크기
+    private Student[] students = new Student[100];
+    private int size = 0; // 현재 Student 배열의 크기
 
-	private static StudentManager manager = new StudentManager();
+    private static StudentManager manager = new StudentManager();
 
-	private StudentManager() {
-	}
+    private StudentManager() {
+    }
 
-	static StudentManager getManager() {
-		return manager;
-	}
+    static StudentManager getManager() {
+		    return manager;
+    }
 
     // 새로운 학생 추가
-	void addStudent(Student s) {
+    void addStudent(Student s) {
         // students 배열에 새로운 인스턴스 추가하고 size 증가
-		students[size++] = s;
-	}
+		    students[size++] = s;
+    }
 
     // 이름으로 학생을 찾아 전공을 변경
-	void changeMajor(String name, String major) {
-		Student s = getStudent(name);
-		if (s != null) {
-			s.setMajor(major);
-		}
-	}
+    void changeMajor(String name, String major) {
+        Student s = getStudent(name);
+        if (s != null) {
+            s.setMajor(major);
+        }
+    }
 
     // 이름으로 학생 정보 조회
-	Student getStudent(String name) {
-		for (int i = 0; i < size; i++) {
-			if (name.equals(students[i].getName())) {
-				return students[i];
-			}
-		}
-		// 조건에 맞는 학생이 없는 경우 null 리턴
-		return null;
-	}
+    Student getStudent(String name) {
+        for (int i = 0; i < size; i++) {
+            if (name.equals(students[i].getName())) {
+                return students[i];
+            }
+        }
+        // 조건에 맞는 학생이 없는 경우 null 리턴
+        return null;
+    }
 }
 ```
 
@@ -853,68 +853,68 @@ import java.util.Scanner;
 
 public class StudentTest {
 
-	static Student[] students = new Student[10];
-	static int size = 0;
+    static Student[] students = new Student[10];
+    static int size = 0;
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		Scanner sc = new Scanner(System.in);
-		int sel;
+        Scanner sc = new Scanner(System.in);
+        int sel;
 
-		do {
-			System.out.println("번호를 입력해주세요.");
-			System.out.println("1. 학생 추가");
-			System.out.println("2. 학생 조회");
-			System.out.println("3. 전공 변경");
-			System.out.println("0. 종료");
-			sel = sc.nextInt();
-			if (sel == 1) {
-				// 학생 추가
-				System.out.println("학생을 추가합니다.");
-				System.out.println("이름: ");
-				String name = sc.next();
-				System.out.println("나이: ");
-				int age = sc.nextInt();
-				System.out.println("전공: ");
-				String major = sc.next();
+        do {
+            System.out.println("번호를 입력해주세요.");
+            System.out.println("1. 학생 추가");
+            System.out.println("2. 학생 조회");
+            System.out.println("3. 전공 변경");
+            System.out.println("0. 종료");
+            sel = sc.nextInt();
+            if (sel == 1) {
+                // 학생 추가
+                System.out.println("학생을 추가합니다.");
+                System.out.println("이름: ");
+                String name = sc.next();
+                System.out.println("나이: ");
+                int age = sc.nextInt();
+                System.out.println("전공: ");
+                String major = sc.next();
 
-				// 학생 인스턴스를 만드는 방법
-				// 1. 인스턴스를 만들고 setter를 이용해 속성을 변경한다.
-				Student st = new Student();
-				st.setName(name);
-				st.setAge(age);
-				st.setMajor(major);
+                // 학생 인스턴스를 만드는 방법
+                // 1. 인스턴스를 만들고 setter를 이용해 속성을 변경한다.
+                Student st = new Student();
+                st.setName(name);
+                st.setAge(age);
+                st.setMajor(major);
 
-				// 2. 속성이 정해진 인스턴스를 생성한다.
-				Student st = new Student(name, age, major);
-				sm.addStudent(st);
+                // 2. 속성이 정해진 인스턴스를 생성한다.
+                Student st = new Student(name, age, major);
+                sm.addStudent(st);
 
-			} else if (sel == 2) {
-				// 학생 조회
-				System.out.println("학생을 조회합니다.");
-				System.out.println("이름: ");
-				String name = sc.next();
-				Student st = sm.getStudent(name);
-				if (st == null) {
-					System.out.println("학생을 찾지 못했습니다.");
-				} else {
-					System.out.println("조회한 학생의 정보는");
-					System.out.println(st.getName());
-					System.out.println(st.getAge());
-					System.out.println(st.getMajor());
-				}
+            } else if (sel == 2) {
+                // 학생 조회
+                System.out.println("학생을 조회합니다.");
+                System.out.println("이름: ");
+                String name = sc.next();
+                Student st = sm.getStudent(name);
+                if (st == null) {
+                    System.out.println("학생을 찾지 못했습니다.");
+            } else {
+                    System.out.println("조회한 학생의 정보는");
+                    System.out.println(st.getName());
+                    System.out.println(st.getAge());
+                    System.out.println(st.getMajor());
+            }
 
-			} else if (sel == 3) {
-				// 전공 변경
-				System.out.println("전공을 변경합니다.");
-				System.out.println("이름: ");
-				String name = sc.next();
-				System.out.println("전공: ");
-				String major = sc.next();
-				sm.changeMajor(name, major);
-			}
-		} while (sel != 0);
-	}
+            } else if (sel == 3) {
+                // 전공 변경
+                System.out.println("전공을 변경합니다.");
+                System.out.println("이름: ");
+                String name = sc.next();
+                System.out.println("전공: ");
+                String major = sc.next();
+                sm.changeMajor(name, major);
+            }
+        } while (sel != 0);
+    }
 }
 ```
 
