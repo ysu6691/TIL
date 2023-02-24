@@ -109,7 +109,7 @@ Hibernate가 지원하는 메소드 내부에서는 JDBC API가 동작한다.
 - **J2SE** 환경: 엔티티 매니저와 영속성 컨텍스트가 1:1 관계
 - **J2EE, 스프링 프레임워크** 같은 컨테이너 환경: 엔티티 매니저와 영속성 컨텍스트가 N:1 관계
 
-<img src="https://user-images.githubusercontent.com/109272360/220949956-a439612f-182b-4592-8bb2-add89a53b49a.png">
+<img src="https://user-images.githubusercontent.com/109272360/220949956-a439612f-182b-4592-8bb2-add89a53b49a.png" width="700px">
 
 ```java
 // EntityManagerFactory 생성
@@ -145,7 +145,9 @@ emf.close();
 ### 엔티티의 생명주기
 - 비영속 (new/transient)
 	- 영속성 컨텍스트와 전혀 관계가 없는 새로운 상태
-	<img src="https://user-images.githubusercontent.com/109272360/220951574-6171ac0d-2f06-4bc8-83e2-ef51e40aa64d.png">
+
+	<img src="https://user-images.githubusercontent.com/109272360/220951574-6171ac0d-2f06-4bc8-83e2-ef51e40aa64d.png" width="600px">
+
 	```java
 	// 객체를 생성한 상태(비영속)
 	Member member = new Member();
@@ -156,7 +158,9 @@ emf.close();
 - 영속 (managed)
 	- 영속성 컨텍스트에 관리되는 상태
 	- `persist()` 메소드를 통해 영속 상태로 만들 수 있다.
-	<img src="https://user-images.githubusercontent.com/109272360/220951624-69a63e22-6f7f-46b3-8659-39c2335dfbf7.png">
+
+	<img src="https://user-images.githubusercontent.com/109272360/220951624-69a63e22-6f7f-46b3-8659-39c2335dfbf7.png" width="600px">
+
 	```java
 	// 객체를 생성한 상태(비영속)
 	Member member = new Member();
@@ -183,7 +187,9 @@ emf.close();
 	- 엔티티 매니저는 우선적으로 데이터를 1차 캐시에서 찾는다.
 	- 1차 캐시에 데이터가 없으면 DB를 조회한다.
 	- 만약 데이터가 1차 캐시에 없고 DB에 있다면, DB에서 조회한 데이터를 1차 캐시에 저장한 뒤 반환한다.
-	<img src="https://user-images.githubusercontent.com/109272360/220956381-fd7a52d5-7f6c-4bed-9264-1aa4ebde4ae6.png">
+
+	<img src="https://user-images.githubusercontent.com/109272360/220956381-fd7a52d5-7f6c-4bed-9264-1aa4ebde4ae6.png" width="700px">
+
 	```java
 	Member member = new Member();
 	member.setId(1);
@@ -211,7 +217,9 @@ emf.close();
 - 트랜잭션을 지원하는 쓰기 지연(transactional write-behind)
 	- `persist()` 메소드 실행 시 1차 캐시에 저장함과 동시에 **쓰기 지연 SQL 저장소**에 SQL 쿼리를 저장한다.
 	- `commit()` 메소드 실행 시 저장했던 SQL 쿼리를 DB에 한 번에 날린다.
-	<img src="https://user-images.githubusercontent.com/109272360/220956228-d27bc958-b247-406b-9947-aab4dea129f8.png">
+
+	<img src="https://user-images.githubusercontent.com/109272360/220956228-d27bc958-b247-406b-9947-aab4dea129f8.png" width="700px">
+
 	```java
 	EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName);
 	EntityManager em = emf.createEntityManager();
@@ -228,7 +236,9 @@ emf.close();
 
 - 변경 감지(Dirty Checking)
 	- 영속 엔티티를 조회할 때의 스냅샷을 저장해, `commit()` 시 기존 스냅샷과 비교한 뒤 자동 수정
+
 	<img src="https://user-images.githubusercontent.com/109272360/220958175-039db935-68a0-4a74-983f-2a3fb5d2f45b.png">
+	
 	```java
 	EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName);
 	EntityManager em = emf.createEntityManager();
@@ -378,30 +388,30 @@ import java.util.Date;
 @Entity 
 public class Member { 
 
-		@Id 
-		private Long id; 
-
-		@Column(name = "name") 
-		private String username; 
-
-		private Integer age; 
-
-		@Enumerated(EnumType.STRING) 
-		private RoleType roleType; 
-
-		@Temporal(TemporalType.TIMESTAMP) 
-		private Date createdDate; 
-
-		@Temporal(TemporalType.TIMESTAMP) 
-		private Date lastModifiedDate; 
-
-		private LocalDateTime localDateTime;
-
-		@Lob 
-		private String description; 
-
-		@Transient
-		private Integer tmp;
+    @Id 
+    private Long id; 
+    
+    @Column(name = "name") 
+    private String username; 
+    
+    private Integer age; 
+    
+    @Enumerated(EnumType.STRING) 
+    private RoleType roleType; 
+    
+    @Temporal(TemporalType.TIMESTAMP) 
+    private Date createdDate; 
+    
+    @Temporal(TemporalType.TIMESTAMP) 
+    private Date lastModifiedDate; 
+    
+    private LocalDateTime localDateTime;
+    
+    @Lob 
+    private String description; 
+    
+    @Transient
+    private Integer tmp;
 }
 ```
 
@@ -423,9 +433,9 @@ public class Member {
 	```java
 	@Entity 
 	public class Member { 
-			@Id 
-			@GeneratedValue(strategy = GenerationType.IDENTITY) 
-			private Long id;
+	    @Id 
+	    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+	    private Long id;
 	}
 	```
 	```java
@@ -433,14 +443,14 @@ public class Member {
 
 	try {
 
-		Member member = new Member(); // 아직 id 모름
-
-		// INSERT 실행
-		em.persist(member);
-		System.out.println(member.id); // id 조회 가능
-
-		tx.commit();
-	}
+	    Member member = new Member(); // 아직 id 모름
+    
+	    // INSERT 실행
+	    em.persist(member);
+	    System.out.println(member.id); // id 조회 가능
+    
+	    tx.commit();
+	    }
 	...
 	```
 
@@ -455,36 +465,37 @@ public class Member {
 	```java
 	@Entity 
 	@SequenceGenerator( 
-					name = "MEMBER_SEQ_GENERATOR", // 식별자 생성기 이름(필수) 
-					sequenceName = "MEMBER_SEQ", // 매핑할 데이터베이스 시퀀스 이름
-					initialValue = 1, allocationSize = 50) // 기본값: initialValue: 1, allocationSize: 50
+          name = "MEMBER_SEQ_GENERATOR", // 식별자 생성기 이름(필수) 
+          sequenceName = "MEMBER_SEQ", // 매핑할 데이터베이스 시퀀스 이름
+          initialValue = 1, allocationSize = 50) // 기본값: initialValue: 1, allocationSize: 50
 	public class Member { 
-			@Id 
-			@GeneratedValue(strategy = GenerationType.SEQUENCE, 
-							generator = "MEMBER_SEQ_GENERATOR") 
-			private Long id; 
+      @Id 
+      @GeneratedValue(strategy = GenerationType.SEQUENCE, 
+              generator = "MEMBER_SEQ_GENERATOR") 
+      private Long id; 
 	}
 	```
+
 	```java
 	...
 
 	try {
 
-		// 아직 id 모름
-		Member member = new Member1();
-		Member member = new Member2();
-		Member member = new Member3();
-
-		em.persist(member1);
-		// call next value for Member_SEQ ->  DB 시퀀스 1로 설정
-		// call next value for Member_SEQ -> DB 시퀀스 51로 설정
-		em.persist(member2); // 메모리에서 2 가져오기 (DB 조회 x)
-		em.persist(member3); // 메모리에서 3 가져오기 (DB 조회 x)
-		System.out.println(member1.id); // 1 (id 조회 가능)
-		System.out.println(member2.id); // 2 (id 조회 가능)
-		System.out.println(member3.id); // 3 (id 조회 가능)
-
-		tx.commit();
+      // 아직 id 모름
+      Member member = new Member1();
+      Member member = new Member2();
+      Member member = new Member3();
+      
+      em.persist(member1);
+      // call next value for Member_SEQ ->  DB 시퀀스 1로 설정
+      // call next value for Member_SEQ -> DB 시퀀스 51로 설정
+      em.persist(member2); // 메모리에서 2 가져오기 (DB 조회 x)
+      em.persist(member3); // 메모리에서 3 가져오기 (DB 조회 x)
+      System.out.println(member1.id); // 1 (id 조회 가능)
+      System.out.println(member2.id); // 2 (id 조회 가능)
+      System.out.println(member3.id); // 3 (id 조회 가능)
+      
+      tx.commit();
 	}
 	...
 	```
@@ -497,21 +508,21 @@ public class Member {
 
 	```sql
 	create table MY_SEQUENCES ( 
-			sequence_name varchar(255) not null, 
-			next_val bigint, 
-			primary key ( sequence_name ) 
+      sequence_name varchar(255) not null, 
+      next_val bigint, 
+      primary key ( sequence_name ) 
 	)
 	```
 	```java
 	@Entity 
 	@TableGenerator(
-					name = "MEMBER_SEQ_GENERATOR", 
-					table = "MY_SEQUENCES", 
-					pkColumnValue = "MEMBER_SEQ", allocationSize = 1) 
+      name = "MEMBER_SEQ_GENERATOR", 
+      table = "MY_SEQUENCES", 
+      pkColumnValue = "MEMBER_SEQ", allocationSize = 1) 
 	public class Member { 
-			@Id 
-			@GeneratedValue(strategy = GenerationType.TABLE, 
-							generator = "MEMBER_SEQ_GENERATOR") 
-			private Long id; 
+      @Id 
+      @GeneratedValue(strategy = GenerationType.TABLE, 
+              generator = "MEMBER_SEQ_GENERATOR") 
+      private Long id; 
 	}
 	```
