@@ -126,16 +126,16 @@ EntityTransaction tx = em.getTranscation();
 tx.begin();
 
 try {
-	// 데이터 조작 코드 작성
+    // 데이터 조작 코드 작성
 
-	// 트랜잭션 commit
-	tx.commit();
+    // 트랜잭션 commit
+    tx.commit();
 } catch (Exception e) {
-	// 에러 발생시 트랜잭션 rollback
-	tx.rollback();
+    // 에러 발생시 트랜잭션 rollback
+    tx.rollback();
 } finally {
-	// 엔티티 매니저 닫기
-	em.close();
+    // 엔티티 매니저 닫기
+    em.close();
 }
 
 // 엔티티 매니저 팩토리 닫기
@@ -421,14 +421,14 @@ public class Member {
 
 `@Id`만 사용하면 키를 직접 할당할 수 있고, `@GeneratedValue`를 사용하면 키를 자동으로 생성한다.
 
-`@GeneratedValue` 내 `strategy`를 지정해 어떤 전략으로 키를 자동 생성할지 결정할 수 있다.
+`@GeneratedValue` 내 `strategy`를 지정해 어떤 전략으로 키를 자동 생성할지 결정할 수 있다. (`AUTO`: DBMS에 따라 자동 지정, 기본값)
 
 - **IDENTITY 전략**
 	- 키 생성을 데이터베이스에 위임한다.
 	- 주로 MySQL, PostgreSQL, SQL Server, DB2에서 사용한다. (예: AUTO_INCREMENT)
 	- 키 생성을 DB에 위임하다보니 INSERT 이후에만 해당 객체의 id 값을 알 수 있다는 단점이 있다.
 	- 따라서 IDENTITY 전략에서는 INSERT SQL을 `tx.commit()`이 아닌 `em.persist()` 시점에 실행해 id를 영속성 컨텍스트에 저장한다.
-	- 따라서 `persist()` 이후에는 객체의 id를 `객체.id`로 직접 조회할 수 있다.
+	- 따라서 `persist()` 이후에는 객체의 id를 직접 조회할 수 있다.
 
 	```java
 	@Entity 
@@ -447,7 +447,7 @@ public class Member {
     
 	    // INSERT 실행
 	    em.persist(member);
-	    System.out.println(member.id); // id 조회 가능
+	    System.out.println(member.getId()); // id 조회 가능
     
 	    tx.commit();
 	    }
@@ -476,10 +476,10 @@ public class Member {
 	}
 	```
 
-	```java
-	...
+  ```java
+  ...
 
-	try {
+  try {
 
       // 아직 id 모름
       Member member = new Member1();
@@ -496,9 +496,9 @@ public class Member {
       System.out.println(member3.id); // 3 (id 조회 가능)
       
       tx.commit();
-	}
-	...
-	```
+  }
+  ...
+  ```
 
 - **TABLE 전략**
 	- 키 생성 전용 테이블을 하나 만들어서 데이터베이스 시퀀스를 흉내낸다.
@@ -513,16 +513,267 @@ public class Member {
       primary key ( sequence_name ) 
 	)
 	```
-	```java
-	@Entity 
-	@TableGenerator(
-      name = "MEMBER_SEQ_GENERATOR", 
-      table = "MY_SEQUENCES", 
-      pkColumnValue = "MEMBER_SEQ", allocationSize = 1) 
-	public class Member { 
+  ```java
+  @Entity 
+  @TableGenerator(
+          name = "MEMBER_SEQ_GENERATOR", 
+          table = "MY_SEQUENCES", 
+          pkColumnValue = "MEMBER_SEQ", allocationSize = 1) 
+  public class Member { 
       @Id 
       @GeneratedValue(strategy = GenerationType.TABLE, 
               generator = "MEMBER_SEQ_GENERATOR") 
       private Long id; 
-	}
+  }
 	```
+
+## 4. 연관관계 매핑
+
+### 단방향 연관관계
+
+<img src="https://user-images.githubusercontent.com/109272360/221084821-7f9b8ab9-ef54-43ff-a3ec-7f1e0352e318.png" width="550px">
+
+```java
+@Entity
+public class Member {
+
+    @Id @GeneratedValue
+    private Long id;
+
+    @Column(name = "USERNAME")
+    private String name;
+    
+    private int age;
+    
+		// Team과의 연관관계 생성
+    @ManyToONE
+    @JoinColumn(name = "TEAM_ID") // 테이블에서의 외래키
+    private Team team
+
+		// getter, setter
+}
+```
+
+```java
+@Entity
+public class Team {
+
+    @Id @GeneratedValue
+    private Long id;
+
+    private String name;
+
+		// getter, setter
+}
+```
+
+- 연관관계 저장하기
+	```java
+	// 팀 저장
+	Team team = new Team();
+	team.setName("TeamA");
+	em.persist(team);
+
+	// 회원 저장
+	Member member = new Member();
+	member.setName("member1");
+	member.setTeam(team); // 단방향 연관관계 설정
+	em.persist(member);
+	```
+
+- 참조로 연관관계 조회하기
+	```java
+	// 조회
+	Member findMember = em.find(Member.class, member.getId());
+
+	// 참조를 사용해서 연관관계 조회
+	Team findTeam = findMember.getTeam();
+	```
+
+- 연관관계 수정
+	```java
+	// 새로운 팀 저장
+	Team teamB = new Team();
+	teamB.setName("TeamB");
+	em.persist(teamB);
+
+	// 회원1에 새로운 팀 설정
+	// persist() 없이도 자동 반영
+	member.setTeam(teamB);
+	```
+
+### 양방향 연관관계
+
+<img src="https://user-images.githubusercontent.com/109272360/221085893-86898fb8-4a98-43c5-9d42-1b9ffa7d8f2a.png" width="550px">
+
+```java
+@Entity
+public class Member {
+
+    @Id @GeneratedValue
+    private Long id;
+
+    @Column(name = "USERNAME")
+    private String name;
+    
+    private int age;
+    
+		// Team과의 연관관계 생성
+    @ManyToONE
+    @JoinColumn(name = "TEAM_ID")
+    private Team team
+
+		// getter, setter
+}
+```
+
+```java
+@Entity
+public class Team {
+
+    @Id @GeneratedValue
+    private Long id;
+
+    private String name;
+
+		// 양방향 매핑
+		// mappedBy: 반대편 엔티티가 참조하는 이름
+		@OneToMany(mappedBy = "team")
+		List<Member> members = new ArrayList<Member>();
+
+		// getter, setter
+}
+```
+
+- 양방향 매핑
+	```java
+  Team team = new Team();
+  team.setName("teamA");
+  em.persist(team);
+
+  Member member = new Member();
+  member.setUsername("member1");
+  member.setAge(20);
+	member.setTeam(team);
+  em.persist(member);
+
+	// flush & clear 작업을 하지 않으면 엔티티 매니저는 team을 영속성 컨텍스트에서 가져온다.
+	// 영속성 컨텍스트에서의 team은 바뀐 member를 인식하지 못한다. (member에만 team을 추가했기 때문)
+	// 따라서 flush 후 영속성 컨텍스트를 비우면 DB에서 갱신된 team을 가져올 수 있다.
+	em.flush();
+	em.clear();
+
+  Team findTeam = em.find(Team.class, team.getId());
+	int memberSize = findTeam.getMembers().size(); // 역방향 조회
+	```
+
+> **양방향 매핑 시 주의할 점**
+> 
+> 양방향으로 매핑하더라도 다음과 같이 `member` 객체에서만 `team` 객체를 저장하는 경우, `team` 객체는 `member` 객체를 인지하지 못한다.
+> 
+> ```java
+> // team 생성
+> Team team = new Team();
+> team.setName("teamA");
+> em.persist(team);
+> 
+> // member 생성
+> Member member = new Member();
+> member.setUsername("member");
+> member.setAge(20);
+> member.setTeam(team); // teamA와의 연관관계 생성
+> em.persist(member);
+> 
+> // member -> team 조회 성공
+> Team findTeam = member.getTeam();
+> System.out.println(findTeam.getName()); // teamA
+> 
+> // team -> member 조회 실패
+> System.out.println(team.getMembers()); // null
+> ```
+> 
+> 따라서 순수 객체 상태를 유지하기 위해서는 항상 **양쪽에 값을 설정**해야 한다.
+> 
+> ```java
+> Team team = new Team();
+> team.setName("teamA");
+> em.persist(team);
+> 
+> Member member = new Member();
+> member.setUsername("member");
+> member.setAge(20);
+> member.setTeam(team);
+> em.persist(member);
+> 
+> // 역방향으로도 저장
+> team.getMembers().add(member);
+> 
+> // member -> team 조회 성공
+> Team findTeam = member.getTeam();
+> System.out.println(findTeam.getName()); // teamA
+> 
+> // team -> member 조회 성공
+> List<Member> findMembers = team.getMembers();
+> for (Member findMember : findMembers) {
+>     System.out.println(findMember.getUsername()); // member
+> }
+> ```
+>
+> 이는 한 객체의 setter를 양방향 매핑에 맞게 고침으로써 간편하게 적용가능하다.
+> 
+> ```java
+> @Entity
+> public class Team {
+> 		...
+> 
+> 		// setMembers 대신 작성
+> 		// 양방향 모두 저장
+>     public void changeMembers(Member member) {
+>         members.add(member);
+>         member.setTeam(this);
+>     }
+> }
+> ```
+> ```java
+> Member member = new Member();
+> member.setUsername("member1");
+> member.setAge(20);
+> em.persist(member);
+> 
+> Team team = new Team();
+> team.setName("teamA");
+> team.changeMembers(member);
+> em.persist(team);
+> 
+> // 역방향으로 저장할 필요 x
+> // member.setTeam(team);
+> 
+> // member -> team 조회 성공
+> Team findTeam = member.getTeam();
+> System.out.println(findTeam.getName()); // teamA
+> 
+> // team -> member 조회 성공
+> List<Member> findMembers = team.getMembers();
+> for (Member findMember : findMembers) {
+>     System.out.println(findMember.getUsername()); // member1
+> }
+> ```
+
+### 연관관계의 주인
+
+객체끼리 연관관계를 맺기 위해서는 한 객체가 다른 객체의 정보를 갖고 있어야 한다.
+
+따라서 다른 객체와 연관관계를 맺을 **연관관계 주인**을 정해야 하는데, 연관관계 주인은 주로 **테이블 상에서 외래키를 갖고 있는 곳**으로 정한다.
+
+(비지니스 로직을 기준으로 정하지 않는다.)
+
+이렇게 연관관계 주인을 정한 뒤, 연관관계 주인이 맺은 단방향 매핑만으로도 연관관계 매핑은 완료된다.
+
+따라서 우선적으로 단방향 매핑 후 양방향 매핑은 필요 시 추가해도 무방하다.
+
+(양방향 매핑은 반대 방향으로의 조회 기능이 추가된 것 뿐)
+
+### 다양한 연관관계 매핑
+
+- 다대일 (N:1)
+	
