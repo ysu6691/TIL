@@ -1092,3 +1092,247 @@ public class Member {
     ...
 }
 ```
+
+### 값 타입과 불변 객체
+
+임베디드 타입 같은 값 타입을 여러 객체가 공유하면 예상치 못한 버그가 발생할 수 있다.
+
+```java
+// 입베디드 타입 생성
+Address address = new Address("city", "street", "zipcode");
+
+Member member1 = new Member();
+member1.setAddress(address);
+
+// 같은 값 타입 공유
+Member member2 = new Member();
+member2.setAddress(address);
+
+// member1의 주소를 바꾸고자 함
+address.setCity("newCity");
+
+// member2의 주소도 함께 바뀌어버림
+System.out.println(member2.getAddress().getCity()); // newCity
+```
+
+**임베디드 타입은 자바의 기본 타입이 아니라 객체 타입이므로 참조 형태로 전달된다.**
+
+따라서 다음과 같이 값을 복사해서 사용할 것을 권장한다.
+
+```java
+Address address = new Address("city", "street", "zipcode");
+
+Member member1 = new Member();
+member1.setAddress(address);
+
+// 값을 복사해서 사용
+Member member2 = new Member();
+member2.setAddress(new Address(address.getCity(), address.getStreet(), address.getZipcode()));
+
+// member1의 주소를 바꾸고자 함
+address.setCity("newCity");
+
+// member2의 주소는 변하지 않음
+System.out.println(member2.getAddress().getCity()); // city
+```
+
+또는 부작용을 원천 차단하기 위해 값 타입은 **불변 객체로 설계**해, 생성 시점 이후 값을 변경할 수 없도록 할 수 있다.
+
+-> 생성자로만 값을 설정하고 setter 삭제하기 (Integer, String은 자바가 제공하는 대표적인 불변 객체)
+
+```java
+@Embeddable
+public class Address {
+
+    private String city;
+    private String street;
+    private String zipcode;
+
+    public Address(String city, String street, String zipcode) {
+        this.city = city;
+        this.street = street;
+        this.zipcode = zipcode;
+    }
+
+	// setter는 존재 x
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public String getZipcode() {
+        return zipcode;
+    }
+}
+```
+
+```java
+Address address = new Address("city", "street", "zipcode");
+
+Member member1 = new Member();
+member1.setAddress(address);
+
+Member member2 = new Member();
+member2.setAddress(address);
+
+// setter는 이제 불가능
+// address.setCity("newCity");
+
+// 생성자로만 값을 설정 가능
+Address newAddress = new Address("newCity", "street", "zipcode");
+member1.setAddress(newAddress);
+
+// member2의 주소는 이제 변하지 않음
+System.out.println(member2.getAddress().getCity()); // city
+
+```
+
+### 값 타입의 비교
+
+값 타입은 인스턴스가 달라도 그 안의 값이 같으면 같은 것으로 봐야 한다.
+
+```java
+// 두 인스턴스는 같은 같은 것으로 취급되어야 한다.
+Address address1 = new Address("city", "street", "zipcode");
+Address address2 = new Address("city", "street", "zipcode");
+```
+
+인스턴스는 다음 두 가지 방식으로 비교할 수 있다.
+
+- **동일성(identity) 비교**: 인스턴스의 참조 값을 비교(`==` 사용)
+- **동등성(equivalence) 비교**: 인스턴스의 값을 비교(`equals()` 사용)
+
+**여기서 값 타입은 동등성 비교를 통해 비교를 해야 한다.**
+
+값 타입의 `equals()` 메소드를 적절하게 재정의한 뒤 사용한다.
+
+```java
+@Embeddable
+public class Address {
+    ...
+
+    // equals와 hashCode 재정의
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return Objects.equals(city, address.city) && Objects.equals(street, address.street) && Objects.equals(zipcode, address.zipcode);
+	}
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(city, street, zipcode);
+    }
+}
+```
+
+```java
+Address address1 = new Address("city", "street", "zipcode");
+Address address2 = new Address("city", "street", "zipcode");
+
+// 재정의한 equals를 통해 비교한다
+System.out.println(address1.equals(address2)); // true
+
+// ==은 사용 x
+System.out.println(address1 == address2); // false
+```
+
+### 값 타입 컬렉션
+
+값 타입을 하나 이상 저장할 때 사용할 수 있다.
+
+**값 타입에 대한 별도의 테이블이 생성되고, 기존 엔티티와의 일대다 관계를 맺는다.**
+
+`@ElementCollection`, `@CollectionTable`을 사용한다.
+
+```java
+@Entity
+public class Member {
+    ...
+
+    @Embedded
+    private Adress address;
+
+    // 기본값이 lazy라 fetch 속성은 생략 가능
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name="ADDRESS", joinColumns=
+        @JoinColumn(name="MEMBER_ID")
+	)
+	private List<Address> addressHistory = new ArrayList<>();
+}
+```
+
+```java
+Address address1 = new Address("city1", "street1", "zipcode1");
+Address address2 = new Address("city2", "street2", "zipcode2");
+
+Member member = new Member();
+member.getAddressHistory().add(address1);
+member.getAddressHistory().add(address2);
+
+// member만 persist해도 address 테이블은 갱신됨
+// address는 member의 라이프 사이클을 따르는 값 타입이기 때문
+em.persist(member);
+```
+
+<img src="https://user-images.githubusercontent.com/109272360/221618834-3bf60d67-57ca-45a2-bb60-865297827fff.png" width="300px">
+
+하지만 값 타입 컬렉션은 식별자가 없기 때문에 수정, 삭제 시 추적이 어렵다.
+
+따라서 변경 사항이 발생하면 주인 엔티티와 연관된 모든 데이터를 삭제하고, 현재 값을 모두 다시 저장한다.
+
+따라서 **상황에 따라 값 타입 컬렉션 대신 새로운 엔티티 생성을 및 일대다 관계를 고려**해야 한다.
+
+(영속성 전이(Cascasde) + 고아 객체 제거를 사용해서 값 타입 컬렉션처럼 사용)
+
+```java
+// 값 타입 컬렉션 대신 새로운 엔티티 생성
+@Entity
+public class AddressEntity {
+
+    @Id @GeneratedValue
+    private Long id;
+
+    private Address address;
+
+    public AddressEntity(Address address) {
+        this.address = address;
+    }
+}
+```
+
+```java
+@Entity
+public class Member {
+    ...
+
+    // 일대다 관계로 연결
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "MEMBER_ID")
+    private List<AddressEntity> addressHistory = new ArrayList<AddressEntity>();
+
+    ...
+}
+```
+
+```java
+Address address1 = new Address("city1", "street1", "zipcode1");
+Address address2 = new Address("city2", "street2", "zipcode2");
+
+Member member = new Member();
+member.getAddressHistory().add(new AddressEntity(address1));
+member.getAddressHistory().add(new AddressEntity(address2));
+
+em.persist(member);
+```
+
+> **값 타입과 엔티티를 혼동하지 말 것**
+> 
+> 식별자가 필요하고, 지속해서 값을 추적 및 변경해야 한다면 그것은 엔티티이다.
+> 
+> 값 타입은 정말 값 타입이라 판단될 때만 사용해야 한다.
