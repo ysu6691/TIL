@@ -1370,6 +1370,11 @@ delete_절
   - 테이블 이름 대신 엔티티 이름을 사용 (`Member`)
   - 별칭은 필수 (`m`) (`as`는 생략 가능)
 
+- `createQuery(쿼리, [타입])`
+  - 첫 번째 인자로 String 타입의 쿼리를 넣는다.
+  - 두 번째 인자로 타입을 넣어 반환할 타입을 지정할 수 있다.
+
+
 ### 집합과 정렬
 
 `GROUP BY`, `HAVING`, `ORDER BY` 사용 가능
@@ -1547,3 +1552,229 @@ for (Member member : resultList) {
     `select m, t from Member m left join Team t on m.username = t.name`
 
 ### 서브 쿼리
+
+- `[NOT] EXISTS`
+  - 서브 쿼리 조건을 만족하는[만족하지 않는] 경우만 반환
+  - 예시1: 팀이 "teamA"인 유저만 반환
+
+    `select m from Member m where exists (select t from m.team t where t.name = 'teamA')`
+
+  - 예시2: 팀이 "teamA"가 아닌 유저만 반환
+
+     `select m from Member m where not exists (select t from m.team t where t.name = 'teamA')`
+
+- `ALL`
+
+  - 서브 쿼리에서 반환된 모든 값을 확인
+
+  - 예시: 상품 재고의 최댓값보다 주문량이 더 큰 주문들
+    
+    `select o from Order o where o.orderAmount > all (select p.stockAmount from Product p)`
+
+    (위 쿼리는 `select o from Order o where o.orderAmount > (select MAX(p.stockAmount) from Product p)`와 같음)
+
+- `ANY`(=`SOME`)
+
+  - 서브 쿼리 결과 중 하나라도 만족하면 참
+
+  - 예시: 어떤 팀이든 팀에 소속된 회원
+
+    `select m from Member m where m.team = any (select t from Team t)`
+
+- `[NOT] IN`
+
+  - 서브 쿼리 중 하나라도 같은 것이 있으면 참[거짓]
+
+  - 예시1: 지역이 서울인 부서에 속한 직원
+
+    `select e from Employee e where e.department in (select d from Department d where d.location = 'Seoul')`
+
+  - 예시2: 부서가 IT, Sales인 직원
+
+    `select e from Employee e where e.department in ('IT', 'Sales')`
+
+  - 예시3: 부서가 IT, Sales가 아닌 직원
+  
+    `select e from Employee e where e.department not in ('IT', 'Sales')`
+
+※ JPQL은 WHERE, HAVING, SELECT, FROM(하이버네이트 6 이상)절의 서브 쿼리를 지원한다.
+
+   FROM절의 서브 쿼리는 조인으로 풀어서 해결하는 것도 가능하다.
+
+### 타입 표현
+
+- enum
+  
+  `패키지명.enum명.타입` 형태로 사용
+
+  ```java
+  // enum 생성
+  package jpql;
+
+  public class MemberType {
+      ADMIN, USER
+  }
+  ```
+
+  ```java
+  public class Member {
+      ...
+      @Enumerated(EnumType.STRING)
+      private MemberType type;
+  }
+  ```
+
+  ```java
+  String query = "select m from Member m where m.type = jpql.MemberType.ADMIN";
+  ```
+  
+- 엔티티 타입: `type()` (상속 관계에서 사용)
+  
+  ```java
+  // Book이 Item을 상속 받고 있는 경우
+  String query = "select i from Item i where type(i) = Book";
+  ```
+
+### 조건식
+
+- 기본 case 식
+
+  ```java
+  Member member = new Member();
+  member.setAge(8);
+  em.persist(member);
+  
+  em.flush();
+  em.clear();
+  
+  String query =
+          "select " +
+                  "case when m.age <= 10 then '학생요금' " +
+                  "     when m.age >= 60 then '경로요금' " +
+                  "     else '일반요금' " +
+                  "end " +
+          "from Member m";
+  List<String> resultList = em.createQuery(query, String.class).getResultList();
+  for (String s : resultList) {
+      System.out.println(s); // 학생요금
+  }
+  ```
+
+- 단순 case 식
+
+  ```java
+  Team team = new Team();
+  team.setName("teamA");
+  em.persist(team);
+  
+  em.flush();
+  em.clear();
+  
+  String query =
+          "select " +
+              "case t.name " +
+                  "when 'teamA' then '인센티브 110%' " +
+                  "when 'teamB' then '인센티브 120%' " +
+                  "else '인센티브 105%' " +
+          "end " +
+          "from Team t";
+  List<String> resultList = em.createQuery(query, String.class).getResultList();
+  for (String s : resultList) {
+      System.out.println(s); // 인센티브 110%
+  }
+  ```
+
+- COALESCE(A, B)
+  
+  A가 null인 경우 B 반환
+
+  ```java
+  Member member1 = new Member();
+  member1.setUsername(null);
+  em.persist(member1);
+
+  Member member2 = new Member();
+  member2.setUsername("member1");
+  em.persist(member2);
+
+  em.flush();
+  em.clear();
+
+  String query = "select coalesce(m.username, '이름 없는 회원') from Member m";
+  List<String> resultList = em.createQuery(query, String.class).getResultList();
+  for (String s : resultList) {
+      System.out.println(s);
+      // 이름없는 회원
+      // member1
+  }
+  ```
+
+- NULLIF(A, B)
+
+  A가 B와 같으면 null로 반환
+
+  ```java
+  Member member1 = new Member();
+  member1.setUsername("member1");
+  em.persist(member1);
+
+  Member member2 = new Member();
+  member2.setUsername("member2");
+  em.persist(member2);
+
+  em.flush();
+  em.clear();
+
+  String query = "select nullif(m.username, 'member1') from Member m";
+  List<String> resultList = em.createQuery(query, String.class).getResultList();
+  for (String s : resultList) {
+      System.out.println(s);
+      // null
+      // member2
+  }
+  ```
+
+### JPQL 함수
+
+- CONCAT
+  ```java
+  String query = "select concat('a', 'b') from Member m"; // ab
+  ```
+
+- SUBSTRING
+  ```java
+  String query = "select substring('abcdefg', 2, 3) from Member m"; // bcd
+  ```
+
+- TRIM
+  ```java
+  String query = "select trim(' abc ') from Member m"; // abc
+  ```
+  
+- LOWER, UPPER
+  ```java
+  String query1 = "select lower('Abc') from Member m"; // abc
+  String query2 = "select upper('Abc') from Member m"; // ABC
+  ```
+
+- LENGTH
+  ```java
+  String query = "select length('abc') from Member m"; // 3
+  ```
+
+- LOCATE
+  ```java
+  String query = "select locate('cd', 'abcdefg') from Member m"; // 3
+  ```
+
+- ABS, SQRT, MOD(A, B)
+  ```java
+  String query1 = "select abs(-10) from Member m"; // 10
+  String query2 = "select sqrt(4) from Team t where t.name='teamA'"; // 2
+  String query3 = "select mod(10, 3) from Team t where t.name='teamA'"; // 10 % 3 = 1
+  ```
+
+- SIZE
+  ```java
+  String query = "select size(t.members) from Team t where t.name='teamA'"; // teamA의 구성원 수
+  ```
