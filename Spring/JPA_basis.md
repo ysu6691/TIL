@@ -724,10 +724,10 @@ public class Team {
 > ```java
 > @Entity
 > public class Team {
-> 		...
+>     ...
 > 
-> 		// setMembers 대신 작성
-> 		// 양방향 모두 저장
+>     // setMembers 대신 작성
+>     // 양방향 모두 저장
 >     public void changeMembers(Member member) {
 >         members.add(member);
 >         member.setTeam(this);
@@ -815,13 +815,13 @@ public class Team {
 // @DiscriminatorColumn(name="xxx") (name 안 적을 시 기본값: DTYPE)
 public class Item {
 	
-	@Id @GeneratedValue
-	private Long id;
+    @Id @GeneratedValue
+    private Long id;
 
-	private String name;
-	private int price;
+    private String name;
+    private int price;
 
-	// getter, setter
+    // getter, setter
 }
 ```
 
@@ -833,7 +833,7 @@ public class Item {
 public class Album extends Item {
     private String artist;
 
-		// artist에 대한 getter, setter
+    // artist에 대한 getter, setter
 }
 ```
 
@@ -895,10 +895,10 @@ public class Album extends Item {
 public abstract class BaseEntity {
     private String createBy;
     private LocalDateTime createdDate;
-		private String lastModifiedBy;
-		private LocalDateTime lastModifiedDate;
+    private String lastModifiedBy;
+    private LocalDateTime lastModifiedDate;
 
-		// getter, setter
+    // getter, setter
 }
 ```
 
@@ -907,7 +907,7 @@ public abstract class BaseEntity {
 public class Member extends BaseEntity {
     private String name;
 
-		// getter, setter
+    // getter, setter
 }
 ```
 
@@ -1014,7 +1014,7 @@ public class PhoneServiceProvider {
 
     private String name;
 
-	private PhoneNumber phoneNumber;
+    private PhoneNumber phoneNumber;
 
     // getter, setter
 }
@@ -1154,7 +1154,7 @@ public class Address {
         this.zipcode = zipcode;
     }
 
-	// setter는 존재 x
+    // setter는 존재 x
 
     public String getCity() {
         return city;
@@ -1262,8 +1262,8 @@ public class Member {
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name="ADDRESS", joinColumns=
         @JoinColumn(name="MEMBER_ID")
-	)
-	private List<Address> addressHistory = new ArrayList<>();
+    )
+    private List<Address> addressHistory = new ArrayList<>();
 }
 ```
 
@@ -1336,3 +1336,214 @@ em.persist(member);
 > 식별자가 필요하고, 지속해서 값을 추적 및 변경해야 한다면 그것은 엔티티이다.
 > 
 > 값 타입은 정말 값 타입이라 판단될 때만 사용해야 한다.
+
+## 6. JPQL(Java Persistence Query Language)
+
+### 기본 문법과 기능
+
+JPQL은 객체 지향 쿼리 언어로, **테이블이 아닌 엔티티 객체를 대상으로 쿼리**한다.
+
+특정 데이터베이스 SQL에 의존하지 않으며, 최종적으로 SQL로 변환된다.
+
+```java
+// select_문
+select_절
+from_절
+[where_절]
+[groupby_절]
+[having_절]
+[orderby_절]
+
+// update_문
+update_절
+[where_절]
+
+// delete_문
+delete_절
+[where_절]
+```
+
+- 규칙
+  - 예시: `select m from Member as m where m.age > 18`
+  - 엔티티와 속성은 대소문자 구분 o (`Member`, `age`)
+  - JPQL 키워드는 대소문자 구분 x (`SELECT`, `FROM`, `where`)
+  - 테이블 이름 대신 엔티티 이름을 사용 (`Member`)
+  - 별칭은 필수 (`m`) (`as`는 생략 가능)
+
+### 집합과 정렬
+
+`GROUP BY`, `HAVING`, `ORDER BY` 사용 가능
+
+```java
+select
+    COUNT(m),   // 회원 수
+    SUM(m.age), // 나이 합
+    AVG(m.age), // 평균 나이
+    MAX(m.age), // 최대 나이
+    MIN(m.age)  // 최소 나이
+from Member m
+```
+
+### TypeQuery, Query
+
+- `TypeQuery`
+
+  반환 타입이 명확할 때 사용
+
+  ```java
+  TypeQuery<Member> query1 = 
+      em.createQuery("select m from Member m", Member.class);
+
+  TypeQuery<String> query2 = 
+    em.createQuery("select m.username from Member m", String.class);
+  ```
+
+- Query
+  
+  반환 타입이 명확하지 않을 때 사용
+
+  ```java
+  Query query = 
+    em.createQuery("select m.username, m.age from Member m");
+  ```
+
+### 결과 조회 API
+
+- `query.getResultList()`
+  - 결과가 하나 이상일 때 리스트 반환
+  - 결과가 없으면 빈 리스트 반환
+
+- `query.getSingleResult()`
+  - 결과가 정확히 하나일 때 단일 객체 반환
+  - 결과가 없으면: javax.persistence.NoResultException
+  - 둘 이상이면: javax.persistence.NonUniqueResultException
+
+### 파라미터 바인딩
+
+- 이름 기준
+  ```java
+  // 이름 기준 동적 파라미터 생성
+  TypedQuery<Member> query = em.createQuery(
+      "select m from Member m where m.username = :username", Member.class
+  );
+
+  // 인자 부여
+  query.setParameter("username", "member1");
+
+  // username이 member1인 멤버 객체 반환
+  Member result = query.getSingleResult();
+  ```
+  ```java
+  // 이는 보통 chaining을 통해 구현된다.
+  Member result = em.createQuery("select m from Member m where m.username = :username", Member.class)
+          .setParameter("username", "member1")
+          .getSingleResult();
+  ```
+
+- 위치 기준
+
+  위치 기준은 혼동의 우려가 있어 잘 사용하지 않는다.
+
+  ```java
+  // 위치 기준 동적 파라미터 생성
+  TypedQuery<Member> query = em.createQuery(
+      "select m from Member m where m.username = ?1", Member.class
+  );
+
+  // 인자 부여
+  query.setParameter(1, "member1");
+
+  // username이 member1인 멤버 객체 반환
+  Member result = query.getSingleResult();
+  ```
+
+### 프로젝션
+
+SELECT 절에 조회할 대상을 지정하는 것
+
+프로젝션 대상: 엔티티, 임베디드 타입, 스칼라 타입(숫자, 문자 등 기본 데이터 타입)
+
+- `select m from Member m` -> 엔티티 프로젝션
+- `select m.team from Member m` -> 엔티티 프로젝션
+- `select m.address from Member m` -> 임베디드 타입 프로젝션
+- `select m.username, m.age from Member m` -> 스칼라 타입 프로젝션
+- `select` 키워드 다음 `distinct`를 명시해 중복 제거 가능
+
+프로젝션으로 여러 값을 조회하는 방법은 다음과 같다.
+- Query 타입으로 조회
+  ```java
+  List resultList = em.createQuery("select m.username, m.age from Member m")
+          .getResultList();
+
+  Object o = resultList.get(0);
+  Object[] result = (Object[]) o;
+  System.out.println("name: " + result[0]); // 유저 name
+  System.out.println("age: " + result[1]); // 유저 age
+  ```
+
+- Object[] 타입으로 조회
+  ```java
+  List<Object[]> resultList = em.createQuery("select m.username, m.age from Member m")
+          .getResultList();
+  Object[] result = resultList.get(0);
+  System.out.println("name: " + result[0]); // 유저 name
+  System.out.println("age: " + result[1]); // 유저 age
+  ```
+
+- new 명령어로 조회
+  ```java
+  // 순서와 타입이 일치하는 생성자가 필요하다.
+  List<MemberDTO> result = em.createQuery("select new 패키지명.MemberDTO(m.username, m.age) from Member m", MemberDTO.class)
+          .getResultList();
+  MemberDTO memberDTO = result.get(0);
+  System.out.println("name: " + memberDTO.getUsername()); // 유저 name
+  System.out.println("age: " + memberDTO.getAge()); // 유저 age
+  ```
+
+### 페이징 API
+
+JPA는 페이징을 다음 두 API로 추상화한다.
+
+- `setFirstResult(int startPosition)`: 조회 시작 위치 (0부터 시작)
+- `setMaxResults(int maxResult)`: 조회할 데이터 수
+
+```java
+String jpql = "select m from Member m";
+List<Member> resultList = em.createQuery(jpql, Member.class)
+        .setFirstResult(10) // 10번째 유저부터
+        .setMaxResults(3) // 3명의 유저 가져오기
+        .getResultList();
+
+for (Member member : resultList) {
+    System.out.println(member.getUsername());
+    // member10
+    // member11
+    // member12
+}
+```
+
+### 조인
+
+- 내부 조인
+  
+  `select m from Member m [inner] join m.team t`
+
+- 외부 조인
+
+  `select m from Member m left [outer] join m.team t`
+
+- 세타 조인
+
+  `select count(m) from Member m, Team t where m.username = t.name`
+
+- ON절(JPA 2.1부터 지원)
+  
+  - 조인 대상 필터링
+    
+	`select m, t from Member m left join m.team t on t.name = "팀이름"`
+
+  - 연관관계 없는 엔티티 외부 조인(하이버네이트 5.1부터 지원)
+
+    `select m, t from Member m left join Team t on m.username = t.name`
+
+### 서브 쿼리
