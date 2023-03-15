@@ -82,6 +82,65 @@ public class NoDIController {
 
 다른 방식과는 다르게 생성자를 통한 의존성 주입 방식은 레퍼런스 객체 없이는 객체를 초기화할 수 없게 설계할 수 있기 때문이다.
 
+### 서블릿(Servlet)
+
+**서블릿이란 클라이언트의 요청을 처리하고 결과를 반환하는 자바 웹 프로그래밍 기술이다.**
+
+- 서블릿 Life-Cycle
+
+  - `init()`: 서블릿이 메모리에 로드될 때 한번만 호출
+
+  - `servie()`: 모든 요청은 service()를 통해 `doXXX()` 메소드로 이동
+
+  - `doGet()`: GET 방식으로 요청 시 호출
+
+  - `doPost()`: POST 방식으로 요청 시 호출
+
+  - `destroy()`: 서블릿이 메모리에서 해제되면 호출
+
+
+- 서블릿의 동작 방식
+
+  1. 클라이언트로부터 HTTP 요청을 받아 서블릿 컨테이너로 전달된다.
+
+  2. 서블릿 컨테이너는 해당 요청을 처리하기 위해 `init()` 메소드를 호출해 서블릿 인스턴스를 생성한다.
+
+  3. 요청을 처리한 뒤 HTTP 응답을 생성해 클라이언트에 전달한다.
+
+```java
+public class myServlet extends HttpServlet {
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+
+    }
+    
+    @Override
+    public void destroy() {
+
+    }
+
+    @Override
+    protected void doService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // GET, POST 방식에 상관 없이 호출
+    }
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // GET 방식일 때 호출
+    }
+    
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // POST 방식일 때 호출
+    }
+	
+}
+```
+
+
+
 ### 스프링 부트의 동작 방식
 
 스프링 부트에서 `spring-boot-starter-web` 모듈을 사용하면 기본적으로 톰캣(Tomcat)을 사용하는 스프링 MVC 구조를 기반으로 동작한다.
+
