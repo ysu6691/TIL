@@ -101,11 +101,24 @@ public class NoDIController {
 
 - 서블릿의 동작 방식
 
-  1. 클라이언트로부터 HTTP 요청을 받아 서블릿 컨테이너로 전달된다.
+  1. 웹 서버(e.g. Apache Tomcat)가 시작될 때 서블릿 컨테이너는 모든 서블릿을 배치하고 로드한다.
 
-  2. 서블릿 컨테이너는 해당 요청을 처리하기 위해 `init()` 메소드를 호출해 서블릿 인스턴스를 생성한다.
+     이때 ServletContext 객체를 생성하는데, ServletContext는 각 웹 애플리케이션마다 하나만 존재하며 모든 서블릿에서 공통적으로 사용된다.
 
-  3. 요청을 처리한 뒤 HTTP 응답을 생성해 클라이언트에 전달한다.
+     ServletContext는 `addListener()`, `addFilter()` 등의 유용한 메소드를 제공한다.
+
+  2. 서블릿이 로드되면 서블릿 컨테이너는 `init()` 메소드를 호출해 서블릿 인스턴스를 생성한다.
+
+     이렇게 초기화된 서블릿 인스턴스는 싱글톤으로 관리되어 다음에 한 번 더 해당 서블릿 클래스를 호출하면 `init()` 메소드가 호출되지 않고 기존에 있던 서블릿 인스턴스를 호출한다.
+
+  3. 클라이언트로부터 HTTP 요청을 받을 때마다 서블릿 컨테이너는 HttpServletRequest와 HttpServletResponse 객체를 생성한다.
+
+     각 요청에 대해 `service()` 메소드를 호출하는 새로운 스레드를 생성한다.
+
+     `service()` 메소드는 요청 방식에 따라 `doXXX()` 메소드로 요청을 전달한다.
+
+  4. 적절한 서비스 
+
 
 ```java
 public class myServlet extends HttpServlet {
