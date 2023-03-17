@@ -117,7 +117,7 @@ public class NoDIController {
 
      `service()` 메소드는 요청 방식에 따라 `doXXX()` 메소드로 요청을 전달한다.
 
-  4. 적절한 서비스 
+  4. 적절한 서비스
 
 
 ```java
