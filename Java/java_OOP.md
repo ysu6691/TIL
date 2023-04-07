@@ -965,7 +965,7 @@ package inheritance;
 public class StudentTest {
 	public static void main(String[] args) {
 		Student s = new Student();
-        // Person의 속성에 접근 가능
+    // Person의 속성에 접근 가능
 		s.name = "ysu";
 		System.out.println(s.name);
 	}
