@@ -111,3 +111,58 @@ StaticApplicationContext ac = new StaticApplicationContext();
   <img src="https://user-images.githubusercontent.com/109272360/230946785-d524ae2c-da74-4855-926c-81197f89c43f.png" width="600px">
 
 이제 IoC 컨테이너에 빈을 등록하는 테스트 코드를 작성해볼 수 있다.
+
+```java
+public class ApplicationContextText{
+    @Test
+    public void registerBean() {
+        // StaticApplicationContext: 코드에 의해 설정 메타정보를 등록하는 기능을 제공하는 애플리케이션 컨텍스트
+        StaticApplicationContext ac = new StaticApplicationContext();
+
+        // 1. 디폴트 메타정보를 사용해서 싱글톤 빈을 등록
+        // Hello 클래스를 hello1이라는 이름의 싱글톤 빈으로 컨테이너에 등록
+        ac.registerSingleton("hello1", Hello.Class);
+        // 빈 등록 확인
+        Hello hello1 = ac.getBean("hello1", Hello.class);
+        assertThat(hello1, is(notNullValue()));
+        
+        // 2. 설정 메타정보를 만들어서 등록
+        // 빈 메타정보를 담은 객체 생성 (빈 클래스는 Hello로 지정)
+        BeanDefinition helloDef = new RootBeanDefinition(Hello.class);
+        helloDef.getPropertyValues().addPropertyValue("name", "Spring"); // name 프로퍼티의 value = Spring
+        ac.registerBeanDefinition("hello2", helloDef);
+        // 프로퍼티 설정 확인
+        Hello hello2 = ac.getBean("hello2", Hello.class);
+        assertThat(hello2.sayHello(), is("Hello Spring"));
+        
+        // 빈은 객체 단위로 등록되기 때문에 같은 클래스 타입이더라도 서로 다른 빈 객체가 만들어진다.
+        assertThat(hello1, is(not(hello2)));        
+    }
+}
+```
+
+또한 서로 다른 타입의 빈에 의존성을 주입할 수도 있다.
+
+```java
+public class ApplicationContextText{
+    @Test
+    public void registerBeanWithDependency() {
+        StaticApplicationContext ac = new StaticApplicationContext();
+        
+        // printer라는 이름을 가진 StringPrinter 타입의 빈 생성
+        ac.registerBeanDefinition("printer", new RootBeanDefinition(StringPrinter.class));
+        
+        BeanDefinition helloDef = new RootBeanDefinition(Hello.class);
+        helloDef.getPropertyValues().addPropertyValue("name", "Spring");
+        // 아이디가 printer인 빈에 대한 레퍼런스를 프로퍼티로 등록
+        helloDef.getPropertyValues().addPropertyValue("printer", new RuntimeBeanReference("printer"));
+        ac.registerBeanDefinition("hello", helloDef);
+        
+        Hello hello = ac.getBean("hello", Hello.class);
+        hello.print();
+        
+        // Hello 클래스의 print() 메소드는 DI 된 Printer 타입의 객체에 의해 Hello Spring을 출력
+        assertThat(ac.getBean("printer").toString(), is("Hello Spring"));
+    }
+}
+```
