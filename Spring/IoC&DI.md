@@ -11,7 +11,7 @@
 스프링에서 IoC를 담당하는 컨테이너를 **빈 팩토리** 또는 **애플리케이션 컨텍스트**라고 부른다.
 
 - **빈 팩토리**
-  - **의존성 주입(DI, Dependency Injection)**을 위한 객체의 생성과 객체 사이의 런타임 관계를 설정
+  - **의존성 주입**(DI, Dependency Injection)을 위한 객체의 생성과 객체 사이의 런타임 관계를 설정
   - `BeanFactory` 인터페이스로 정의된다.
 
 - **애플리케이션 컨텍스트**
@@ -43,7 +43,7 @@ StaticApplicationContext ac = new StaticApplicationContext();
 
   서로의 인터페이스에만 의존하며, 어떤 구체적인 객체를 사용하게 될지는 관심을 갖지 않는다.
 
-  <img src="https://user-images.githubusercontent.com/109272360/230944859-05bd1713-8139-44b9-b288-7906a0f556f8.png" width="400px">
+  <img src="https://user-images.githubusercontent.com/109272360/230944859-05bd1713-8139-44b9-b288-7906a0f556f8.png" width="500px">
 
   ```java
   public class Hello {
@@ -108,7 +108,7 @@ StaticApplicationContext ac = new StaticApplicationContext();
 
   이렇게 DI로 연결되는 객체들이 모여서 하나의 애플리케이션을 구성하고 동작하게 된다.
 
-  <img src="https://user-images.githubusercontent.com/109272360/230946785-d524ae2c-da74-4855-926c-81197f89c43f.png" width="600px">
+  <img src="https://user-images.githubusercontent.com/109272360/230946785-d524ae2c-da74-4855-926c-81197f89c43f.png" width="700px">
 
 이제 IoC 컨테이너에 빈을 등록하는 테스트 코드를 작성해볼 수 있다.
 
