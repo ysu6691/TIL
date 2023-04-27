@@ -1400,7 +1400,7 @@ from Member m
       em.createQuery("select m from Member m", Member.class);
 
   TypeQuery<String> query2 = 
-    em.createQuery("select m.username from Member m", String.class);
+      em.createQuery("select m.username from Member m", String.class);
   ```
 
 - Query
@@ -1409,7 +1409,7 @@ from Member m
 
   ```java
   Query query = 
-    em.createQuery("select m.username, m.age from Member m");
+      em.createQuery("select m.username, m.age from Member m");
   ```
 
 ### 결과 조회 API
