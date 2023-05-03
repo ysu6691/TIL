@@ -1441,8 +1441,8 @@ from Member m
   ```java
   // 이는 보통 chaining을 통해 구현된다.
   Member result = em.createQuery("select m from Member m where m.username = :username", Member.class)
-          .setParameter("username", "member1")
-          .getSingleResult();
+      .setParameter("username", "member1")
+      .getSingleResult();
   ```
 
 - 위치 기준
