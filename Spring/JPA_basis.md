@@ -1478,7 +1478,7 @@ SELECT 절에 조회할 대상을 지정하는 것
 - Query 타입으로 조회
   ```java
   List resultList = em.createQuery("select m.username, m.age from Member m")
-          .getResultList();
+      .getResultList();
 
   Object o = resultList.get(0);
   Object[] result = (Object[]) o;
@@ -1489,7 +1489,7 @@ SELECT 절에 조회할 대상을 지정하는 것
 - Object[] 타입으로 조회
   ```java
   List<Object[]> resultList = em.createQuery("select m.username, m.age from Member m")
-          .getResultList();
+      .getResultList();
   Object[] result = resultList.get(0);
   System.out.println("name: " + result[0]); // 유저 name
   System.out.println("age: " + result[1]); // 유저 age
