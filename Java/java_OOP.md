@@ -926,7 +926,7 @@ public class StudentTest {
 
 `extend`를 이용해 상속을 사용할 수 있다.
 
-부모의 생성자와 초기화 블록은 상속되지 않는다.
+부모의 생성자와 초기화 블록은 상속되지 않는다. 
 
 다중 상속을 허용하지 않는다. (최대 하나의 부모 클래스만 가질 수 있다.)
 
@@ -936,12 +936,12 @@ public class StudentTest {
 package inheritance;
 
 public class Person {
-	String name;
-	int age;
+    String name;
+    int age;
 	
-	public void eat() {
-		System.out.println("음식을 먹는다.");
-	}
+    public void eat() {
+        System.out.println("음식을 먹는다.");
+    }
 }
 ```
 
@@ -965,7 +965,7 @@ package inheritance;
 public class StudentTest {
 	public static void main(String[] args) {
 		Student s = new Student();
-        // Person의 속성에 접근 가능
+    // Person의 속성에 접근 가능
 		s.name = "ysu";
 		System.out.println(s.name);
 	}

@@ -724,10 +724,10 @@ public class Team {
 > ```java
 > @Entity
 > public class Team {
-> 		...
+>     ...
 > 
-> 		// setMembers 대신 작성
-> 		// 양방향 모두 저장
+>     // setMembers 대신 작성
+>     // 양방향 모두 저장
 >     public void changeMembers(Member member) {
 >         members.add(member);
 >         member.setTeam(this);
@@ -815,13 +815,13 @@ public class Team {
 // @DiscriminatorColumn(name="xxx") (name 안 적을 시 기본값: DTYPE)
 public class Item {
 	
-	@Id @GeneratedValue
-	private Long id;
+    @Id @GeneratedValue
+    private Long id;
 
-	private String name;
-	private int price;
+    private String name;
+    private int price;
 
-	// getter, setter
+    // getter, setter
 }
 ```
 
@@ -833,7 +833,7 @@ public class Item {
 public class Album extends Item {
     private String artist;
 
-		// artist에 대한 getter, setter
+    // artist에 대한 getter, setter
 }
 ```
 
@@ -895,10 +895,10 @@ public class Album extends Item {
 public abstract class BaseEntity {
     private String createBy;
     private LocalDateTime createdDate;
-		private String lastModifiedBy;
-		private LocalDateTime lastModifiedDate;
+    private String lastModifiedBy;
+    private LocalDateTime lastModifiedDate;
 
-		// getter, setter
+    // getter, setter
 }
 ```
 
@@ -907,6 +907,874 @@ public abstract class BaseEntity {
 public class Member extends BaseEntity {
     private String name;
 
-		// getter, setter
+    // getter, setter
 }
 ```
+
+## 5. 값 타입
+
+JPA의 데이터 타입을 분류하면 다음과 같다.
+
+- 엔티티 타입
+  - `@Entity`로 정의하는 객체
+  - 데이터가 변해도 식별자로 지속해서 추적 가능
+- 값 타입
+  - int, Integer, String 처럼 단순히 값으로 사용하는 자바 기본 타입이나 객체
+  - 식별자가 없고 값만 있으므로 변경시 추적 불가
+
+값 타입은 다시 다음과 같이 분류할 수 있다.
+
+- 기본값 타입
+  - 자바 기본 타입(int, double)
+  - 래퍼 클래스(Integer, Long)
+  - String
+- 임베디드 타입(embedded type, 복합 값 타입)
+- 컬렉션 값 타입(collection value type)
+
+값 타입은 **생명 주기를 엔티티에 의존**한다.
+
+또한 하나의 값 타입이 여러 곳에서 사용되지 않도록 **절대 공유하지 않아야 한다.**
+
+(한 객체의 속성을 변경했을 때 다른 객체의 속성이 같이 변경되는 side effect 발생 가능)
+
+### 기본값 타입
+
+자바 기본 타입, 래퍼 클래스, String이 기본값 타입에 해당된다.
+
+### 임베디드 타입
+
+새로운 값 타입을 직접 정의할 수 있다.
+
+만약 `Member` 엔티티가 `city`, `street`, `zipcode` 속성을 가지고 있다면, 이 세 속성은 `Address`라는 타입으로 묶어서 관리할 수 있다.
+
+`@Embeddable`로 값 타입을 정의하고, `@Embedded`로 정의한 값 타입을 사용할 수 있다.
+
+생성한 임베디드 타입은 **기본 생성자를 필수로 넣어야 한다.**
+
+임베디드 타입은 재사용성과 높은 응집도를 가지고 있어, 타입 내부에서 해당 타입에 관한 메소드를 작성할 수 있다.
+
+임베디드 타입을 사용해도 테이블의 컬럼에는 차이가 없다.
+
+<img src="https://user-images.githubusercontent.com/109272360/221508147-b1f5aca9-366e-4ee0-8d42-fa0d55baa705.png" width="400px">
+
+```java
+@Entity
+public class Member {
+    
+    @Id @GeneratedValue
+    private Long id;
+
+    private String name;
+
+    @Embedded
+    private Address address;
+
+	// getter, setter
+}
+```
+
+```java
+@Embeddable
+public class Address {
+
+    private String city;
+    private String street;
+    private String zipcode;
+
+    // 기본 생성자를 필수로 넣어야 한다.
+    public Address() {
+
+	}
+
+    public Address(String city, String street, String zipcode) {
+        this.city = city;
+        this.street = street;
+        this.zipcode = zipcode;
+    }
+
+    // getter, setter
+}
+```
+
+```java
+Member member = new Member();
+// setter의 인자로 해당 임베디드 타입을 넣는다.
+member.setAddress(new Address("city", "street", "zipcode"));
+```
+
+또한 임베디드 타입은 엔티티를 속성으로 가질 수 있다.
+
+```java
+@Entity
+public class PhoneServiceProvider {
+
+    @Id @GeneratedValue
+    @Column(name = "PHONE_SERVICE_PROVIDE_ID")
+    private Long id;
+
+    private String name;
+
+    private PhoneNumber phoneNumber;
+
+    // getter, setter
+}
+```
+```java
+@Embeddable
+public class PhoneNumber {
+
+    private String number;
+
+    // 엔티티를 속성으로 가질 수 있다.
+    @ManyToOne
+    @JoinColumn(name = "PHONE_SERVICE_PROVIDER_ID")
+    private PhoneServiceProvider provider;
+
+    public PhoneNumber() {
+
+    }
+
+    public PhoneNumber(String number, PhoneServiceProvider provider) {
+        this.number = number;
+        this.provider = provider;
+    }
+	
+	// getter, setter
+}
+```
+```java
+@Entity
+public class Member {
+
+    @Id @GeneratedValue
+    private Long id;
+
+    @Embedded
+    private PhoneNumber phoneNumber;
+
+    // getter, setter
+}
+```
+
+```java
+PhoneServiceProvider provider = new PhoneServiceProvider();
+provider.setName("xxx");
+em.persist(provider);
+
+Member member =  new Member();
+member.setPhoneNumber(new PhoneNumber("010-0000-0000", provider));
+em.persist(member);
+```
+
+한 엔티티에서 같은 값 타입을 사용하면 컬럼 명이 중복되게 된다.
+
+이런 경우 `@AttributeOverrides`, `@AttributeOverride`을 사용해서 컬럼명을 재정의해야한다.
+
+```java
+@Entity
+public class Member {
+    ...
+
+    @Embedded
+    private Address homeAddress;
+
+    @Embedded
+    @AttributeOverrides(
+            @AttributeOverride(name="city",
+                    column=@Column(name = "WORK_CITY")),
+            @AttributeOverride(name="street",
+                    column=@Column(name = "WORK_STREET")),
+            @AttributeOverride(name="zipcode",
+                    column=@Column(name = "WORK_ZIPCODE"))
+    )
+    private Address workAddress;
+
+    ...
+}
+```
+
+### 값 타입과 불변 객체
+
+임베디드 타입 같은 값 타입을 여러 객체가 공유하면 예상치 못한 버그가 발생할 수 있다.
+
+```java
+// 입베디드 타입 생성
+Address address = new Address("city", "street", "zipcode");
+
+Member member1 = new Member();
+member1.setAddress(address);
+
+// 같은 값 타입 공유
+Member member2 = new Member();
+member2.setAddress(address);
+
+// member1의 주소를 바꾸고자 함
+address.setCity("newCity");
+
+// member2의 주소도 함께 바뀌어버림
+System.out.println(member2.getAddress().getCity()); // newCity
+```
+
+**임베디드 타입은 자바의 기본 타입이 아니라 객체 타입이므로 참조 형태로 전달된다.**
+
+따라서 다음과 같이 값을 복사해서 사용할 것을 권장한다.
+
+```java
+Address address = new Address("city", "street", "zipcode");
+
+Member member1 = new Member();
+member1.setAddress(address);
+
+// 값을 복사해서 사용
+Member member2 = new Member();
+member2.setAddress(new Address(address.getCity(), address.getStreet(), address.getZipcode()));
+
+// member1의 주소를 바꾸고자 함
+address.setCity("newCity");
+
+// member2의 주소는 변하지 않음
+System.out.println(member2.getAddress().getCity()); // city
+```
+
+또는 부작용을 원천 차단하기 위해 값 타입은 **불변 객체로 설계**해, 생성 시점 이후 값을 변경할 수 없도록 할 수 있다.
+
+-> 생성자로만 값을 설정하고 setter 삭제하기 (Integer, String은 자바가 제공하는 대표적인 불변 객체)
+
+```java
+@Embeddable
+public class Address {
+
+    private String city;
+    private String street;
+    private String zipcode;
+
+    public Address(String city, String street, String zipcode) {
+        this.city = city;
+        this.street = street;
+        this.zipcode = zipcode;
+    }
+
+    // setter는 존재 x
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public String getZipcode() {
+        return zipcode;
+    }
+}
+```
+
+```java
+Address address = new Address("city", "street", "zipcode");
+
+Member member1 = new Member();
+member1.setAddress(address);
+
+Member member2 = new Member();
+member2.setAddress(address);
+
+// setter는 이제 불가능
+// address.setCity("newCity");
+
+// 생성자로만 값을 설정 가능
+Address newAddress = new Address("newCity", "street", "zipcode");
+member1.setAddress(newAddress);
+
+// member2의 주소는 이제 변하지 않음
+System.out.println(member2.getAddress().getCity()); // city
+
+```
+
+### 값 타입의 비교
+
+값 타입은 인스턴스가 달라도 그 안의 값이 같으면 같은 것으로 봐야 한다.
+
+```java
+// 두 인스턴스는 같은 같은 것으로 취급되어야 한다.
+Address address1 = new Address("city", "street", "zipcode");
+Address address2 = new Address("city", "street", "zipcode");
+```
+
+인스턴스는 다음 두 가지 방식으로 비교할 수 있다.
+
+- **동일성(identity) 비교**: 인스턴스의 참조 값을 비교(`==` 사용)
+- **동등성(equivalence) 비교**: 인스턴스의 값을 비교(`equals()` 사용)
+
+**여기서 값 타입은 동등성 비교를 통해 비교를 해야 한다.**
+
+값 타입의 `equals()` 메소드를 적절하게 재정의한 뒤 사용한다.
+
+```java
+@Embeddable
+public class Address {
+    ...
+
+    // equals와 hashCode 재정의
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return Objects.equals(city, address.city) && Objects.equals(street, address.street) && Objects.equals(zipcode, address.zipcode);
+	}
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(city, street, zipcode);
+    }
+}
+```
+
+```java
+Address address1 = new Address("city", "street", "zipcode");
+Address address2 = new Address("city", "street", "zipcode");
+
+// 재정의한 equals를 통해 비교한다
+System.out.println(address1.equals(address2)); // true
+
+// ==은 사용 x
+System.out.println(address1 == address2); // false
+```
+
+### 값 타입 컬렉션
+
+값 타입을 하나 이상 저장할 때 사용할 수 있다.
+
+**값 타입에 대한 별도의 테이블이 생성되고, 기존 엔티티와의 일대다 관계를 맺는다.**
+
+`@ElementCollection`, `@CollectionTable`을 사용한다.
+
+```java
+@Entity
+public class Member {
+    ...
+
+    @Embedded
+    private Adress address;
+
+    // 기본값이 lazy라 fetch 속성은 생략 가능
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name="ADDRESS", joinColumns=
+        @JoinColumn(name="MEMBER_ID")
+    )
+    private List<Address> addressHistory = new ArrayList<>();
+}
+```
+
+```java
+Address address1 = new Address("city1", "street1", "zipcode1");
+Address address2 = new Address("city2", "street2", "zipcode2");
+
+Member member = new Member();
+member.getAddressHistory().add(address1);
+member.getAddressHistory().add(address2);
+
+// member만 persist해도 address 테이블은 갱신됨
+// address는 member의 라이프 사이클을 따르는 값 타입이기 때문
+em.persist(member);
+```
+
+<img src="https://user-images.githubusercontent.com/109272360/221618834-3bf60d67-57ca-45a2-bb60-865297827fff.png" width="300px">
+
+하지만 값 타입 컬렉션은 식별자가 없기 때문에 수정, 삭제 시 추적이 어렵다.
+
+따라서 변경 사항이 발생하면 주인 엔티티와 연관된 모든 데이터를 삭제하고, 현재 값을 모두 다시 저장한다.
+
+따라서 **상황에 따라 값 타입 컬렉션 대신 새로운 엔티티 생성을 및 일대다 관계를 고려**해야 한다.
+
+(영속성 전이(Cascasde) + 고아 객체 제거를 사용해서 값 타입 컬렉션처럼 사용)
+
+```java
+// 값 타입 컬렉션 대신 새로운 엔티티 생성
+@Entity
+public class AddressEntity {
+
+    @Id @GeneratedValue
+    private Long id;
+
+    private Address address;
+
+    public AddressEntity(Address address) {
+        this.address = address;
+    }
+}
+```
+
+```java
+@Entity
+public class Member {
+    ...
+
+    // 일대다 관계로 연결
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "MEMBER_ID")
+    private List<AddressEntity> addressHistory = new ArrayList<AddressEntity>();
+
+    ...
+}
+```
+
+```java
+Address address1 = new Address("city1", "street1", "zipcode1");
+Address address2 = new Address("city2", "street2", "zipcode2");
+
+Member member = new Member();
+member.getAddressHistory().add(new AddressEntity(address1));
+member.getAddressHistory().add(new AddressEntity(address2));
+
+em.persist(member);
+```
+
+> **값 타입과 엔티티를 혼동하지 말 것**
+> 
+> 식별자가 필요하고, 지속해서 값을 추적 및 변경해야 한다면 그것은 엔티티이다.
+> 
+> 값 타입은 정말 값 타입이라 판단될 때만 사용해야 한다.
+
+## 6. JPQL(Java Persistence Query Language)
+
+### 기본 문법과 기능
+
+JPQL은 객체 지향 쿼리 언어로, **테이블이 아닌 엔티티 객체를 대상으로 쿼리**한다.
+
+특정 데이터베이스 SQL에 의존하지 않으며, 최종적으로 SQL로 변환된다.
+
+```java
+// select_문
+select_절
+from_절
+[where_절]
+[groupby_절]
+[having_절]
+[orderby_절]
+
+// update_문
+update_절
+[where_절]
+
+// delete_문
+delete_절
+[where_절]
+```
+
+- 규칙
+  - 예시: `select m from Member as m where m.age > 18`
+  - 엔티티와 속성은 대소문자 구분 o (`Member`, `age`)
+  - JPQL 키워드는 대소문자 구분 x (`SELECT`, `FROM`, `where`)
+  - 테이블 이름 대신 엔티티 이름을 사용 (`Member`)
+  - 별칭은 필수 (`m`) (`as`는 생략 가능)
+
+- `createQuery(쿼리, [타입])`
+  - 첫 번째 인자로 String 타입의 쿼리를 넣는다.
+  - 두 번째 인자로 타입을 넣어 반환할 타입을 지정할 수 있다.
+
+
+### 집합과 정렬
+
+`GROUP BY`, `HAVING`, `ORDER BY` 사용 가능
+
+```java
+select
+    COUNT(m),   // 회원 수
+    SUM(m.age), // 나이 합
+    AVG(m.age), // 평균 나이
+    MAX(m.age), // 최대 나이
+    MIN(m.age)  // 최소 나이
+from Member m
+```
+
+### TypeQuery, Query
+
+- `TypeQuery`
+
+  반환 타입이 명확할 때 사용
+
+  ```java
+  TypeQuery<Member> query1 = 
+      em.createQuery("select m from Member m", Member.class);
+
+  TypeQuery<String> query2 = 
+      em.createQuery("select m.username from Member m", String.class);
+  ```
+
+- Query
+  
+  반환 타입이 명확하지 않을 때 사용
+
+  ```java
+  Query query = 
+      em.createQuery("select m.username, m.age from Member m");
+  ```
+
+### 결과 조회 API
+
+- `query.getResultList()`
+  - 결과가 하나 이상일 때 리스트 반환
+  - 결과가 없으면 빈 리스트 반환
+
+- `query.getSingleResult()`
+  - 결과가 정확히 하나일 때 단일 객체 반환
+  - 결과가 없으면: javax.persistence.NoResultException
+  - 둘 이상이면: javax.persistence.NonUniqueResultException
+
+### 파라미터 바인딩
+
+- 이름 기준
+  ```java
+  // 이름 기준 동적 파라미터 생성
+  TypedQuery<Member> query = em.createQuery(
+      "select m from Member m where m.username = :username", Member.class
+  );
+
+  // 인자 부여
+  query.setParameter("username", "member1");
+
+  // username이 member1인 멤버 객체 반환
+  Member result = query.getSingleResult();
+  ```
+  ```java
+  // 이는 보통 chaining을 통해 구현된다.
+  Member result = em.createQuery("select m from Member m where m.username = :username", Member.class)
+      .setParameter("username", "member1")
+      .getSingleResult();
+  ```
+
+- 위치 기준
+
+  위치 기준은 혼동의 우려가 있어 잘 사용하지 않는다.
+
+  ```java
+  // 위치 기준 동적 파라미터 생성
+  TypedQuery<Member> query = em.createQuery(
+      "select m from Member m where m.username = ?1", Member.class
+  );
+
+  // 인자 부여
+  query.setParameter(1, "member1");
+
+  // username이 member1인 멤버 객체 반환
+  Member result = query.getSingleResult();
+  ```
+
+### 프로젝션
+
+SELECT 절에 조회할 대상을 지정하는 것
+
+프로젝션 대상: 엔티티, 임베디드 타입, 스칼라 타입(숫자, 문자 등 기본 데이터 타입)
+
+- `select m from Member m` -> 엔티티 프로젝션
+- `select m.team from Member m` -> 엔티티 프로젝션
+- `select m.address from Member m` -> 임베디드 타입 프로젝션
+- `select m.username, m.age from Member m` -> 스칼라 타입 프로젝션
+- `select` 키워드 다음 `distinct`를 명시해 중복 제거 가능
+
+프로젝션으로 여러 값을 조회하는 방법은 다음과 같다.
+- Query 타입으로 조회
+  ```java
+  List resultList = em.createQuery("select m.username, m.age from Member m")
+      .getResultList();
+
+  Object o = resultList.get(0);
+  Object[] result = (Object[]) o;
+  System.out.println("name: " + result[0]); // 유저 name
+  System.out.println("age: " + result[1]); // 유저 age
+  ```
+
+- Object[] 타입으로 조회
+  ```java
+  List<Object[]> resultList = em.createQuery("select m.username, m.age from Member m")
+      .getResultList();
+  Object[] result = resultList.get(0);
+  System.out.println("name: " + result[0]); // 유저 name
+  System.out.println("age: " + result[1]); // 유저 age
+  ```
+
+- new 명령어로 조회
+  ```java
+  // 순서와 타입이 일치하는 생성자가 필요하다.
+  List<MemberDTO> result = em.createQuery("select new 패키지명.MemberDTO(m.username, m.age) from Member m", MemberDTO.class)
+          .getResultList();
+  MemberDTO memberDTO = result.get(0);
+  System.out.println("name: " + memberDTO.getUsername()); // 유저 name
+  System.out.println("age: " + memberDTO.getAge()); // 유저 age
+  ```
+
+### 페이징 API
+
+JPA는 페이징을 다음 두 API로 추상화한다.
+
+- `setFirstResult(int startPosition)`: 조회 시작 위치 (0부터 시작)
+- `setMaxResults(int maxResult)`: 조회할 데이터 수
+
+```java
+String jpql = "select m from Member m";
+List<Member> resultList = em.createQuery(jpql, Member.class)
+        .setFirstResult(10) // 10번째 유저부터
+        .setMaxResults(3) // 3명의 유저 가져오기
+        .getResultList();
+
+for (Member member : resultList) {
+    System.out.println(member.getUsername());
+    // member10
+    // member11
+    // member12
+}
+```
+
+### 조인
+
+- 내부 조인
+  
+  `select m from Member m [inner] join m.team t`
+
+- 외부 조인
+
+  `select m from Member m left [outer] join m.team t`
+
+- 세타 조인
+
+  `select count(m) from Member m, Team t where m.username = t.name`
+
+- ON절(JPA 2.1부터 지원)
+  
+  - 조인 대상 필터링
+    
+	`select m, t from Member m left join m.team t on t.name = "팀이름"`
+
+  - 연관관계 없는 엔티티 외부 조인(하이버네이트 5.1부터 지원)
+
+    `select m, t from Member m left join Team t on m.username = t.name`
+
+### 서브 쿼리
+
+- `[NOT] EXISTS`
+  - 서브 쿼리 조건을 만족하는[만족하지 않는] 경우만 반환
+  - 예시1: 팀이 "teamA"인 유저만 반환
+
+    `select m from Member m where exists (select t from m.team t where t.name = 'teamA')`
+
+  - 예시2: 팀이 "teamA"가 아닌 유저만 반환
+
+     `select m from Member m where not exists (select t from m.team t where t.name = 'teamA')`
+
+- `ALL`
+
+  - 서브 쿼리에서 반환된 모든 값을 확인
+
+  - 예시: 상품 재고의 최댓값보다 주문량이 더 큰 주문들
+    
+    `select o from Order o where o.orderAmount > all (select p.stockAmount from Product p)`
+
+    (위 쿼리는 `select o from Order o where o.orderAmount > (select MAX(p.stockAmount) from Product p)`와 같음)
+
+- `ANY`(=`SOME`)
+
+  - 서브 쿼리 결과 중 하나라도 만족하면 참
+
+  - 예시: 어떤 팀이든 팀에 소속된 회원
+
+    `select m from Member m where m.team = any (select t from Team t)`
+
+- `[NOT] IN`
+
+  - 서브 쿼리 중 하나라도 같은 것이 있으면 참[거짓]
+
+  - 예시1: 지역이 서울인 부서에 속한 직원
+
+    `select e from Employee e where e.department in (select d from Department d where d.location = 'Seoul')`
+
+  - 예시2: 부서가 IT, Sales인 직원
+
+    `select e from Employee e where e.department in ('IT', 'Sales')`
+
+  - 예시3: 부서가 IT, Sales가 아닌 직원
+  
+    `select e from Employee e where e.department not in ('IT', 'Sales')`
+
+※ JPQL은 WHERE, HAVING, SELECT, FROM(하이버네이트 6 이상)절의 서브 쿼리를 지원한다.
+
+   FROM절의 서브 쿼리는 조인으로 풀어서 해결하는 것도 가능하다.
+
+### 타입 표현
+
+- enum
+  
+  `패키지명.enum명.타입` 형태로 사용
+
+  ```java
+  // enum 생성
+  package jpql;
+
+  public class MemberType {
+      ADMIN, USER
+  }
+  ```
+
+  ```java
+  public class Member {
+      ...
+      @Enumerated(EnumType.STRING)
+      private MemberType type;
+  }
+  ```
+
+  ```java
+  String query = "select m from Member m where m.type = jpql.MemberType.ADMIN";
+  ```
+  
+- 엔티티 타입: `type()` (상속 관계에서 사용)
+  
+  ```java
+  // Book이 Item을 상속 받고 있는 경우
+  String query = "select i from Item i where type(i) = Book";
+  ```
+
+### 조건식
+
+- 기본 case 식
+
+  ```java
+  Member member = new Member();
+  member.setAge(8);
+  em.persist(member);
+  
+  em.flush();
+  em.clear();
+  
+  String query =
+          "select " +
+                  "case when m.age <= 10 then '학생요금' " +
+                  "     when m.age >= 60 then '경로요금' " +
+                  "     else '일반요금' " +
+                  "end " +
+          "from Member m";
+  List<String> resultList = em.createQuery(query, String.class).getResultList();
+  for (String s : resultList) {
+      System.out.println(s); // 학생요금
+  }
+  ```
+
+- 단순 case 식
+
+  ```java
+  Team team = new Team();
+  team.setName("teamA");
+  em.persist(team);
+  
+  em.flush();
+  em.clear();
+  
+  String query =
+          "select " +
+              "case t.name " +
+                  "when 'teamA' then '인센티브 110%' " +
+                  "when 'teamB' then '인센티브 120%' " +
+                  "else '인센티브 105%' " +
+          "end " +
+          "from Team t";
+  List<String> resultList = em.createQuery(query, String.class).getResultList();
+  for (String s : resultList) {
+      System.out.println(s); // 인센티브 110%
+  }
+  ```
+
+- COALESCE(A, B)
+  
+  A가 null인 경우 B 반환
+
+  ```java
+  Member member1 = new Member();
+  member1.setUsername(null);
+  em.persist(member1);
+
+  Member member2 = new Member();
+  member2.setUsername("member1");
+  em.persist(member2);
+
+  em.flush();
+  em.clear();
+
+  String query = "select coalesce(m.username, '이름 없는 회원') from Member m";
+  List<String> resultList = em.createQuery(query, String.class).getResultList();
+  for (String s : resultList) {
+      System.out.println(s);
+      // 이름없는 회원
+      // member1
+  }
+  ```
+
+- NULLIF(A, B)
+
+  A가 B와 같으면 null로 반환
+
+  ```java
+  Member member1 = new Member();
+  member1.setUsername("member1");
+  em.persist(member1);
+
+  Member member2 = new Member();
+  member2.setUsername("member2");
+  em.persist(member2);
+
+  em.flush();
+  em.clear();
+
+  String query = "select nullif(m.username, 'member1') from Member m";
+  List<String> resultList = em.createQuery(query, String.class).getResultList();
+  for (String s : resultList) {
+      System.out.println(s);
+      // null
+      // member2
+  }
+  ```
+
+### JPQL 함수
+
+- CONCAT
+  ```java
+  String query = "select concat('a', 'b') from Member m"; // ab
+  ```
+
+- SUBSTRING
+  ```java
+  String query = "select substring('abcdefg', 2, 3) from Member m"; // bcd
+  ```
+
+- TRIM
+  ```java
+  String query = "select trim(' abc ') from Member m"; // abc
+  ```
+  
+- LOWER, UPPER
+  ```java
+  String query1 = "select lower('Abc') from Member m"; // abc
+  String query2 = "select upper('Abc') from Member m"; // ABC
+  ```
+
+- LENGTH
+  ```java
+  String query = "select length('abc') from Member m"; // 3
+  ```
+
+- LOCATE
+  ```java
+  String query = "select locate('cd', 'abcdefg') from Member m"; // 3
+  ```
+
+- ABS, SQRT, MOD(A, B)
+  ```java
+  String query1 = "select abs(-10) from Member m"; // 10
+  String query2 = "select sqrt(4) from Team t where t.name='teamA'"; // 2
+  String query3 = "select mod(10, 3) from Team t where t.name='teamA'"; // 10 % 3 = 1
+  ```
+
+- SIZE
+  ```java
+  String query = "select size(t.members) from Team t where t.name='teamA'"; // teamA의 구성원 수
+  ```
