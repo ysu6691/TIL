@@ -110,16 +110,16 @@
 |실수형|double|8byte|	-179769313486231570e+308~1.79769313486231570e+308|
 
 - 자료형 범위 비교
-byte < char = short < int < long < float < double
+byte < short, (char) < int < long < float < double
 
 - 데이터 형변환
   - 암묵적(Implicit Casting)
     - 범위가 넓은 데이터 형에 좁은 데이터 형을 대입하는 것
-    - ex) byte b = 100;  int i = b;
-  - 명시적(Explicit Casting)
+    - ex) `byte b = 100;`  `int i = b;`
+  - 명시적(Explicit Casting, =**캐스팅**)
     - 범위가 좁은 데이터 형에 넓은 데이터 형을 대입하는 것
-    - ex1) int i = 100;  byte b = i; (x)
-    - ex2) int i = 100;  byte b = (byte) i; (o)
+    - ex1) `int i = 100;`  `byte b = i;` (x)
+    - ex2) `int i = 100;`  `byte b = (byte) i;` (o)
 
   ```java
 	public static void main(String[] args) {
@@ -141,21 +141,31 @@ byte < char = short < int < long < float < double
       double f = 1.6;
       int ia = (int) f;
       System.out.println(ia); // 1 (소수점 버림)
+
+      int x = 1;
+      int y = 2;
+      double result = x / y; // 0 (x / y가 int로 먼저 0으로 계산됨)
+      double result = (double) x / y; // 0.5
+
+      // 문자열과 숫자 연산
+      int value = 3 + 7; // 10
+      String str1 = 3 + "7"; // 37
+      String str2 = 1 + 2 + "3"; // "33"
 	}
   ```
 
 ### 변수
 - 선언
   - `자료형 변수명`
-  - ex) int age;  String name;
+  - ex) `int age;`  `String name;`
 
 - 저장(할당)
   - `변수명 = 저장할 값`
-  - ex) age = 30;  name = "java";
+  - ex) `age = 30;`  `name = "java";`
 
 - 초기화: 선언과 저장을 동시에
   - `자료형 변수명 = 저장할 값`
-  - ex) int age = 30;
+  - ex) `int age = 30;`
 
 ```java
 public static void main(String[] args) {
@@ -344,6 +354,25 @@ public static void main(String[] args) {
       System.out.println("없는 달 입니다.");
   }
   // 없는 달 입니다.
+
+  // Switch Expressions(Java 12 이후 버전)
+  String grade1 = "B";
+  switch (grade1) {
+    case "A", 'a' -> System.out.println("우수 회원입니다.");
+    case "B", "b" -> System.out.println("일반 회원입니다.");
+    default -> System.out.println("손님입니다.");
+  }
+
+  // Switch Expressions + yield(Java 13 이후 버전): 값을 바로 대입 가능
+  String grade2 = "B";
+  int score = switch (grade) {
+    case "A" -> 100;
+    case "B" -> {
+      int result = 100 - 20;
+      yield result; // B인 경우 80 대입
+    }
+    default -> 60; // default를 필수로 명시해야 한다.
+  } 
   ```
 
 ### 반복문
